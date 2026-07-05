@@ -18,6 +18,12 @@
     "bazi:luck": "tsx scripts/test-luck.mjs",
     "bazi:xkdg": "tsx scripts/test-xkdg.mjs",
     "bazi:elements": "tsx scripts/test-elements.mjs",
+    "bazi:tengod": "tsx scripts/test-ten-god-profile.mjs",
+    "bazi:palace": "tsx scripts/test-palace.mjs",
+    "bazi:luckfav": "tsx scripts/test-luck-favorability.mjs",
+    "bazi:content": "tsx scripts/test-content.mjs",
+    "bazi:interpret": "tsx scripts/test-interpret.mjs",
+    "bazi:narrative2": "tsx scripts/test-narrative-v2.mjs",
     "engine:test": "node scripts/test-tyme.mjs",
     "engine:validate": "node scripts/validate-engine.mjs",
     "engine:audit": "node scripts/audit-day-pillar.mjs",
@@ -31,7 +37,8 @@
     "markdown:test": "tsx scripts/test-markdown.mjs",
     "stream:test": "tsx scripts/test-stream.mjs",
     "narrative:test": "tsx scripts/test-narrative.mjs",
-    "daybazi:test": "tsx scripts/test-day-bazi.mjs"
+    "daybazi:test": "tsx scripts/test-day-bazi.mjs",
+    "locations:test": "tsx scripts/test-locations.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

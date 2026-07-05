@@ -11,6 +11,7 @@ export interface Profile {
   timezone: string;          // IANA tz, default "Asia/Bangkok"
   birthLongitude?: number;   // ลองจิจูดของสถานที่เกิด (degrees, -180 ถึง 180) เช่น 100.5 สำหรับกทม.
   useTrueSolarTime?: boolean; // default true (TST แม่นกว่า). false = Beijing standard time
+  birthLocationKey?: string; // key ของจังหวัดจาก BIRTH_LOCATIONS (เช่น "bangkok") — derive timezone+longitude อัตโนมัติ. undefined = กรอกเอง (กำหนดเอง mode)
   note?: string;             // หมายเหตุ (optional)
   createdAt: string;         // ISO
   updatedAt: string;         // ISO

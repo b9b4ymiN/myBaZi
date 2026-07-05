@@ -23,6 +23,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import type { Profile, Gender, BirthTimeKnown } from "@/types/profile";
+import {
+  BIRTH_LOCATIONS,
+  findLocation,
+  findLocationByName,
+} from "@/lib/bazi/locations";
 
 interface ProfileFormProps {
   open: boolean;
@@ -41,6 +46,36 @@ const ASIAN_TIMEZONES = [
   { value: "UTC", label: "UTC" },
 ];
 
+interface FormData {
+  name: string;
+  gender: Gender;
+  birthDate: string;
+  birthTime: string;
+  birthTimeKnown: BirthTimeKnown;
+  locationInput: string; // text ใน datalist (nameTh หรือที่ผู้ใช้พิมพ์)
+  birthLocationKey: string; // "" = ยังไม่ match จังหวัดใน list
+  useCustomLocation: boolean; // true = กรอก timezone + longitude เอง
+  timezone: string; // ใช้ใน custom mode
+  birthLongitude: string; // ใช้ใน custom mode
+  useTrueSolarTime: boolean;
+  note: string;
+}
+
+const DEFAULT_FORM: FormData = {
+  name: "",
+  gender: "male",
+  birthDate: "",
+  birthTime: "",
+  birthTimeKnown: "known",
+  locationInput: "กรุงเทพมหานคร",
+  birthLocationKey: "bangkok",
+  useCustomLocation: false,
+  timezone: "Asia/Bangkok",
+  birthLongitude: "",
+  useTrueSolarTime: true,
+  note: "",
+};
+
 export function ProfileForm({
   open,
   onOpenChange,
@@ -48,47 +83,30 @@ export function ProfileForm({
   onSave,
 }: ProfileFormProps) {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    name: "",
-    gender: "male" as Gender,
-    birthDate: "",
-    birthTime: "",
-    birthTimeKnown: "known" as BirthTimeKnown,
-    timezone: "Asia/Bangkok",
-    birthLongitude: "",
-    useTrueSolarTime: true,
-    note: "",
-  });
+  const [formData, setFormData] = useState<FormData>(DEFAULT_FORM);
 
   // Reset form when dialog opens/closes or profile changes
   useEffect(() => {
     if (profile) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFormData({
-        name: profile.name,
-        gender: profile.gender,
-        birthDate: profile.birthDate,
-        birthTime: profile.birthTime || "",
-        birthTimeKnown: profile.birthTimeKnown,
-        timezone: profile.timezone,
-        birthLongitude: profile.birthLongitude?.toString() || "",
-        useTrueSolarTime: profile.useTrueSolarTime ?? true,
-        note: profile.note || "",
-      });
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- restore form ตอนเปิด/edit (dep = profile/open ไม่ loop)
+      setFormData(buildFormFromProfile(profile));
     } else {
-      setFormData({
-        name: "",
-        gender: "male",
-        birthDate: "",
-        birthTime: "",
-        birthTimeKnown: "known",
-        timezone: "Asia/Bangkok",
-        birthLongitude: "",
-        useTrueSolarTime: true,
-        note: "",
-      });
+      setFormData(DEFAULT_FORM);
     }
   }, [profile, open]);
+
+  /** ผู้ใช้พิมพ์/เลือกใน datalist → match จังหวัด แล้ว derive timezone+longitude */
+  const handleLocationInput = (value: string) => {
+    const loc = findLocationByName(value);
+    setFormData((prev) => ({
+      ...prev,
+      locationInput: value,
+      birthLocationKey: loc ? loc.key : "",
+      // sync timezone/longitude เผื่อ user toggle ไป custom mode ภายหลัง
+      timezone: loc ? loc.timezone : prev.timezone,
+      birthLongitude: loc ? loc.longitude.toFixed(4) : prev.birthLongitude,
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,7 +133,34 @@ export function ProfileForm({
       return;
     }
 
-    // Create profile data with client-side timestamp
+    // Location validation
+    if (!formData.useCustomLocation && !formData.birthLocationKey) {
+      toast.error("กรุณาเลือกจังหวัด หรือเปิด 'กำหนดเอง'");
+      return;
+    }
+
+    // Derive timezone + longitude ตาม mode
+    let timezone: string;
+    let birthLongitude: number | undefined;
+    let birthLocationKey: string | undefined;
+
+    if (formData.useCustomLocation) {
+      timezone = formData.timezone;
+      birthLongitude = formData.birthLongitude
+        ? parseFloat(formData.birthLongitude)
+        : undefined;
+      birthLocationKey = undefined;
+    } else {
+      const loc = findLocation(formData.birthLocationKey);
+      if (!loc) {
+        toast.error("สถานที่เกิดไม่ถูกต้อง กรุณาเลือกใหม่");
+        return;
+      }
+      timezone = loc.timezone;
+      birthLongitude = loc.longitude;
+      birthLocationKey = loc.key;
+    }
+
     const now = new Date().toISOString();
     const profileData = {
       name: formData.name.trim(),
@@ -123,9 +168,10 @@ export function ProfileForm({
       birthDate: formData.birthDate,
       birthTime: formData.birthTimeKnown === "known" ? formData.birthTime : null,
       birthTimeKnown: formData.birthTimeKnown,
-      timezone: formData.timezone,
-      birthLongitude: formData.birthLongitude ? parseFloat(formData.birthLongitude) : undefined,
+      timezone,
+      birthLongitude,
       useTrueSolarTime: formData.useTrueSolarTime,
+      birthLocationKey,
       note: formData.note.trim() || undefined,
       createdAt: profile ? profile.createdAt : now,
       updatedAt: now,
@@ -136,6 +182,11 @@ export function ProfileForm({
     toast.success(profile ? "บันทึกโปรไฟล์เรียบร้อย" : "สร้างโปรไฟล์เรียบร้อย");
     router.refresh();
   };
+
+  // Location ที่ match ในปัจจุบัน (สำหรับแสดง preview)
+  const matchedLocation = formData.birthLocationKey
+    ? findLocation(formData.birthLocationKey)
+    : undefined;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -232,27 +283,98 @@ export function ProfileForm({
             </div>
           )}
 
-          {/* Timezone */}
-          <div className="space-y-2">
-            <Label htmlFor="timezone">โซนเวลา</Label>
-            <Select
-              value={formData.timezone}
-              onValueChange={(value) =>
-                setFormData({ ...formData, timezone: value })
+          {/* Birth Location — Custom toggle */}
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="useCustomLocation"
+              checked={formData.useCustomLocation}
+              onChange={(e) =>
+                setFormData({ ...formData, useCustomLocation: e.target.checked })
               }
-            >
-              <SelectTrigger id="timezone">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ASIAN_TIMEZONES.map((tz) => (
-                  <SelectItem key={tz.value} value={tz.value}>
-                    {tz.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              className="h-4 w-4 rounded border-gray-300"
+            />
+            <Label htmlFor="useCustomLocation" className="cursor-pointer">
+              เกิดต่างประเทศ / กำหนดเอง (timezone + ลองจิจูด)
+            </Label>
           </div>
+
+          {/* Birth Location — datalist (จังหวัด) OR custom inputs */}
+          {!formData.useCustomLocation ? (
+            <div className="space-y-2">
+              <Label htmlFor="birthLocation">สถานที่เกิด (จังหวัด)</Label>
+              <Input
+                id="birthLocation"
+                list="birth-locations"
+                value={formData.locationInput}
+                onChange={(e) => handleLocationInput(e.target.value)}
+                placeholder="พิมพ์หรือเลือกจังหวัด เช่น กรุงเทพมหานคร"
+              />
+              <datalist id="birth-locations">
+                {BIRTH_LOCATIONS.map((loc) => (
+                  <option key={loc.key} value={loc.nameTh}>
+                    {loc.nameEn}
+                  </option>
+                ))}
+              </datalist>
+              {matchedLocation ? (
+                <p className="text-xs text-muted-foreground">
+                  ลองจิจูด {matchedLocation.longitude.toFixed(2)}°E · เขตเวลา{" "}
+                  {matchedLocation.timezone}
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  พิมพ์ชื่อจังหวัดให้ตรง เช่น &ldquo;กรุงเทพมหานคร&rdquo; &ldquo;เชียงใหม่&rdquo;
+                  &ldquo;ขอนแก่น&rdquo;
+                </p>
+              )}
+            </div>
+          ) : (
+            <>
+              {/* Timezone (custom) */}
+              <div className="space-y-2">
+                <Label htmlFor="timezone">โซนเวลา</Label>
+                <Select
+                  value={formData.timezone}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, timezone: value })
+                  }
+                >
+                  <SelectTrigger id="timezone">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ASIAN_TIMEZONES.map((tz) => (
+                      <SelectItem key={tz.value} value={tz.value}>
+                        {tz.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Birth Longitude (custom) */}
+              <div className="space-y-2">
+                <Label htmlFor="birthLongitude">
+                  ลองจิจูดของสถานที่เกิด (ไม่บังคับ)
+                </Label>
+                <Input
+                  id="birthLongitude"
+                  type="number"
+                  step="0.1"
+                  value={formData.birthLongitude}
+                  onChange={(e) =>
+                    setFormData({ ...formData, birthLongitude: e.target.value })
+                  }
+                  placeholder="100.5"
+                />
+                <p className="text-xs text-muted-foreground">
+                  ใส่ลองจิจูดเมืองเกิดเพื่อความแม่นยำสูงสุด (เช่น 100.5 สำหรับ
+                  กทม.) ค้นหาได้จาก Google Maps
+                </p>
+              </div>
+            </>
+          )}
 
           {/* True Solar Time Toggle */}
           <div className="space-y-2">
@@ -274,27 +396,6 @@ export function ProfileForm({
               เวลาแท้ตามตำแหน่งดวงอาทิตย์จริง แม่นยำกว่ามาตรฐาน Beijing time
             </p>
           </div>
-
-          {/* Birth Longitude */}
-          {formData.useTrueSolarTime && (
-            <div className="space-y-2">
-              <Label htmlFor="birthLongitude">ลองจิจูดของสถานที่เกิด (ไม่บังคับ)</Label>
-              <Input
-                id="birthLongitude"
-                type="number"
-                step="0.1"
-                value={formData.birthLongitude}
-                onChange={(e) =>
-                  setFormData({ ...formData, birthLongitude: e.target.value })
-                }
-                placeholder="100.5"
-              />
-              <p className="text-xs text-muted-foreground">
-                ใส่ลองจิจูดเมืองเกิดเพื่อความแม่นยำสูงสุด (เช่น 100.5 สำหรับ กทม.)
-                ค้นหาได้จาก Google Maps
-              </p>
-            </div>
-          )}
 
           {/* Note */}
           <div className="space-y-2">
@@ -322,4 +423,48 @@ export function ProfileForm({
       </DialogContent>
     </Dialog>
   );
+}
+
+/**
+ * สร้าง form state จาก Profile ที่บันทึกไว้
+ * - ถ้ามี birthLocationKey ที่ยัง valid → restore เป็นโหมดเลือกจังหวัด
+ * - ถ้าไม่มี key หรือ key stale → restore เป็น custom mode (backward compat)
+ */
+function buildFormFromProfile(profile: Profile): FormData {
+  const base: FormData = {
+    ...DEFAULT_FORM,
+    name: profile.name,
+    gender: profile.gender,
+    birthDate: profile.birthDate,
+    birthTime: profile.birthTime || "",
+    birthTimeKnown: profile.birthTimeKnown,
+    useTrueSolarTime: profile.useTrueSolarTime ?? true,
+    note: profile.note || "",
+  };
+
+  if (profile.birthLocationKey) {
+    const loc = findLocation(profile.birthLocationKey);
+    if (loc) {
+      // Restore เป็นโหมดเลือกจังหวัด
+      return {
+        ...base,
+        locationInput: loc.nameTh,
+        birthLocationKey: loc.key,
+        useCustomLocation: false,
+        timezone: loc.timezone,
+        birthLongitude: loc.longitude.toFixed(4),
+      };
+    }
+    // key stale (จังหวัดถูกลบจาก list) → fallback custom
+  }
+
+  // Profile เก่า (กรอก manual) หรือ key stale → custom mode แสดงค่าเดิม
+  return {
+    ...base,
+    locationInput: "",
+    birthLocationKey: "",
+    useCustomLocation: true,
+    timezone: profile.timezone,
+    birthLongitude: profile.birthLongitude?.toString() || "",
+  };
 }
