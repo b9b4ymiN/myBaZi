@@ -371,33 +371,33 @@ function analyzeWeakNormalUsefulGod(
 
 /**
  * Generate application tips (สี/ทิศ/อาชีพ) จากธาตุ
+ * คืนเป็นหลายบรรทัด (newline-separated) แยกตามธาตุหลัก/รอง/หลีกเลี่ยง
+ * ผู้ render ต้องใช้ whitespace-pre-line หรือแยกบรรทัดเอง
  */
 function generateApplicationTips(
   primaryElement: ElementName,
   secondaryElements: ElementName[],
   avoidElements: ElementName[]
 ): string {
-  const tips: string[] = [];
+  const lines: string[] = [];
 
-  // เพิ่ม tips สำหรับ primary element
-  const primaryTips = getElementTips(primaryElement);
-  tips.push(primaryTips);
+  // tips สำหรับ primary element (用神)
+  lines.push(`ธาตุหลัก ${ELEMENT_THAI[primaryElement]} (${primaryElement}): ${getElementTips(primaryElement)}`);
 
-  // เพิ่ม tips สำหรับ secondary elements (ถ้าไม่ซ้ำ)
+  // tips สำหรับ secondary elements (喜神) — ถ้าไม่ซ้ำ primary
   for (const secondary of secondaryElements) {
     if (!areElementsSame(secondary, primaryElement)) {
-      const secondaryTips = getElementTips(secondary);
-      tips.push(secondaryTips);
+      lines.push(`ธาตุรอง ${ELEMENT_THAI[secondary]} (${secondary}): ${getElementTips(secondary)}`);
     }
   }
 
-  // คำแนะนำหลีกเลี่ยง
+  // คำแนะนำหลีกเลี่ยง (忌神)
   if (avoidElements.length > 0) {
     const avoidThai = avoidElements.map((e) => ELEMENT_THAI[e]).join("、");
-    tips.push(`หลีกเลี่ยง: ${avoidThai}`);
+    lines.push(`หลีกเลี่ยง: ${avoidThai}`);
   }
 
-  return tips.join(" | ");
+  return lines.join("\n");
 }
 
 /**
@@ -405,11 +405,11 @@ function generateApplicationTips(
  */
 function getElementTips(element: ElementName): string {
   const tips: Record<ElementName, string> = {
-    木: "สีเขียว/น้ำตาล | ทิศตะวันออก | อาชีพ: เกษตร, ไม้, การศึกษา, พิมพ์",
-    火: "สีแดง/ม่วง/ชมพู | ทิศใต้ | อาชีพ: พลังงาน, เทคโนโลยี, อิเล็กทรอนิกส์, หุ้น",
-    土: "สีเหลือง/น้ำตาล/ส้ม | ทิศกลาง/ตะวันออกเฉียงใต้-ตะวันตกเฉียงใต้ | อาชีพ: อสังหาฯ, ก่อสร้าง, โลจิสติกส์, บริการ",
-    金: "สีขาว/ทอง/เงิน/เทา | ทิศตะวันตก | อาชีพ: การเงิน, ธนาคาร, กฎหมาย, วิศวกรรม",
-    水: "สีดำ/น้ำเงิน/กรมท่า/เทาเข้ม | ทิศเหนือ | อาชีพ: สื่อสาร, การตลาด, ขนส่ง, ท่องเที่ยว, บันเทิง",
+    木: "สีเขียว/น้ำตาล · ทิศตะวันออก · อาชีพ: เกษตร, ไม้, การศึกษา, พิมพ์",
+    火: "สีแดง/ม่วง/ชมพู · ทิศใต้ · อาชีพ: พลังงาน, เทคโนโลยี, อิเล็กทรอนิกส์, หุ้น",
+    土: "สีเหลือง/น้ำตาล/ส้ม · ทิศกลาง/ตะวันออกเฉียงใต้-ตะวันตกเฉียงใต้ · อาชีพ: อสังหาฯ, ก่อสร้าง, โลจิสติกส์, บริการ",
+    金: "สีขาว/ทอง/เงิน/เทา · ทิศตะวันตก · อาชีพ: การเงิน, ธนาคาร, กฎหมาย, วิศวกรรม",
+    水: "สีดำ/น้ำเงิน/กรมท่า/เทาเข้ม · ทิศเหนือ · อาชีพ: สื่อสาร, การตลาด, ขนส่ง, ท่องเที่ยว, บันเทิง",
   };
 
   return tips[element];

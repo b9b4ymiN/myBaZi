@@ -86,13 +86,14 @@ export const STRENGTH_LEVEL_THAI: Record<StrengthLevel, string> = {
 };
 
 /**
- * Map Strength Level → อธิบายโดยย่อ
+ * Map Strength Level → อธิบายโดยย่อ (description ล้วย ไม่มี "เจ้าวันX" นำหน้า
+ * เพราะผู้เรียกนำไปใช้ในรูป "เจ้าวัน{level}: {desc}" — ซ้ำคำถ้ามีนำหน้า)
  */
 export const STRENGTH_LEVEL_DESC: Record<StrengthLevel, string> = {
-  very_strong: "เจ้าวันแข็งมาก มีพลังเด็ดขาด ไม่ต้องพึ่งพาคนอื่น",
-  strong: "เจ้าวันแข็ง มีพลังเพียงพอ มั่นคง",
-  weak: "เจ้าวันอ่อน ต้องพึ่งพาธาตุอื่น",
-  very_weak: "เจ้าวันอ่อนมาก ต้องการค้ำยันสูง",
+  very_strong: "มีพลังเด็ดขาด แข็งแกร่งยิ่ง ไม่ต้องพึ่งพาคนอื่น",
+  strong: "มีพลังเพียงพอ ค่อนข้างมั่นคง",
+  weak: "ต้องพึ่งพาธาตุอื่นเสริม",
+  very_weak: "ต้องการธาตุค้ำยันสูง",
 };
 
 /**

@@ -4,6 +4,7 @@
 
 import type { ElementName, YinYang } from "./types";
 import type { TenGodName, TenGodInfo, TenGodRelationship } from "../../types/bazi-gods-stars";
+import { TEN_GOD_THAI } from "../../types/bazi-gods-stars";
 import { getRelationshipType } from "./relationships";
 
 /**
@@ -87,7 +88,7 @@ export function toTenGodInfo(
 
   return {
     name,
-    nameTh: getTenGodThai(name),
+    nameTh: TEN_GOD_THAI[name],
     relationship,
     element,
     yinYang,
@@ -112,24 +113,4 @@ function getRelationshipFromTenGod(name: TenGodName): TenGodRelationship {
 
   // Should never reach here (TypeScript ensures exhaustiveness)
   throw new Error(`Unknown TenGodName: ${name}`);
-}
-
-/**
- * หาชื่อไทยของ 10 God
- */
-function getTenGodThai(name: TenGodName): string {
-  const thaiMap: Record<TenGodName, string> = {
-    比肩: "比肩 (เพื่อน/ภราดร)",
-    劫财: "劫财 (ทรัพย์สินชั่วคราว)",
-    食神: "食神 (เทพผู้บริโภค)",
-    伤官: "伤官 (นักการทูตบาดเจ็บ)",
-    偏财: "偏财 (ทรัพย์สินทางอ้อม)",
-    正财: "正财 (ทรัพย์สินตรง)",
-    七杀: "七杀 (七นักฆ่า)",
-    正官: "正官 (นักการทูตตรง)",
-    偏印: "偏印 (ทรัพย์สินทางอ้อม)",
-    正印: "正印 (ทรัพย์สินตรง)",
-  };
-
-  return thaiMap[name];
 }

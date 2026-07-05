@@ -3,6 +3,7 @@
 import { createElement as h } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
 import { MarkdownRenderer } from "../src/components/ui/markdown.tsx"
+import { RichText } from "../src/components/ui/rich-text.tsx"
 
 const sample = [
   "# หัวข้อใหญ่",
@@ -29,6 +30,8 @@ const sample = [
   "[ลิงก์ร้าย](javascript:alert(1))",
   "",
   "[ลิงก์ดี](https://example.com)",
+  "",
+  "แนะนำให้ใช้สีแดง และเสริมธาตุไฟ ตามด้วยธาตุน้ำ",
 ].join("\n")
 
 const html = renderToStaticMarkup(h(MarkdownRenderer, { content: sample }))
@@ -43,6 +46,15 @@ const checks = {
   pre: /<pre/.test(html),
   table: /<table/.test(html),
   goodLink: /href="https:\/\/example\.com"/.test(html),
+  // Concept badges (color + element enrichment)
+  colorBadgeRed: html.includes('class="cb cb-color"') && html.includes('data-color="red"'),
+  elementBadgeFire: html.includes('class="cb cb-element"') && html.includes('data-el="fire"'),
+  elementBadgeWater: html.includes('data-el="water"'),
+  // RichText (app-wide plain-text path) — same badges via shared splitConcepts
+  richTextFire: renderToStaticMarkup(h(RichText, { children: "เสริมธาตุไฟ" })).includes('data-el="fire"'),
+  richTextRed: renderToStaticMarkup(h(RichText, { children: "ใช้สีแดง" })).includes('data-color="red"'),
+  richTextPlain:
+    renderToStaticMarkup(h(RichText, { children: "ข้อความธรรมดา" })) === "<span>ข้อความธรรมดา</span>",
   // Security DOD — must all be true (sanitized away):
   noScriptTag: !/<script/i.test(html),
   noJsUrl: !/javascript:alert/i.test(html),

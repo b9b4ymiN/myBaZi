@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { RichText } from "@/components/ui/rich-text";
 import Image from "next/image";
 
 interface UsefulGodCardProps {
@@ -113,7 +114,7 @@ export function UsefulGodCard({ usefulGod }: UsefulGodCardProps) {
         {/* Description */}
         {description && (
           <div className="p-3 bg-muted/50 rounded-lg border border-border">
-            <div className="text-sm text-muted-foreground">{description}</div>
+            <RichText className="text-sm text-muted-foreground">{description}</RichText>
           </div>
         )}
 
@@ -126,7 +127,7 @@ export function UsefulGodCard({ usefulGod }: UsefulGodCardProps) {
                 {reasons.map((reason, idx) => (
                   <div key={idx} className="text-sm text-muted-foreground flex gap-2">
                     <span className="font-medium text-primary">•</span>
-                    <span>{reason}</span>
+                    <RichText>{reason}</RichText>
                   </div>
                 ))}
               </div>
@@ -141,7 +142,7 @@ export function UsefulGodCard({ usefulGod }: UsefulGodCardProps) {
             <div className="space-y-2">
               <div className="text-sm font-medium">คำแนะนำการนำไปใช้</div>
               <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <div className="text-sm text-muted-foreground">{applicationTips}</div>
+                <RichText className="text-sm text-muted-foreground whitespace-pre-line">{applicationTips}</RichText>
               </div>
             </div>
           </>

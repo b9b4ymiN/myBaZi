@@ -12,7 +12,7 @@
  * No new calculation; no mutation.
  */
 
-import type { TongShuDayInfo } from "@/types/tongshu";
+import type { TongShuDayInfo, PersonalResonance } from "@/types/tongshu";
 import type { BaZiChart } from "@/lib/bazi/types";
 import {
   detectInteractionBetween,
@@ -166,4 +166,94 @@ export function getPersonalizedRecommends(
     nameTh: r.nameTh,
     highlighted: goals.some((g) => r.nameTh.includes(g)),
   }));
+}
+
+/** Visual tone for a calendar cell, resolved from BaZi link + day rating. */
+export type CellTone = "clash" | "good" | "neutral" | "caution" | "bad" | "muted";
+
+const RATING_TONE: Record<TongShuDayInfo["rating"], CellTone> = {
+  very_auspicious: "good",
+  auspicious: "good",
+  neutral: "neutral",
+  inauspicious: "caution",
+  very_inauspicious: "bad",
+};
+
+const RESONANCE_TONE: Record<PersonalResonance["rating"], CellTone> = {
+  very_good: "good",
+  good: "good",
+  neutral: "neutral",
+  challenging: "caution",
+  very_challenging: "bad",
+};
+
+/**
+ * Resolve a calendar cell's visual tone for a given day.
+ * Priority: 冲 clash (highest signal) > personal resonance > generic day rating.
+ * When no profile (resonance null), falls back to the generic day rating.
+ */
+export function getCellTone(
+  dayInfo: TongShuDayInfo,
+  resonance: PersonalResonance | null,
+  dayInteractions: DayNatalInteraction[]
+): CellTone {
+  if (dayInteractions.some((d) => d.type === "冲")) return "clash";
+  if (resonance) return RESONANCE_TONE[resonance.rating];
+  return RATING_TONE[dayInfo.rating];
+}
+
+/**
+ * A day's "goodness" ranking — combines personal resonance, useful-god
+ * alignment, and generic auspiciousness; penalises days that 冲 a natal
+ * pillar. Used to surface the best days of the month proactively.
+ *
+ * NOTE: goodness is an interpretive ranking for display only (NOT a
+ * fortune claim). Derived purely from existing engine output.
+ */
+export interface RankedDay {
+  tone: CellTone;
+  goodness: number;
+  hasClash: boolean;
+  resonanceScore: number | null;
+  /** Short Thai reason string (why this day ranks as it does). */
+  reasonThai: string;
+}
+
+export function rankDay(
+  dayInfo: TongShuDayInfo,
+  resonance: PersonalResonance | null,
+  dayInteractions: DayNatalInteraction[]
+): RankedDay {
+  const hasClash = dayInteractions.some((d) => d.type === "冲");
+  const tone = getCellTone(dayInfo, resonance, dayInteractions);
+  const resScore = resonance?.resonanceScore ?? 0;
+
+  let goodness = resScore * 1.5 + dayInfo.powerScore / 5;
+  if (resonance?.alignsWithUsefulGod) goodness += 2;
+  if (hasClash) goodness -= 6;
+
+  const reasons: string[] = [];
+  if (hasClash) {
+    reasons.push("冲 สาดวง");
+  } else {
+    if (resonance) {
+      const r = resonance.rating;
+      if (r === "very_good") reasons.push("เข้ากันมาก");
+      else if (r === "good") reasons.push("เข้ากันดี");
+      else if (r === "challenging" || r === "very_challenging") reasons.push("ท้าทาย");
+    }
+    if (resonance?.alignsWithUsefulGod) reasons.push("ตรง用神");
+    if (dayInfo.rating === "very_auspicious" || dayInfo.rating === "auspicious") {
+      reasons.push("มงคล");
+    }
+    if (reasons.length === 0) reasons.push(tone === "good" ? "ปกติดี" : "ปานกลาง");
+  }
+
+  return {
+    tone,
+    goodness,
+    hasClash,
+    resonanceScore: resonance?.resonanceScore ?? null,
+    reasonThai: reasons.join(" · "),
+  };
 }

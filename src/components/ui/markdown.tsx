@@ -15,6 +15,7 @@ import * as React from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize"
+import rehypeConceptBadges from "@/lib/markdown/rehype-concept-badges"
 import { Check, Copy } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -84,7 +85,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[[rehypeSanitize, sanitizeSchema]]}
+        rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeConceptBadges]}
         components={{
           h1: ({ children }) => (
             <h1 className="mt-5 mb-2 font-heading text-xl font-semibold tracking-tight text-ink">

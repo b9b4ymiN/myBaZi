@@ -215,7 +215,7 @@ export function HomeHub({ profile }: HomeHubProps) {
                     <div className="font-semibold text-ink">
                       {analysis.usefulGod.label}
                     </div>
-                    <p className="text-sm leading-relaxed text-foreground/80">
+                    <p className="text-sm leading-relaxed text-foreground/80 whitespace-pre-line">
                       {analysis.usefulGod.applicationTips}
                     </p>
                   </div>

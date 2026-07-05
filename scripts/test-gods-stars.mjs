@@ -167,9 +167,9 @@ check('4.8 Year ten god name', analysis.tenGods.year.name, '正财');
 check('4.9 Month ten god name', analysis.tenGods.month.name, '比肩');
 check('4.10 Hour ten god name', analysis.tenGods.hour.name, '正官');
 
-checkContains('4.11 Year ten god Thai', analysis.tenGods.year.nameTh, 'ทรัพย์สิน');
+checkContains('4.11 Year ten god Thai', analysis.tenGods.year.nameTh, 'ทรัพย์หลัก');
 checkContains('4.12 Month ten god Thai', analysis.tenGods.month.nameTh, 'เพื่อน');
-checkContains('4.13 Hour ten god Thai', analysis.tenGods.hour.nameTh, 'นักการทูต');
+checkContains('4.13 Hour ten god Thai', analysis.tenGods.hour.nameTh, 'ยศตรง');
 
 check('4.14 Year relationship', analysis.tenGods.year.relationship, 'wealth');
 check('4.15 Month relationship', analysis.tenGods.month.relationship, 'companion');

@@ -3,6 +3,7 @@
 import type { QiMenChart } from "@/types/qimen";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { RichText } from "@/components/ui/rich-text";
 
 interface DeityInsightProps {
   chart: QiMenChart;
@@ -103,7 +104,7 @@ export function DeityInsight({ chart }: DeityInsightProps) {
 
                 {/* Description */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  {info.description}
+                  <RichText>{info.description}</RichText>
                 </p>
               </div>
             );

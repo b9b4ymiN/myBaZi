@@ -15,7 +15,17 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
-import { AlertCircle, Copy, Check, RefreshCw, Square } from 'lucide-react';
+import { AlertCircle, Copy, Check, RefreshCw, Square, Trash2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface ChatWindowProps {
   profile: Profile;
@@ -33,9 +43,11 @@ export function ChatWindow({ profile, settings }: ChatWindowProps) {
     patchMessage,
     setThinking,
     removeMessage,
+    clear,
   } = useChatSafe();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const [resetOpen, setResetOpen] = useState(false);
 
   // Avatars: 天机 = ai_bazi brand mark; user = gendered profile mascot
   const aiAvatarSrc = '/assets/brand/ai_bazi.png';
@@ -181,6 +193,56 @@ export function ChatWindow({ profile, settings }: ChatWindowProps) {
 
   return (
     <div className="flex flex-col overflow-hidden h-[calc(100dvh-11rem)] lg:h-[calc(100dvh-7rem)] min-h-[400px]">
+      {/* Header + reset */}
+      <header className="flex shrink-0 items-center justify-between gap-2 border-b border-border px-4 py-2">
+        <div className="flex items-center gap-2">
+          <Image
+            src={aiAvatarSrc}
+            alt=""
+            aria-hidden="true"
+            width={24}
+            height={24}
+            className="h-6 w-6 rounded-full object-contain"
+          />
+          <span className="font-semibold text-ink">天机 · เทียนจี</span>
+        </div>
+        {!isEmpty && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setResetOpen(true)}
+            aria-label="ล้างการสนทนา"
+            className="text-muted-foreground hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+            <span className="hidden sm:inline">ล้าง</span>
+          </Button>
+        )}
+      </header>
+
+      {/* Reset confirm dialog */}
+      <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>ล้างการสนทนาทั้งหมด?</AlertDialogTitle>
+            <AlertDialogDescription>
+              จะลบข้อความทั้งหมดในเครื่องของคุณ — ไม่สามารถกู้คืนได้
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>ยกเลิก</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                clear();
+                setResetOpen(false);
+              }}
+            >
+              ล้างการสนทนา
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Messages area */}
       <ScrollArea className="min-h-0 flex-1 px-4">
         <div className="max-w-3xl mx-auto py-4 space-y-6">

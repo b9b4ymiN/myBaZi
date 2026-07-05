@@ -234,3 +234,68 @@
     background-color: var(--element-water);
   }
 }
+
+@layer components {
+  /* Concept badges — inline visual chips for color/element mentions in markdown */
+  .cb {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.05em 0.4em;
+    border-radius: 0.35rem;
+    font-size: 0.9em;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  /* Color swatches */
+  .cb-color::before {
+    content: "";
+    display: inline-block;
+    width: 0.7em;
+    height: 0.7em;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in oklch, var(--ink) 25%, transparent);
+  }
+  .cb-color[data-color="white"]  { background: color-mix(in oklch, #fff 70%, transparent); }
+  .cb-color[data-color="white"]::before  { background: #fff; }
+  .cb-color[data-color="black"]  { background: color-mix(in oklch, var(--ink) 12%, transparent); }
+  .cb-color[data-color="black"]::before  { background: #111; }
+  .cb-color[data-color="red"]    { background: color-mix(in oklch, #dc2626 14%, transparent); color: #b91c1c; }
+  .cb-color[data-color="red"]::before    { background: #dc2626; }
+  .cb-color[data-color="green"]  { background: color-mix(in oklch, #16a34a 14%, transparent); color: #15803d; }
+  .cb-color[data-color="green"]::before  { background: #16a34a; }
+  .cb-color[data-color="indigo"] { background: color-mix(in oklch, #4338ca 14%, transparent); color: #3730a3; }
+  .cb-color[data-color="indigo"]::before { background: #4338ca; }
+  .cb-color[data-color="sky"]    { background: color-mix(in oklch, #0ea5e9 14%, transparent); color: #0369a1; }
+  .cb-color[data-color="sky"]::before    { background: #0ea5e9; }
+  .cb-color[data-color="yellow"] { background: color-mix(in oklch, #ca8a04 14%, transparent); color: #a16207; }
+  .cb-color[data-color="yellow"]::before { background: #facc15; }
+  .cb-color[data-color="gold"]   { background: color-mix(in oklch, var(--gold) 16%, transparent); color: var(--gold); }
+  .cb-color[data-color="gold"]::before   { background: var(--gold); }
+  .cb-color[data-color="pink"]   { background: color-mix(in oklch, #db2777 14%, transparent); color: #be185d; }
+  .cb-color[data-color="pink"]::before   { background: #ec4899; }
+  .cb-color[data-color="orange"] { background: color-mix(in oklch, #ea580c 14%, transparent); color: #c2410c; }
+  .cb-color[data-color="orange"]::before { background: #ea580c; }
+  .cb-color[data-color="purple"] { background: color-mix(in oklch, #7c3aed 14%, transparent); color: #6d28d9; }
+  .cb-color[data-color="purple"]::before { background: #7c3aed; }
+  .cb-color[data-color="brown"]  { background: color-mix(in oklch, #92400e 14%, transparent); color: #78350f; }
+  .cb-color[data-color="brown"]::before  { background: #92400e; }
+  .cb-color[data-color="gray"]   { background: color-mix(in oklch, var(--muted-foreground) 12%, transparent); color: var(--muted-foreground); }
+  .cb-color[data-color="gray"]::before   { background: #6b7280; }
+
+  /* Element badges — tinted bg + element color + Chinese element char prefix */
+  .cb-element { font-weight: 600; }
+  .cb-element::before { font-weight: 700; margin-right: 0.1em; }
+  .cb-element[data-el="wood"]  { color: var(--element-wood);  background: color-mix(in oklch, var(--element-wood) 12%, transparent); }
+  .cb-element[data-el="wood"]::before  { content: "木"; }
+  .cb-element[data-el="fire"]  { color: var(--element-fire);  background: color-mix(in oklch, var(--element-fire) 12%, transparent); }
+  .cb-element[data-el="fire"]::before  { content: "火"; }
+  .cb-element[data-el="earth"] { color: var(--element-earth); background: color-mix(in oklch, var(--element-earth) 12%, transparent); }
+  .cb-element[data-el="earth"]::before { content: "土"; }
+  .cb-element[data-el="metal"] { color: var(--element-metal); background: color-mix(in oklch, var(--element-metal) 12%, transparent); }
+  .cb-element[data-el="metal"]::before { content: "金"; }
+  .cb-element[data-el="water"] { color: var(--element-water); background: color-mix(in oklch, var(--element-water) 12%, transparent); }
+  .cb-element[data-el="water"]::before { content: "水"; }
+}

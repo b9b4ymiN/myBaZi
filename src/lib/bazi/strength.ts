@@ -298,24 +298,34 @@ function analyzeClashesAndCombines(chart: BaZiChart): string[] {
     亥: "寅",
   };
 
-  // Check clashes
+  // Check clashes (dedupe คู่: 卯-酉 กับ 酉-卯 คือเรื่องเดียวกัน)
   const branchNames = branches.map(b => b?.branch.name);
+  const reportedClashes = new Set<string>();
   branchNames.forEach((name, idx) => {
     if (!name) return;
 
     const opposite = CLASH_MAP[name];
     if (branchNames.includes(opposite)) {
+      const pairKey = [name, opposite].sort().join("-");
+      if (reportedClashes.has(pairKey)) return;
+      reportedClashes.add(pairKey);
+
       const pillarName = ["ปี", "เดือน", "วัน", "ชั่วโมง"][idx];
       notes.push(`⚠️ หลัก${pillarName} (${name}) ถูก clash กับ (${opposite}) - อาจทำให้ root ไม่เสถียร`);
     }
   });
 
-  // Check combines
+  // Check combines (dedupe คู่ เช่นเดียวกัน)
+  const reportedCombines = new Set<string>();
   branchNames.forEach((name, idx) => {
     if (!name) return;
 
     const combine = COMBINE_MAP[name];
     if (branchNames.includes(combine)) {
+      const pairKey = [name, combine].sort().join("-");
+      if (reportedCombines.has(pairKey)) return;
+      reportedCombines.add(pairKey);
+
       const pillarName = ["ปี", "เดือน", "วัน", "ชั่วโมง"][idx];
       notes.push(`ℹ️ หลัก${pillarName} (${name}) มี six harmony กับ (${combine}) - อาจ transform element`);
     }

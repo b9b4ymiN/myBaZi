@@ -170,7 +170,7 @@ export function analyzeElements(chart: BaZiChart): ElementComposition {
 
     return {
       element,
-      count: weight, // weighted count
+      count: Math.round(weight * 10) / 10, // weighted count (round 1 ทศนิยมกัน float error เช่น 1.0+0.3+0.3+0.4 → 3.5999…)
       percentage: Math.round(percentage * 10) / 10, // 1 ทศนิยม
       weight,
       level,

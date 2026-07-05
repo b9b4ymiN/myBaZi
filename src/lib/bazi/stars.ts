@@ -129,7 +129,7 @@ export function findStars(chart: BaZiChart): StarInfo[] {
     if (found) {
       stars.push({
         name: "羊刃",
-        nameTh: "羊刃 (เลื่อยควาย)",
+        nameTh: "羊刃 (คมดาบ)",
         category: "inauspicious",
         position: found.position,
         description: "ดาวแห่งความรุนแรงและการตัดสินใจเด็ดขาด อาจนำมาซึ่งอุบัติเหตุหรือการบาดเจ็บ",
@@ -159,7 +159,7 @@ export function findStars(chart: BaZiChart): StarInfo[] {
     if (found) {
       stars.push({
         name: "文昌",
-        nameTh: "文昌 (ดาวแห่งวัฒนธรรม)",
+        nameTh: "文昌 (ดาวปัญญา/วรรณกรรม)",
         category: "auspicious",
         position: found.position,
         description: "ดาวแห่งปัญญาและความฉลาด เหมาะกับการศึกษาและงานวิชาการ",
@@ -189,10 +189,10 @@ export function findStars(chart: BaZiChart): StarInfo[] {
     if (found) {
       stars.push({
         name: "驿马",
-        nameTh: "驿马 (ม้าออกท่อง)",
+        nameTh: "驿马 (ม้าเดินทาง)",
         category: "auspicious",
         position: found.position,
-        description: "ดาวแห่งการเดินทางและการเปลี่ยนแปลง ชีวิตเคลื่อนไหวและมักจะไปไหนมาไหน",
+        description: "ดาวแห่งการเดินทางและการเปลี่ยนแปลง ชีวิตเคลื่อนไหวและมักเดินทางบ่อย",
       });
     }
   }
@@ -204,7 +204,7 @@ export function findStars(chart: BaZiChart): StarInfo[] {
     if (found) {
       stars.push({
         name: "华盖",
-        nameTh: "华盖 (หลังคาเครื่องสูง)",
+        nameTh: "华盖 (ฉัตร/มาลา)",
         category: "auspicious",
         position: found.position,
         description: "ดาวแห่งศาสนาและปรัชญา มีความสนใจในเรื่องลึกลับหรือศาสนา",

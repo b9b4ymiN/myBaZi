@@ -3,6 +3,7 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { TopBar } from "@/components/layout/top-bar";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { FloatingChatButton } from "@/components/layout/floating-chat-button";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
@@ -26,6 +27,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Mobile bottom nav */}
       <BottomNav />
+
+      {/* Floating chat (天机) — hidden on /tianji via the component */}
+      <FloatingChatButton />
     </div>
   );
 }

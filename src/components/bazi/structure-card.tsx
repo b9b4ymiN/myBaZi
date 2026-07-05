@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { RichText } from "@/components/ui/rich-text";
 
 interface StructureCardProps {
   structure: StructureAnalysis;
@@ -72,7 +73,7 @@ export function StructureCard({ structure }: StructureCardProps) {
 
         {/* Description */}
         {description && (
-          <div className="text-sm text-muted-foreground">{description}</div>
+          <RichText className="text-sm text-muted-foreground">{description}</RichText>
         )}
 
         <Separator />
@@ -86,7 +87,7 @@ export function StructureCard({ structure }: StructureCardProps) {
                 {reasons.map((reason, idx) => (
                   <div key={idx} className="text-sm text-muted-foreground flex gap-2">
                     <span className="font-medium text-primary">•</span>
-                    <span>{reason}</span>
+                    <RichText>{reason}</RichText>
                   </div>
                 ))}
               </div>
@@ -112,7 +113,7 @@ export function StructureCard({ structure }: StructureCardProps) {
             <div className="space-y-2">
               <div className="text-sm font-medium">ความหมายต่อชีวิต</div>
               <div className="p-3 bg-muted/50 rounded-lg border border-border">
-                <div className="text-sm text-muted-foreground">{implications}</div>
+                <RichText className="text-sm text-muted-foreground">{implications}</RichText>
               </div>
             </div>
           </>

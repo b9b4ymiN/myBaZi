@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { RichText } from "@/components/ui/rich-text";
 
 interface StrengthCardProps {
   strength: StrengthAnalysis;
@@ -89,12 +90,12 @@ export function StrengthCard({ strength }: StrengthCardProps) {
                     </Badge>
                   </div>
                   {factor.description && (
-                    <div className="text-xs text-muted-foreground">{factor.description}</div>
+                    <RichText className="text-xs text-muted-foreground">{factor.description}</RichText>
                   )}
                   {factor.details.length > 0 && (
                     <ul className="text-xs text-muted-foreground list-disc list-inside space-y-0.5">
                       {factor.details.map((detail, dIdx) => (
-                        <li key={dIdx}>{detail}</li>
+                        <li key={dIdx}><RichText>{detail}</RichText></li>
                       ))}
                     </ul>
                   )}
@@ -158,7 +159,7 @@ export function StrengthCard({ strength }: StrengthCardProps) {
             <Separator />
             <div className="p-3 bg-muted/50 rounded-lg border border-border">
               <div className="text-sm font-medium mb-1">สรุป</div>
-              <div className="text-sm text-muted-foreground">{summary}</div>
+              <RichText className="text-sm text-muted-foreground">{summary}</RichText>
             </div>
           </>
         )}

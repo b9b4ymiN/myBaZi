@@ -9,6 +9,7 @@ import type { StrengthAnalysis } from "@/types/bazi-strength";
 import { ElementBadge } from "./element-badge";
 import { elementAssetPath } from "./element-asset";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RichText } from "@/components/ui/rich-text";
 import Image from "next/image";
 
 interface DayMasterCardProps {
@@ -90,7 +91,7 @@ export function DayMasterCard({ strength }: DayMasterCardProps) {
               {archetype.traits}
               <span className="text-2xl" aria-hidden="true">{archetype.emoji}</span>
             </div>
-            <div className="text-sm text-muted-foreground">{archetype.description}</div>
+            <RichText className="text-sm text-muted-foreground">{archetype.description}</RichText>
           </div>
         </div>
       </CardContent>

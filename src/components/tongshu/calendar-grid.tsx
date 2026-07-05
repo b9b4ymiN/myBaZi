@@ -1,42 +1,59 @@
 "use client";
 
 import { CalendarDay } from "@/lib/tongshu/use-tongshu-month";
+import type { CellTone } from "@/lib/tongshu/day-bazi";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 
 interface CalendarGridProps {
   days: CalendarDay[];
   selectedDay: Date | null;
   onDaySelect: (date: Date, info: CalendarDay["info"]) => void;
+  /** Per-day visual tone keyed by date.toDateString() (profile-aware). Optional. */
+  dayTones?: Map<string, CellTone>;
 }
 
 const WEEKDAYS = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
 
-const RATING_COLORS = {
-  very_auspicious: "bg-green-700 text-white border-green-800",
-  auspicious: "bg-green-600 text-white border-green-700",
-  neutral: "bg-gray-400 text-white border-gray-500",
-  inauspicious: "bg-orange-500 text-white border-orange-600",
-  very_inauspicious: "bg-red-600 text-white border-red-700"
+const TONE_STYLE: Record<CellTone, { dot: string; label: string }> = {
+  clash: { dot: "bg-destructive", label: "冲 สาดวง — เลี่ยงเรื่องใหญ่" },
+  good: { dot: "bg-jade", label: "เข้ากันดี/มงคล" },
+  neutral: { dot: "bg-gold", label: "ปานกลาง" },
+  caution: { dot: "bg-orange-500", label: "ท้าทาย" },
+  bad: { dot: "bg-red-700", label: "ท้าทายมาก" },
+  muted: { dot: "bg-muted-foreground/40", label: "" },
 };
 
-export function CalendarGrid({ days, selectedDay, onDaySelect }: CalendarGridProps) {
+export function CalendarGrid({
+  days,
+  selectedDay,
+  onDaySelect,
+  dayTones,
+}: CalendarGridProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {/* Weekday headers */}
-      <div className="grid grid-cols-7 gap-2">
-        {WEEKDAYS.map((day) => (
-          <div key={day} className="text-center font-semibold text-sm text-muted-foreground py-2">
-            {day}
+      <div className="grid grid-cols-7 gap-1">
+        {WEEKDAYS.map((d) => (
+          <div
+            key={d}
+            className="py-1 text-center text-xs font-semibold text-muted-foreground"
+          >
+            {d}
           </div>
         ))}
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1">
         {days.map((calendarDay, index) => {
-          const isSelected = selectedDay && calendarDay.date.toDateString() === selectedDay.toDateString();
+          const isSelected =
+            selectedDay &&
+            calendarDay.date.toDateString() === selectedDay.toDateString();
           const isPadding = !calendarDay.info;
+          const tone = !isPadding
+            ? (dayTones?.get(calendarDay.date.toDateString()) ?? "muted")
+            : "muted";
+          const toneStyle = TONE_STYLE[tone];
 
           return (
             <button
@@ -44,61 +61,57 @@ export function CalendarGrid({ days, selectedDay, onDaySelect }: CalendarGridPro
               onClick={() => !isPadding && onDaySelect(calendarDay.date, calendarDay.info)}
               disabled={isPadding}
               className={cn(
-                "aspect-square p-2 rounded-lg border-2 transition-all hover:shadow-md min-h-[80px]",
-                "flex flex-col items-start justify-between",
+                "flex aspect-square min-h-[48px] flex-col justify-between rounded-lg border p-1.5 transition-all",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 isPadding
-                  ? "bg-muted/30 border-muted text-muted-foreground cursor-not-allowed"
-                  : "bg-card border-border hover:border-jade/50 cursor-pointer",
-                isSelected && "border-jade ring-2 ring-jade/20"
+                  ? "cursor-not-allowed border-transparent bg-transparent text-muted-foreground/40"
+                  : "cursor-pointer border-border bg-card hover:border-jade/50 hover:shadow-sm",
+                isSelected && "border-jade ring-2 ring-jade/25",
               )}
               aria-label={
                 isPadding
                   ? "ไม่มีข้อมูล"
-                  : `${calendarDay.date.getDate()} ${calendarDay.info?.dayOfficer.nameTh} คะแนน ${calendarDay.info?.powerScore}`
+                  : `${calendarDay.date.getDate()} ${calendarDay.info?.lunarDate.dayName ?? ""}${toneStyle.label ? " · " + toneStyle.label : ""}`
               }
             >
-              {/* Day number and today indicator */}
-              <div className="flex items-center justify-between w-full">
-                <span className={cn(
-                  "text-sm font-medium",
-                  isPadding && "text-muted-foreground",
-                  calendarDay.isToday && "text-primary font-bold"
-                )}>
+              {/* Day number + today mark */}
+              <div className="flex items-center justify-between">
+                <span
+                  className={cn(
+                    "text-sm font-medium leading-none",
+                    calendarDay.isToday && "text-jade font-bold",
+                  )}
+                >
                   {calendarDay.date.getDate()}
                 </span>
                 {calendarDay.isToday && (
-                  <div className="w-2 h-2 rounded-full bg-primary" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-jade" aria-hidden="true" />
                 )}
               </div>
 
-              {/* Tong Shu info */}
-              {calendarDay.info && (
-                <div className="flex flex-col gap-1 w-full">
-                  {/* Lunar day */}
-                  <div className="text-xs text-muted-foreground truncate">
-                    {calendarDay.info.lunarDate.dayName}
-                  </div>
-
-                  {/* Power score badge */}
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "text-xs px-1 py-0 h-5 w-full justify-center",
-                      RATING_COLORS[calendarDay.info.rating]
-                    )}
-                  >
-                    {calendarDay.info.powerScore}
-                  </Badge>
-
-                  {/* Day officer (truncated) */}
-                  <div className="text-xs truncate text-muted-foreground" title={calendarDay.info.dayOfficer.nameTh}>
-                    {calendarDay.info.dayOfficer.nameTh.slice(0, 4)}
-                  </div>
+              {/* Lunar day (tiny) + tone dot */}
+              {!isPadding && (
+                <div className="flex items-center justify-between gap-0.5">
+                  <span className="truncate text-[0.6rem] leading-none text-muted-foreground">
+                    {calendarDay.info?.lunarDate.dayName}
+                  </span>
+                  <span
+                    className={cn("h-2 w-2 shrink-0 rounded-full", toneStyle.dot)}
+                    aria-hidden="true"
+                  />
                 </div>
               )}
             </button>
           );
         })}
+      </div>
+
+      {/* Legend */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-1 text-[0.65rem] text-muted-foreground">
+        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-jade" /> ดี</span>
+        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-gold" /> ปานกลาง</span>
+        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-orange-500" /> ท้าทาย</span>
+        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-destructive" /> 冲 สาดวง</span>
       </div>
     </div>
   );

@@ -1,13 +1,29 @@
 "use client";
 
-import { TongShuDayInfo, TongShuHour, PersonalResonance, ScoredHour } from "@/types/tongshu";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+/**
+ * DayDetailPanel — selected-day detail, organised into 4 tabs so it never
+ * becomes one giant scroll. Renders BARE content (no outer Card/ScrollArea);
+ * the page wraps it (sticky Card on desktop, BottomSheet on mobile).
+ *
+ * Tabs: สรุม (BaZi link + verdict) · โชคชะตา (宜忌/gods/officer/stars) ·
+ *       ช่วงเวลา (scored hours) · ลึก (XKDG/score breakdown/reference)
+ */
+
+import { useState } from "react";
+import type {
+  TongShuDayInfo,
+  TongShuHour,
+  PersonalResonance,
+  ScoredHour,
+} from "@/types/tongshu";
+import type { DayNatalInteraction, PersonalizedRecommend } from "@/lib/tongshu/day-bazi";
+import { BaziDayLink } from "./bazi-day-link";
+import { HoursView } from "./hours-view";
+import { ReferenceLibrary } from "./reference-library";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { RichText } from "@/components/ui/rich-text";
 import { cn } from "@/lib/utils";
-import { PersonalResonancePanel } from "./personal-resonance-panel";
-import { HoursView } from "./hours-view";
 import Image from "next/image";
 
 interface DayDetailPanelProps {
@@ -15,149 +31,174 @@ interface DayDetailPanelProps {
   hours: TongShuHour[];
   personalResonance?: PersonalResonance | null;
   scoredHours?: ScoredHour[];
+  dayInteractions?: DayNatalInteraction[];
+  currentLuck?: { sixtyCycleName: string } | null;
+  currentAnnual?: { year: number; sixtyCycleName: string } | null;
+  personalizedRecommends?: PersonalizedRecommend[];
 }
 
-const RATING_BADGES = {
-  very_auspicious: { label: "มงคลมาก", className: "bg-green-700 text-white hover:bg-green-800 border-green-800" },
-  auspicious: { label: "มงคล", className: "bg-green-600 text-white hover:bg-green-700 border-green-700" },
-  neutral: { label: "ปานกลาง", className: "bg-gray-400 text-white hover:bg-gray-500 border-gray-500" },
-  inauspicious: { label: "อัปมงคล", className: "bg-orange-500 text-white hover:bg-orange-600 border-orange-600" },
-  very_inauspicious: { label: "อัปมงคลมาก", className: "bg-red-600 text-white hover:bg-red-700 border-red-700" }
+const TABS = [
+  { id: "summary", label: "สรุม" },
+  { id: "fortune", label: "โชคชะตา" },
+  { id: "hours", label: "ช่วงเวลา" },
+  { id: "deep", label: "ลึก" },
+] as const;
+type TabId = (typeof TABS)[number]["id"];
+
+const RATING_BADGE: Record<TongShuDayInfo["rating"], { label: string; className: string }> = {
+  very_auspicious: { label: "มงคลมาก", className: "bg-jade text-primary-foreground" },
+  auspicious: { label: "มงคล", className: "bg-jade/85 text-primary-foreground" },
+  neutral: { label: "ปานกลาง", className: "bg-muted text-foreground" },
+  inauspicious: { label: "อัปมงคล", className: "bg-orange-500/90 text-white" },
+  very_inauspicious: { label: "อัปมงคลมาก", className: "bg-destructive text-primary-foreground" },
 };
 
-export function DayDetailPanel({ info, hours, personalResonance, scoredHours }: DayDetailPanelProps) {
+export function DayDetailPanel({
+  info,
+  hours,
+  personalResonance,
+  scoredHours,
+  dayInteractions,
+  currentLuck,
+  currentAnnual,
+  personalizedRecommends,
+}: DayDetailPanelProps) {
+  const [tab, setTab] = useState<TabId>("summary");
+  const dayInteractionsNorm = dayInteractions ?? [];
+  const personalizedRecommendsNorm = personalizedRecommends ?? [];
+
   if (!info) {
     return (
-      <Card className="h-full">
-        <CardContent className="flex flex-col items-center justify-center h-full min-h-[400px] gap-4">
-          <div className="relative h-24 w-24">
-            <Image
-              src="/assets/brand/mascot-rabbit-tongshu.png"
-              alt="กระต่ายนำโชค"
-              fill
-              className="object-contain"
-            />
-          </div>
-          <p className="text-muted-foreground text-center">
-            เลือกวันจากปฏิทิน<br/>เพื่อดูรายละเอียด
-          </p>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
+        <Image
+          src="/assets/brand/mascot-rabbit-tongshu.png"
+          alt=""
+          aria-hidden="true"
+          width={96}
+          height={112}
+          className="h-24 w-24 object-contain"
+        />
+        <p className="text-sm text-muted-foreground">
+          เลือกวันจากปฏิทิน
+          <br />
+          เพื่อดูรายละเอียดและความเข้ากันกับดวงคุณ
+        </p>
+      </div>
     );
   }
 
-  const ratingBadge = RATING_BADGES[info.rating];
+  const rating = RATING_BADGE[info.rating];
 
   return (
-    <ScrollArea className="h-full">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">
+    <div className="space-y-3">
+      {/* Header */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="text-base font-semibold text-ink">
             {info.solarDate.day}/{info.solarDate.month}/{info.solarDate.year + 543}
-          </CardTitle>
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span>วันจันทรคติ: {info.lunarDate.monthName}{info.lunarDate.dayName}</span>
-            <span>•</span>
-            <span className="text-xs">{info.sixtyCycle}</span>
-            {info.solarTerm && (
-              <>
-                <span>•</span>
-                <Badge variant="outline" className="text-xs">节气: {info.solarTerm}</Badge>
-              </>
-            )}
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-6">
-          {/* Personal Resonance */}
-          {personalResonance && (
-            <>
-              <PersonalResonancePanel resonance={personalResonance} />
-              <Separator />
-            </>
+          </h3>
+          <Badge className={cn("border", rating.className)}>{rating.label}</Badge>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+          <span>{info.lunarDate.monthName}{info.lunarDate.dayName}</span>
+          <span>·</span>
+          <span className="font-medium text-ink">{info.sixtyCycle}</span>
+          {info.solarTerm && (
+            <Badge variant="outline" className="text-[0.65rem]">节气 {info.solarTerm}</Badge>
           )}
+        </div>
+      </div>
 
-          {/* Power Score and Rating */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">คะแนนพลัง:</span>
-              <span className="text-2xl font-bold">{info.powerScore}</span>
-            </div>
-            <Badge className={cn("w-full justify-center py-2", ratingBadge.className)}>
-              {ratingBadge.label}
-            </Badge>
+      {/* Tab bar */}
+      <div role="tablist" aria-label="รายละเอียดวัน" className="flex gap-1 rounded-xl bg-muted p-1">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={tab === t.id}
+            onClick={() => setTab(t.id)}
+            className={cn(
+              "flex-1 rounded-lg px-2 py-1.5 text-xs font-medium transition-colors sm:text-sm",
+              tab === t.id ? "bg-card text-ink shadow-sm" : "text-muted-foreground",
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab content */}
+      {tab === "summary" && (
+        <div className="space-y-3">
+          <BaziDayLink
+            resonance={personalResonance ?? null}
+            dayInteractions={dayInteractionsNorm}
+            currentLuck={currentLuck}
+            currentAnnual={currentAnnual}
+            recommends={personalizedRecommendsNorm}
+            variant="full"
+          />
+          <Separator />
+          <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2 text-xs">
+            <span className="text-muted-foreground">คะแนนพลังวัน</span>
+            <span className="text-lg font-bold text-ink">
+              {info.powerScore > 0 ? "+" : ""}
+              {info.powerScore}
+            </span>
           </div>
+          {info.summary && <p className="text-xs leading-6 text-muted-foreground"><RichText>{info.summary}</RichText></p>}
+        </div>
+      )}
 
-          {/* Power Score Breakdown */}
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">รายละเอียดคะแนน:</h4>
-            <div className="space-y-1 text-xs">
-              <div className="flex justify-between">
-                <span>ประจำวัน:</span>
-                <span className={cn(info.powerScoreBreakdown.dayOfficer >= 0 ? "text-green-600" : "text-red-600")}>
-                  {info.powerScoreBreakdown.dayOfficer > 0 ? "+" : ""}{info.powerScoreBreakdown.dayOfficer}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>ดาวเหลือง/ดำ:</span>
-                <span className={cn(info.powerScoreBreakdown.yellowBlackStar >= 0 ? "text-green-600" : "text-red-600")}>
-                  {info.powerScoreBreakdown.yellowBlackStar > 0 ? "+" : ""}{info.powerScoreBreakdown.yellowBlackStar}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>ดาว 28:</span>
-                <span className={cn(info.powerScoreBreakdown.constellation28 >= 0 ? "text-green-600" : "text-red-600")}>
-                  {info.powerScoreBreakdown.constellation28 > 0 ? "+" : ""}{info.powerScoreBreakdown.constellation28}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>เทพเจ้า:</span>
-                <span className={cn(info.powerScoreBreakdown.gods >= 0 ? "text-green-600" : "text-red-600")}>
-                  {info.powerScoreBreakdown.gods > 0 ? "+" : ""}{info.powerScoreBreakdown.gods}
-                </span>
-              </div>
-              <Separator className="my-1" />
-              <div className="flex justify-between font-medium">
-                <span>รวม:</span>
-                <span className={cn(info.powerScoreBreakdown.total >= 0 ? "text-green-600" : "text-red-600")}>
-                  {info.powerScoreBreakdown.total > 0 ? "+" : ""}{info.powerScoreBreakdown.total}
-                </span>
+      {tab === "fortune" && (
+        <div className="space-y-3">
+          {/* Recommends / avoids (personalized highlights) */}
+          <div className="grid gap-3">
+            <div>
+              <h4 className="mb-1.5 text-xs font-semibold text-jade">สิ่งที่ควรทำ (宜)</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {personalizedRecommendsNorm.length > 0 ? (
+                  personalizedRecommendsNorm.map((r, i) => (
+                    <Badge
+                      key={i}
+                      variant={r.highlighted ? "default" : "outline"}
+                      className={cn(
+                        "text-xs",
+                        r.highlighted && "bg-jade/15 text-jade border border-jade/30",
+                      )}
+                    >
+                      {r.highlighted ? "★ " : ""}
+                      {r.nameTh}
+                    </Badge>
+                  ))
+                ) : (
+                  <span className="text-xs text-muted-foreground">—</span>
+                )}
               </div>
             </div>
-          </div>
-
-          {/* XKDG Information */}
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">XKDG (玄空大卦):</h4>
-            <div className="p-3 rounded-lg border surface-paper border-gold/40">
-              <div className="text-xs text-muted-foreground">วันหลัก</div>
-              <div className="font-medium text-ink">{info.xkdg.sixtyCycle}</div>
-              <div className="text-xs text-muted-foreground mt-1">
-                ซำ{info.xkdg.periodGroupName} (Period {info.xkdg.periodGroup})
+            <div>
+              <h4 className="mb-1.5 text-xs font-semibold text-destructive">สิ่งที่ควรหลีกเลี่ยง (忌)</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {info.avoids.length > 0 ? (
+                  info.avoids.map((a, i) => (
+                    <Badge key={i} variant="outline" className="text-xs text-muted-foreground">
+                      {a.nameTh}
+                    </Badge>
+                  ))
+                ) : (
+                  <span className="text-xs text-muted-foreground">—</span>
+                )}
               </div>
             </div>
           </div>
 
           <Separator />
 
-          {/* Main Auspicious/Inauspicious Indicators */}
-          <div className="grid grid-cols-1 gap-3">
-            <InfoCard
-              title="ประจำวัน (Day Officer)"
-              nameTh={info.dayOfficer.nameTh}
-              auspicious={info.dayOfficer.auspicious}
-              meaning={info.dayOfficer.meaning}
-            />
-            <InfoCard
-              title="ดาวเหลือง/ดำ (Yellow/Black Star)"
-              nameTh={info.yellowBlackStar.nameTh}
-              auspicious={info.yellowBlackStar.auspicious}
-            />
-            <InfoCard
-              title="ดาว 28 ประจำวัน"
-              nameTh={info.constellation28.nameTh}
-              auspicious={info.constellation28.auspicious}
-            />
+          {/* Day officer / stars */}
+          <div className="grid gap-2">
+            <InfoRow label="ประจำวัน" value={info.dayOfficer.nameTh} good={info.dayOfficer.auspicious} />
+            <InfoRow label="ดาวเหลือง/ดำ" value={info.yellowBlackStar.nameTh} good={info.yellowBlackStar.auspicious} />
+            <InfoRow label="ดาว 28" value={info.constellation28.nameTh} good={info.constellation28.auspicious} />
           </div>
 
           {/* Gods */}
@@ -165,157 +206,117 @@ export function DayDetailPanel({ info, hours, personalResonance, scoredHours }: 
             <>
               <Separator />
               <div>
-                <h4 className="text-sm font-medium mb-2">เทพเจ้าประจำวัน:</h4>
-                <div className="flex flex-wrap gap-2">
-                  {info.gods.map((god, idx) => (
+                <h4 className="mb-1.5 text-xs font-semibold text-muted-foreground">เทพเจ้าประจำวัน</h4>
+                <div className="flex flex-wrap gap-1">
+                  {info.gods.map((g, i) => (
                     <Badge
-                      key={idx}
-                      variant={god.auspicious ? "default" : "destructive"}
+                      key={i}
+                      variant="outline"
                       className={cn(
-                        "text-xs",
-                        god.auspicious
-                          ? "bg-green-600 hover:bg-green-700"
-                          : "bg-red-600 hover:bg-red-700"
+                        "text-[0.65rem]",
+                        g.auspicious ? "border-jade/40 text-jade" : "border-destructive/40 text-destructive",
                       )}
                     >
-                      {god.nameTh}
+                      {g.nameTh}
                     </Badge>
                   ))}
                 </div>
               </div>
             </>
           )}
+        </div>
+      )}
 
-          {/* Recommends and Avoids */}
-          {(info.recommends.length > 0 || info.avoids.length > 0) && (
-            <>
-              <Separator />
-              <div className="grid grid-cols-1 gap-4">
-                {info.recommends.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-medium mb-2 text-green-700 dark:text-green-400">
-                      สิ่งที่ควรทำ (宜):
-                    </h4>
-                    <ul className="space-y-1">
-                      {info.recommends.map((rec, idx) => (
-                        <li key={idx} className="text-xs flex items-start gap-2">
-                          <span className="text-green-600 mt-0.5">✓</span>
-                          <span>{rec.nameTh}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {info.avoids.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-medium mb-2 text-red-700 dark:text-red-400">
-                      สิ่งที่ควรหลีกเลี่ยง (忌):
-                    </h4>
-                    <ul className="space-y-1">
-                      {info.avoids.map((avoid, idx) => (
-                        <li key={idx} className="text-xs flex items-start gap-2">
-                          <span className="text-red-600 mt-0.5">✗</span>
-                          <span>{avoid.nameTh}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-
-          {/* Hour Pillars */}
+      {tab === "hours" && (
+        <div className="space-y-2">
           {scoredHours && scoredHours.length > 0 ? (
-            <>
-              <Separator />
-              <HoursView hours={scoredHours} />
-            </>
-          ) : hours.length > 0 && (
-            <>
-              <Separator />
-              <div>
-                <h4 className="text-sm font-medium mb-3">ช่วงเวลามงคล:</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {hours.map((hour, idx) => (
-                    <HourBadge key={idx} hour={hour} />
-                  ))}
-                </div>
-              </div>
-            </>
+            <HoursView hours={scoredHours} />
+          ) : hours.length > 0 ? (
+            <div className="grid grid-cols-2 gap-2">
+              {hours.map((h, i) => (
+                <HourBadge key={i} hour={h} />
+              ))}
+            </div>
+          ) : (
+            <p className="py-6 text-center text-xs text-muted-foreground">ไม่มีข้อมูลช่วงเวลา</p>
           )}
+        </div>
+      )}
 
-          {/* Hint if no profile */}
-          {!personalResonance && !scoredHours && (
-            <>
-              <Separator />
-              <div className="p-4 rounded-lg bg-muted text-center">
-                <p className="text-sm text-muted-foreground">
-                  เลือก profile เพื่อดูความเข้ากันส่วนตัว + คะแนนช่วงเวลา
-                </p>
-              </div>
-            </>
-          )}
+      {tab === "deep" && (
+        <div className="space-y-3 text-xs">
+          {/* XKDG */}
+          <div className="rounded-lg border border-gold/40 bg-muted/30 p-3">
+            <div className="mb-0.5 text-muted-foreground">XKDG (玄空大卦)</div>
+            <div className="font-medium text-ink">{info.xkdg.sixtyCycle}</div>
+            <div className="text-[0.65rem] text-muted-foreground">
+              ซำ{info.xkdg.periodGroupName} (Period {info.xkdg.periodGroup})
+            </div>
+          </div>
 
-          {/* Summary */}
-          {info.summary && (
-            <>
-              <Separator />
-              <div className="text-sm text-muted-foreground">
-                {info.summary}
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </ScrollArea>
+          {/* Power score breakdown */}
+          <div className="rounded-lg border border-border p-3">
+            <div className="mb-1.5 font-medium text-ink">รายละเอียดคะแนนพลัง</div>
+            <div className="space-y-1">
+              <ScoreRow label="ประจำวัน" v={info.powerScoreBreakdown.dayOfficer} />
+              <ScoreRow label="ดาวเหลือง/ดำ" v={info.powerScoreBreakdown.yellowBlackStar} />
+              <ScoreRow label="ดาว 28" v={info.powerScoreBreakdown.constellation28} />
+              <ScoreRow label="เทพเจ้า" v={info.powerScoreBreakdown.gods} />
+              <Separator className="my-1" />
+              <ScoreRow label="รวม" v={info.powerScoreBreakdown.total} bold />
+            </div>
+          </div>
+
+          {/* Reference library */}
+          <ReferenceLibrary
+            selectedDayOfficer={info.dayOfficer.name}
+            selectedYellowBlackStar={info.yellowBlackStar.name}
+            selectedConstellation28={info.constellation28.name}
+          />
+        </div>
+      )}
+    </div>
   );
 }
 
-function InfoCard({
-  title,
-  nameTh,
-  auspicious,
-  meaning
-}: {
-  title: string;
-  nameTh: string;
-  auspicious: boolean;
-  meaning?: string;
-}) {
+function InfoRow({ label, value, good }: { label: string; value: string; good: boolean }) {
   return (
-    <div className={cn(
-      "p-3 rounded-lg border",
-      auspicious
-        ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800 surface-paper"
-        : "bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800"
-    )}>
-      <div className="text-xs text-muted-foreground mb-1">{title}</div>
-      <div className={cn("font-medium", auspicious && "text-jade")}>{nameTh}</div>
-      {meaning && (
-        <div className="text-xs text-muted-foreground mt-1">{meaning}</div>
+    <div
+      className={cn(
+        "flex items-center justify-between rounded-lg border px-3 py-2",
+        good ? "border-jade/30 bg-jade/5" : "border-destructive/30 bg-destructive/5",
       )}
+    >
+      <span className="text-[0.7rem] text-muted-foreground">{label}</span>
+      <span className={cn("text-xs font-medium", good ? "text-jade" : "text-destructive")}>
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function ScoreRow({ label, v, bold }: { label: string; v: number; bold?: boolean }) {
+  return (
+    <div className={cn("flex justify-between", bold && "font-medium")}>
+      <span className="text-muted-foreground">{label}</span>
+      <span className={cn(v >= 0 ? "text-jade" : "text-destructive")}>
+        {v > 0 ? "+" : ""}
+        {v}
+      </span>
     </div>
   );
 }
 
 function HourBadge({ hour }: { hour: TongShuHour }) {
   return (
-    <Badge
-      variant="outline"
+    <div
       className={cn(
-        "justify-start text-xs py-2 h-auto",
-        hour.auspicious
-          ? "border-green-500 text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950"
-          : "border-muted-foreground text-muted-foreground"
+        "rounded-lg border px-2 py-1.5",
+        hour.auspicious ? "border-jade/40 bg-jade/5" : "border-border bg-muted/30",
       )}
     >
-      <div className="flex flex-col items-start gap-0.5">
-        <span className="font-medium">{hour.nameTh}</span>
-        <span className="text-[10px] opacity-75">{hour.timeRange}</span>
-        <span className="text-[10px] opacity-75">{hour.sixtyCycle}</span>
-      </div>
-    </Badge>
+      <div className="text-xs font-medium text-ink">{hour.nameTh}</div>
+      <div className="text-[0.6rem] text-muted-foreground">{hour.timeRange}</div>
+    </div>
   );
 }
