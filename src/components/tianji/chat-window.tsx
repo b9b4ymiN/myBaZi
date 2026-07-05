@@ -14,8 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Avatar } from '@/components/ui/avatar';
-import { Bot, User, AlertCircle, Copy, Check, RefreshCw, Square } from 'lucide-react';
+import Image from 'next/image';
+import { AlertCircle, Copy, Check, RefreshCw, Square } from 'lucide-react';
 
 interface ChatWindowProps {
   profile: Profile;
@@ -36,6 +36,11 @@ export function ChatWindow({ profile, settings }: ChatWindowProps) {
   } = useChatSafe();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  // Avatars: 天机 = ai_bazi brand mark; user = gendered profile mascot
+  const aiAvatarSrc = '/assets/brand/ai_bazi.png';
+  const userAvatarSrc =
+    profile.gender === 'male' ? '/assets/brand/man.png' : '/assets/brand/woman.png';
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -175,7 +180,7 @@ export function ChatWindow({ profile, settings }: ChatWindowProps) {
   const isEmpty = messages.length === 0;
 
   return (
-    <div className="flex flex-col overflow-hidden h-[calc(100dvh-260px)] md:h-[calc(100dvh-220px)] min-h-[440px]">
+    <div className="flex flex-col overflow-hidden h-[calc(100dvh-11rem)] lg:h-[calc(100dvh-7rem)] min-h-[400px]">
       {/* Messages area */}
       <ScrollArea className="min-h-0 flex-1 px-4">
         <div className="max-w-3xl mx-auto py-4 space-y-6">
@@ -183,9 +188,14 @@ export function ChatWindow({ profile, settings }: ChatWindowProps) {
             <div className="flex flex-col items-center justify-center h-full py-12">
               <div className="text-center space-y-4 mb-8">
                 <div className="flex justify-center mb-4">
-                  <Avatar className="h-16 w-16 border-2 border-gold/50 bg-gold/10">
-                    <Bot className="h-10 w-10 text-ink" />
-                  </Avatar>
+                  <Image
+                    src={aiAvatarSrc}
+                    alt=""
+                    aria-hidden="true"
+                    width={64}
+                    height={64}
+                    className="h-16 w-16 rounded-full border-2 border-gold/50 bg-gold/10 object-contain p-1"
+                  />
                 </div>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-gold to-jade bg-clip-text text-transparent">
                   天机 (เทียนจี)
@@ -211,9 +221,14 @@ export function ChatWindow({ profile, settings }: ChatWindowProps) {
                     className={`group flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     {message.role === 'assistant' && (
-                      <Avatar className="h-8 w-8 shrink-0 border border-gold/50 bg-gold/10">
-                        <Bot className="h-5 w-5 text-ink" />
-                      </Avatar>
+                      <Image
+                        src={aiAvatarSrc}
+                        alt=""
+                        aria-hidden="true"
+                        width={32}
+                        height={32}
+                        className="h-8 w-8 shrink-0 rounded-full border border-gold/50 bg-gold/10 object-contain p-0.5"
+                      />
                     )}
                     <div
                       className={`flex flex-col max-w-[85%] sm:max-w-[80%] ${
@@ -275,18 +290,28 @@ export function ChatWindow({ profile, settings }: ChatWindowProps) {
                       )}
                     </div>
                     {message.role === 'user' && (
-                      <Avatar className="h-8 w-8 shrink-0 border border-jade/40 bg-jade/10">
-                        <User className="h-5 w-5 text-jade" />
-                      </Avatar>
+                      <Image
+                        src={userAvatarSrc}
+                        alt=""
+                        aria-hidden="true"
+                        width={32}
+                        height={32}
+                        className="h-8 w-8 shrink-0 rounded-full border border-jade/40 bg-jade/10 object-cover"
+                      />
                     )}
                   </div>
                 );
               })}
               {isThinking && (
                 <div className="flex gap-3 justify-start">
-                  <Avatar className="h-8 w-8 shrink-0 border border-gold/50 bg-gold/10">
-                    <Bot className="h-5 w-5 text-ink" />
-                  </Avatar>
+                  <Image
+                    src={aiAvatarSrc}
+                    alt=""
+                    aria-hidden="true"
+                    width={32}
+                    height={32}
+                    className="h-8 w-8 shrink-0 rounded-full border border-gold/50 bg-gold/10 object-contain p-0.5"
+                  />
                   <Card className="px-3 py-2.5 bg-card border-border">
                     <div className="flex items-center gap-2">
                       <div className="flex gap-1">

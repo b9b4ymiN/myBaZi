@@ -125,7 +125,7 @@ const PUNISHMENT_SELF = ["辰", "午", "酉", "亥"] as const;
  * @param branch2 - ชื่อ branch ตัวสอง
  * @returns BranchInteractionType | null - null ถ้าไม่มี interaction
  */
-function detectInteractionBetween(
+export function detectInteractionBetween(
   branch1: string,
   branch2: string
 ): BranchInteractionType | null {

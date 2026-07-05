@@ -30,7 +30,8 @@
     "ai:chat": "tsx scripts/test-chat.mjs",
     "markdown:test": "tsx scripts/test-markdown.mjs",
     "stream:test": "tsx scripts/test-stream.mjs",
-    "narrative:test": "tsx scripts/test-narrative.mjs"
+    "narrative:test": "tsx scripts/test-narrative.mjs",
+    "daybazi:test": "tsx scripts/test-day-bazi.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

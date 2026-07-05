@@ -56,8 +56,8 @@ export default function TianjiPage() {
 
   // All good - show chat window
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <Card>
+    <div className="mx-auto max-w-4xl px-4 pt-4 lg:px-6 lg:pt-6 lg:pb-6">
+      <Card className="overflow-hidden">
         <ChatWindow profile={profile} settings={settings} />
       </Card>
     </div>
