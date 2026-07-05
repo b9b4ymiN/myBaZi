@@ -21,7 +21,7 @@ import { InsightNarrative } from "@/components/bazi/insight-narrative";
 import { useActiveProfileSafe } from "@/lib/stores/use-hydrated";
 import { useBaZiAnalysis } from "@/lib/bazi/use-bazi-analysis";
 import { getArchetype } from "@/lib/bazi/archetypes";
-import { buildBaZiNarrative } from "@/lib/bazi/narrative";
+import { buildBaZiNarrativeV2 } from "@/lib/bazi/narrative-v2";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -76,10 +76,13 @@ export default function BaziPage() {
     yinYang: chart.dayMaster.yinYang ? "yin" : "yang",
   });
 
-  // Build narrative insight flow
-  const narrative = buildBaZiNarrative({
+  // Build narrative insight flow (v2 — ผูกดวงจริง via ten god profile/palace/luck favorability)
+  const narrative = buildBaZiNarrativeV2({
     profileName: activeProfile.name,
     analysis,
+    tenGodProfile: analysis.tenGodProfile,
+    palace: analysis.palace,
+    luckFavorability: analysis.luckFavorability,
     archetype,
   });
 
@@ -166,7 +169,7 @@ export default function BaziPage() {
           <div className="grid gap-4 md:grid-cols-2 md:gap-6">
             <TenGodsView godsAndStars={godsAndStars} chart={chart} />
             <StarsView godsAndStars={godsAndStars} />
-            <LuckTimelineView luck={luck} />
+            <LuckTimelineView luck={luck} favorabilities={analysis.luckFavorability.pillars} />
           </div>
         </PageSection>
       </div>

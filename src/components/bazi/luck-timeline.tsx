@@ -11,10 +11,20 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ElementBadge } from "@/components/bazi/element-badge";
 import { Calendar, TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
 import type { LuckAnalysis } from "@/types/bazi-luck";
+import type { LuckPillarFavorability, Favorability } from "@/lib/bazi/luck-favorability";
 
 interface LuckTimelineViewProps {
   luck: LuckAnalysis;
+  /** favorability ต่อ pillar (optional — ถ้าส่งจะแสดง label รุ่ง/กลาง/ระวัง) */
+  favorabilities?: LuckPillarFavorability[];
 }
+
+/** style ตาม favorability */
+const FAVOR_STYLE: Record<Favorability, { label: string; badge: string; border: string }> = {
+  favorable: { label: "รุ่ง", badge: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300", border: "border-green-400/50" },
+  neutral: { label: "กลาง", badge: "bg-muted text-muted-foreground", border: "border-border" },
+  unfavorable: { label: "ระวัง", badge: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300", border: "border-amber-400/50" },
+};
 
 /**
  * ชื่อตำแหน่งภาษาไทย
@@ -30,21 +40,22 @@ const POSITION_LABELS = {
 function LuckPillarBlock({
   pillar,
   isCurrent,
+  favorability,
 }: {
   pillar: LuckAnalysis["pillars"][number];
   isCurrent: boolean;
+  favorability?: LuckPillarFavorability;
 }) {
+  const favor = favorability ? FAVOR_STYLE[favorability.favorability] : null;
   return (
     <div
       className={`flex-shrink-0 w-32 p-3 rounded-lg border-2 space-y-2 ${
-        isCurrent
-          ? "border-primary bg-primary/5 shadow-md"
-          : "border-border bg-card"
-      }`}
+        favor ? favor.border : isCurrent ? "border-primary" : "border-border"
+      } bg-card ${isCurrent ? "shadow-md ring-2 ring-primary/30" : ""}`}
     >
-      {/* ชื่อ Pillar + ปัจจุบัน badge */}
+      {/* ชื่อ Pillar + ปัจจุบัน/favorability badge */}
       <div className="space-y-1">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-1">
           <span className="font-bold text-lg">{pillar.sixtyCycleName}</span>
           {isCurrent && (
             <Badge className="text-xs">ปัจจุบัน</Badge>
@@ -53,6 +64,11 @@ function LuckPillarBlock({
         <p className="text-xs text-muted-foreground">
           อายุ {pillar.startAge}-{pillar.endAge}
         </p>
+        {favor && favorability && (
+          <Badge variant="outline" className={`text-xs w-full justify-center ${favor.badge}`}>
+            {favor.label}
+          </Badge>
+        )}
       </div>
 
       {/* 10 God + Element Badges */}
@@ -83,7 +99,7 @@ function LuckPillarBlock({
 /**
  * LuckTimelineView Component
  */
-export function LuckTimelineView({ luck }: LuckTimelineViewProps) {
+export function LuckTimelineView({ luck, favorabilities }: LuckTimelineViewProps) {
   const {
     direction,
     startAge,
@@ -91,6 +107,9 @@ export function LuckTimelineView({ luck }: LuckTimelineViewProps) {
     currentAnnual,
     upcomingTransitions,
   } = luck;
+
+  // map pillar.index → favorability (ถ้ามี)
+  const favorByIndex = new Map((favorabilities ?? []).map((f) => [f.index, f]));
 
   return (
     <Card>
@@ -129,6 +148,7 @@ export function LuckTimelineView({ luck }: LuckTimelineViewProps) {
                     key={pillar.index}
                     pillar={pillar}
                     isCurrent={pillar.isCurrent}
+                    favorability={favorByIndex.get(pillar.index)}
                   />
                 ))}
               </div>
@@ -142,6 +162,7 @@ export function LuckTimelineView({ luck }: LuckTimelineViewProps) {
                 key={pillar.index}
                 pillar={pillar}
                 isCurrent={pillar.isCurrent}
+                favorability={favorByIndex.get(pillar.index)}
               />
             ))}
           </div>

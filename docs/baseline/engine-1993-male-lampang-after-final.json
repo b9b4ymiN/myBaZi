@@ -1,0 +1,1363 @@
+{
+  "capturedAt": "2026-07-05T16:11:12.602Z",
+  "tag": "after-final",
+  "note": "AFTER-FINAL snapshot — /bazi content layer (narrative v2 + analyzers).",
+  "profile": {
+    "id": "baseline-1993-male-lampang",
+    "name": "เคสอ้างอิง (ชาย ลำปาง)",
+    "gender": "male",
+    "birthDate": "1993-10-12",
+    "birthTime": "12:55",
+    "birthTimeKnown": "known",
+    "timezone": "Asia/Bangkok",
+    "birthLongitude": 99.5,
+    "useTrueSolarTime": true,
+    "createdAt": "2026-07-05T16:11:12.570Z",
+    "updatedAt": "2026-07-05T16:11:12.571Z"
+  },
+  "currentYear": 2026,
+  "chart": {
+    "birthTimeKnown": true,
+    "year": {
+      "position": "year",
+      "sixtyCycleName": "癸酉",
+      "stem": {
+        "name": "癸",
+        "element": "水",
+        "yinYang": "阴",
+        "index": 9
+      },
+      "branch": {
+        "name": "酉",
+        "element": "金",
+        "zodiac": "鸡",
+        "direction": "西",
+        "hiddenStems": [
+          {
+            "stem": {
+              "name": "辛",
+              "element": "金",
+              "yinYang": "阴",
+              "index": 7
+            },
+            "type": "main"
+          }
+        ]
+      }
+    },
+    "month": {
+      "position": "month",
+      "sixtyCycleName": "壬戌",
+      "stem": {
+        "name": "壬",
+        "element": "水",
+        "yinYang": "阳",
+        "index": 8
+      },
+      "branch": {
+        "name": "戌",
+        "element": "土",
+        "zodiac": "狗",
+        "direction": "中",
+        "hiddenStems": [
+          {
+            "stem": {
+              "name": "戊",
+              "element": "土",
+              "yinYang": "阳",
+              "index": 4
+            },
+            "type": "main"
+          },
+          {
+            "stem": {
+              "name": "辛",
+              "element": "金",
+              "yinYang": "阴",
+              "index": 7
+            },
+            "type": "middle"
+          },
+          {
+            "stem": {
+              "name": "丁",
+              "element": "火",
+              "yinYang": "阴",
+              "index": 3
+            },
+            "type": "residual"
+          }
+        ]
+      }
+    },
+    "day": {
+      "position": "day",
+      "sixtyCycleName": "丙寅",
+      "stem": {
+        "name": "丙",
+        "element": "火",
+        "yinYang": "阳",
+        "index": 2
+      },
+      "branch": {
+        "name": "寅",
+        "element": "木",
+        "zodiac": "虎",
+        "direction": "东",
+        "hiddenStems": [
+          {
+            "stem": {
+              "name": "甲",
+              "element": "木",
+              "yinYang": "阳",
+              "index": 0
+            },
+            "type": "main"
+          },
+          {
+            "stem": {
+              "name": "丙",
+              "element": "火",
+              "yinYang": "阳",
+              "index": 2
+            },
+            "type": "middle"
+          },
+          {
+            "stem": {
+              "name": "戊",
+              "element": "土",
+              "yinYang": "阳",
+              "index": 4
+            },
+            "type": "residual"
+          }
+        ]
+      }
+    },
+    "hour": {
+      "position": "hour",
+      "sixtyCycleName": "甲午",
+      "stem": {
+        "name": "甲",
+        "element": "木",
+        "yinYang": "阳",
+        "index": 0
+      },
+      "branch": {
+        "name": "午",
+        "element": "火",
+        "zodiac": "马",
+        "direction": "南",
+        "hiddenStems": [
+          {
+            "stem": {
+              "name": "丁",
+              "element": "火",
+              "yinYang": "阴",
+              "index": 3
+            },
+            "type": "main"
+          },
+          {
+            "stem": {
+              "name": "己",
+              "element": "土",
+              "yinYang": "阴",
+              "index": 5
+            },
+            "type": "middle"
+          }
+        ]
+      }
+    },
+    "dayMaster": {
+      "name": "丙",
+      "element": "火",
+      "yinYang": "阳",
+      "index": 2
+    }
+  },
+  "strength": {
+    "level": "strong",
+    "score": 1,
+    "dayMaster": {
+      "name": "丙",
+      "element": "火"
+    },
+    "factors": [
+      {
+        "label": "得令 / 失令 (Season)",
+        "description": "สูญเสียแรงสนับสนุนจากฤดู",
+        "score": -2,
+        "details": [
+          "เจ้าวัน (ไฟ) สร้างเดือน (ดิน) = ระบายพลัง → 泄气"
+        ]
+      },
+      {
+        "label": "得地 / 失地 (Root)",
+        "description": "มีรากฐาน (root) ในหลักต่างๆ",
+        "score": 4,
+        "details": [
+          "หลัก 戌 (ดิน): มีธาตุซ่อน ไฟ (คงเหลือ) = ธาตุเดียวกัน",
+          "หลัก 寅 (ไม้): มีธาตุซ่อน ไม้ = ธาตุที่สร้างเจ้าวัน (2x - อยู่วันหลัก)",
+          "หลัก 寅 (ไม้): มีธาตุซ่อน ไฟ (กลาง) = ธาตุเดียวกัน",
+          "หลัก 午 (ไฟ): มีธาตุซ่อน ไฟ = ธาตุเดียวกัน"
+        ]
+      },
+      {
+        "label": "得势 / 失势 (Support)",
+        "description": "สูญเสียพลังไปกับ天干อื่น",
+        "score": -1,
+        "details": [
+          "ปี (癸): ธาตุที่คุมเจ้าวัน → อ่อน -1",
+          "เดือน (壬): ธาตุที่คุมเจ้าวัน → อ่อน -1",
+          "ชั่วโมง (甲): ธาตุที่สร้างเจ้าวัน → เสริม +1"
+        ]
+      }
+    ],
+    "supportingElements": [
+      "木",
+      "火"
+    ],
+    "weakeningElements": [
+      "土",
+      "金",
+      "水"
+    ],
+    "clashNotes": [],
+    "summary": "เจ้าวัน 丙 (ไฟ) แข็ง เพราะ เกิดในฤดูที่ไม่เสริม, มีรากฐาน (root) เหมาะสม, ถูก天干ระบายพลัง"
+  },
+  "structure": {
+    "type": "normal",
+    "subtype": null,
+    "label": "格局ปกติ (正格)",
+    "labelCn": "正格",
+    "description": "Chart เป็นแบบปกติ (เจ้าวัน 丙 (ไฟ) แข็ง เพราะ เกิดในฤดูที่ไม่เสริม, มีรากฐาน (root) เหมาะสม, ถูก天干ระบายพลัง) มีทั้ง support และ control สมดุลพอสมควร",
+    "dominantElement": null,
+    "reasons": [
+      "Day master เจ้าวัน 丙 (ไฟ) แข็ง เพราะ เกิดในฤดูที่ไม่เสริม, มีรากฐาน (root) เหมาะสม, ถูก天干ระบายพลัง",
+      "มีทั้งธาตุที่เสริมและธาตุที่ควบคุม",
+      "ไม่เข้าเงื่อนไขโครงสร้างพิเศษ (Follower/Vibrant/Special)",
+      "ใช้ Useful God ตาม strength (strong → need wealth/power/output; weak → need resource/companion)"
+    ],
+    "implications": "ชีวิตสมดุลพอสมควร ต้องหา Useful God (ธาตุที่เป็นประโยชน์) ตามความแข็ง/อ่อนของ Day Master เพื่อเสริมชีวิตให้ดีขึ้น"
+  },
+  "usefulGod": {
+    "primaryElement": "金",
+    "primaryRelationship": "wealth",
+    "secondaryElements": [
+      "水"
+    ],
+    "avoidElements": [
+      "木",
+      "火"
+    ],
+    "label": "ธาตุโลหะ (财 (ทรัพย์สิน))",
+    "labelCn": "用神：金（财）",
+    "description": "เจ้าวัน ไฟ (丙) แข็ง (格局ปกติ (正格)) → ต้องการ weaken: ธาตุโลหะ (wealth) เพื่อใช้พลัง",
+    "reasons": [
+      "เจ้าวันแข็ง (strength score: 1)",
+      "ธาตุโลหะ (wealth 我克) ใช้พลังเจ้าวัน → เป็น useful god หลัก (priority #1)",
+      "ธาตุน้ำ (power 克我) ช่วยคุมเจ้าวัน → เป็น喜神รอง",
+      "หลีกเลี่ยง ไม้、ไฟ (resource+companion) — ทำให้เจ้าวันแข็งขึ้นเกินไป"
+    ],
+    "applicationTips": "ธาตุหลัก โลหะ (金): สีขาว/ทอง/เงิน/เทา · ทิศตะวันตก · อาชีพ: การเงิน, ธนาคาร, กฎหมาย, วิศวกรรม\nธาตุรอง น้ำ (水): สีดำ/น้ำเงิน/กรมท่า/เทาเข้ม · ทิศเหนือ · อาชีพ: สื่อสาร, การตลาด, ขนส่ง, ท่องเที่ยว, บันเทิง\nหลีกเลี่ยง: ไม้、ไฟ"
+  },
+  "godsAndStars": {
+    "tenGods": {
+      "year": {
+        "name": "正官",
+        "nameTh": "正官 (ยศตรง)",
+        "relationship": "power",
+        "element": "水",
+        "yinYang": "阴"
+      },
+      "month": {
+        "name": "七杀",
+        "nameTh": "七杀 (เจ็ดสังหาร)",
+        "relationship": "power",
+        "element": "水",
+        "yinYang": "阳"
+      },
+      "hour": {
+        "name": "偏印",
+        "nameTh": "偏印 (ตราข้าง)",
+        "relationship": "resource",
+        "element": "木",
+        "yinYang": "阳"
+      },
+      "dayHiddenStems": [
+        {
+          "name": "偏印",
+          "nameTh": "偏印 (ตราข้าง)",
+          "relationship": "resource",
+          "element": "木",
+          "yinYang": "阳"
+        },
+        {
+          "name": "比肩",
+          "nameTh": "比肩 (เพื่อนเคียงบ่า)",
+          "relationship": "companion",
+          "element": "火",
+          "yinYang": "阳"
+        },
+        {
+          "name": "食神",
+          "nameTh": "食神 (เทพแห่งโภชน์)",
+          "relationship": "output",
+          "element": "土",
+          "yinYang": "阳"
+        }
+      ]
+    },
+    "stars": [
+      {
+        "name": "羊刃",
+        "nameTh": "羊刃 (คมดาบ)",
+        "category": "inauspicious",
+        "position": "hour",
+        "description": "ดาวแห่งความรุนแรงและการตัดสินใจเด็ดขาด อาจนำมาซึ่งอุบัติเหตุหรือการบาดเจ็บ"
+      },
+      {
+        "name": "天乙贵人",
+        "nameTh": "天乙贵人 (ผู้ใหญ่ผู้มีอุปการคุณ)",
+        "category": "auspicious",
+        "position": "year",
+        "description": "ดาวแห่งโชคลาภและผู้อุปถัมภ์ ชีวิตได้รับความช่วยเหลือจากบุคคลผู้ใหญ่"
+      },
+      {
+        "name": "华盖",
+        "nameTh": "华盖 (ฉัตร/มาลา)",
+        "category": "auspicious",
+        "position": "month",
+        "description": "ดาวแห่งศาสนาและปรัชญา มีความสนใจในเรื่องลึกลับหรือศาสนา"
+      }
+    ],
+    "starsSummary": {
+      "auspicious": 2,
+      "inauspicious": 1
+    }
+  },
+  "elements": {
+    "counts": [
+      {
+        "element": "木",
+        "count": 3,
+        "percentage": 21.3,
+        "weight": 3,
+        "level": "medium"
+      },
+      {
+        "element": "火",
+        "count": 3.8,
+        "percentage": 27,
+        "weight": 3.8,
+        "level": "high"
+      },
+      {
+        "element": "土",
+        "count": 2.8,
+        "percentage": 19.9,
+        "weight": 2.8,
+        "level": "medium"
+      },
+      {
+        "element": "金",
+        "count": 2.5,
+        "percentage": 17.7,
+        "weight": 2.5,
+        "level": "medium"
+      },
+      {
+        "element": "水",
+        "count": 2,
+        "percentage": 14.2,
+        "weight": 2,
+        "level": "medium"
+      }
+    ],
+    "dominantElement": "火",
+    "weakestElement": "水",
+    "missingElements": [],
+    "totalWeight": 14.1,
+    "description": "ธาตุไฟเด่น (27.0%), ธาตุน้ำน้อยที่สุด (14.2%), สมดุลดี",
+    "balanceStatus": "balanced"
+  },
+  "luck": {
+    "direction": "backward",
+    "startAge": 2,
+    "pillars": [
+      {
+        "index": 0,
+        "sixtyCycleName": "辛酉",
+        "startAge": 2,
+        "endAge": 11,
+        "stem": {
+          "name": "辛",
+          "element": "金"
+        },
+        "branch": {
+          "name": "酉",
+          "element": "金"
+        },
+        "tenGod": "正财",
+        "isCurrent": false
+      },
+      {
+        "index": 1,
+        "sixtyCycleName": "庚申",
+        "startAge": 12,
+        "endAge": 21,
+        "stem": {
+          "name": "庚",
+          "element": "金"
+        },
+        "branch": {
+          "name": "申",
+          "element": "金"
+        },
+        "tenGod": "偏财",
+        "isCurrent": false
+      },
+      {
+        "index": 2,
+        "sixtyCycleName": "己未",
+        "startAge": 22,
+        "endAge": 31,
+        "stem": {
+          "name": "己",
+          "element": "土"
+        },
+        "branch": {
+          "name": "未",
+          "element": "土"
+        },
+        "tenGod": "伤官",
+        "isCurrent": false
+      },
+      {
+        "index": 3,
+        "sixtyCycleName": "戊午",
+        "startAge": 32,
+        "endAge": 41,
+        "stem": {
+          "name": "戊",
+          "element": "土"
+        },
+        "branch": {
+          "name": "午",
+          "element": "火"
+        },
+        "tenGod": "食神",
+        "isCurrent": true
+      },
+      {
+        "index": 4,
+        "sixtyCycleName": "丁巳",
+        "startAge": 42,
+        "endAge": 51,
+        "stem": {
+          "name": "丁",
+          "element": "火"
+        },
+        "branch": {
+          "name": "巳",
+          "element": "火"
+        },
+        "tenGod": "劫财",
+        "isCurrent": false
+      },
+      {
+        "index": 5,
+        "sixtyCycleName": "丙辰",
+        "startAge": 52,
+        "endAge": 61,
+        "stem": {
+          "name": "丙",
+          "element": "火"
+        },
+        "branch": {
+          "name": "辰",
+          "element": "土"
+        },
+        "tenGod": "比肩",
+        "isCurrent": false
+      },
+      {
+        "index": 6,
+        "sixtyCycleName": "乙卯",
+        "startAge": 62,
+        "endAge": 71,
+        "stem": {
+          "name": "乙",
+          "element": "木"
+        },
+        "branch": {
+          "name": "卯",
+          "element": "木"
+        },
+        "tenGod": "正印",
+        "isCurrent": false
+      },
+      {
+        "index": 7,
+        "sixtyCycleName": "甲寅",
+        "startAge": 72,
+        "endAge": 81,
+        "stem": {
+          "name": "甲",
+          "element": "木"
+        },
+        "branch": {
+          "name": "寅",
+          "element": "木"
+        },
+        "tenGod": "偏印",
+        "isCurrent": false
+      }
+    ],
+    "currentPillar": {
+      "index": 3,
+      "sixtyCycleName": "戊午",
+      "startAge": 32,
+      "endAge": 41,
+      "stem": {
+        "name": "戊",
+        "element": "土"
+      },
+      "branch": {
+        "name": "午",
+        "element": "火"
+      },
+      "tenGod": "食神",
+      "isCurrent": true
+    },
+    "currentAnnual": {
+      "year": 2026,
+      "sixtyCycleName": "丙午",
+      "tenGod": "比肩"
+    },
+    "upcomingTransitions": [
+      {
+        "age": 42,
+        "pillar": "丁巳",
+        "yearsAway": 9
+      },
+      {
+        "age": 52,
+        "pillar": "丙辰",
+        "yearsAway": 19
+      },
+      {
+        "age": 62,
+        "pillar": "乙卯",
+        "yearsAway": 29
+      }
+    ]
+  },
+  "tenGodProfile": {
+    "counts": {
+      "比肩": 1,
+      "劫财": 2,
+      "食神": 2,
+      "伤官": 1,
+      "偏财": 0,
+      "正财": 2,
+      "七杀": 1,
+      "正官": 1,
+      "偏印": 2,
+      "正印": 0
+    },
+    "relationshipCounts": {
+      "companion": 3,
+      "output": 3,
+      "wealth": 2,
+      "power": 2,
+      "resource": 2
+    },
+    "entries": [
+      {
+        "position": "year",
+        "source": "stem",
+        "stem": {
+          "name": "癸",
+          "element": "水",
+          "yinYang": "阴",
+          "index": 9
+        },
+        "tenGod": "正官",
+        "relationship": "power"
+      },
+      {
+        "position": "year",
+        "source": "hidden-main",
+        "stem": {
+          "name": "辛",
+          "element": "金",
+          "yinYang": "阴",
+          "index": 7
+        },
+        "tenGod": "正财",
+        "relationship": "wealth"
+      },
+      {
+        "position": "month",
+        "source": "stem",
+        "stem": {
+          "name": "壬",
+          "element": "水",
+          "yinYang": "阳",
+          "index": 8
+        },
+        "tenGod": "七杀",
+        "relationship": "power"
+      },
+      {
+        "position": "month",
+        "source": "hidden-main",
+        "stem": {
+          "name": "戊",
+          "element": "土",
+          "yinYang": "阳",
+          "index": 4
+        },
+        "tenGod": "食神",
+        "relationship": "output"
+      },
+      {
+        "position": "month",
+        "source": "hidden-middle",
+        "stem": {
+          "name": "辛",
+          "element": "金",
+          "yinYang": "阴",
+          "index": 7
+        },
+        "tenGod": "正财",
+        "relationship": "wealth"
+      },
+      {
+        "position": "month",
+        "source": "hidden-residual",
+        "stem": {
+          "name": "丁",
+          "element": "火",
+          "yinYang": "阴",
+          "index": 3
+        },
+        "tenGod": "劫财",
+        "relationship": "companion"
+      },
+      {
+        "position": "day",
+        "source": "hidden-main",
+        "stem": {
+          "name": "甲",
+          "element": "木",
+          "yinYang": "阳",
+          "index": 0
+        },
+        "tenGod": "偏印",
+        "relationship": "resource"
+      },
+      {
+        "position": "day",
+        "source": "hidden-middle",
+        "stem": {
+          "name": "丙",
+          "element": "火",
+          "yinYang": "阳",
+          "index": 2
+        },
+        "tenGod": "比肩",
+        "relationship": "companion"
+      },
+      {
+        "position": "day",
+        "source": "hidden-residual",
+        "stem": {
+          "name": "戊",
+          "element": "土",
+          "yinYang": "阳",
+          "index": 4
+        },
+        "tenGod": "食神",
+        "relationship": "output"
+      },
+      {
+        "position": "hour",
+        "source": "stem",
+        "stem": {
+          "name": "甲",
+          "element": "木",
+          "yinYang": "阳",
+          "index": 0
+        },
+        "tenGod": "偏印",
+        "relationship": "resource"
+      },
+      {
+        "position": "hour",
+        "source": "hidden-main",
+        "stem": {
+          "name": "丁",
+          "element": "火",
+          "yinYang": "阴",
+          "index": 3
+        },
+        "tenGod": "劫财",
+        "relationship": "companion"
+      },
+      {
+        "position": "hour",
+        "source": "hidden-middle",
+        "stem": {
+          "name": "己",
+          "element": "土",
+          "yinYang": "阴",
+          "index": 5
+        },
+        "tenGod": "伤官",
+        "relationship": "output"
+      }
+    ],
+    "dominantGods": [
+      "劫财",
+      "食神",
+      "正财",
+      "偏印"
+    ],
+    "missingRelationships": [],
+    "primaryGroup": "companion",
+    "total": 12
+  },
+  "palace": {
+    "palaces": [
+      {
+        "position": "year",
+        "lifeDomain": "พ่อแม่/บรรพบุรุษ · วัยเด็ก",
+        "stem": {
+          "name": "癸",
+          "element": "水",
+          "yinYang": "阴",
+          "index": 9
+        },
+        "stemTenGod": "正官",
+        "stemRelationship": "power",
+        "branch": {
+          "name": "酉",
+          "element": "金",
+          "zodiac": "鸡",
+          "direction": "西",
+          "hiddenStems": [
+            {
+              "stem": {
+                "name": "辛",
+                "element": "金",
+                "yinYang": "阴",
+                "index": 7
+              },
+              "type": "main"
+            }
+          ]
+        },
+        "branchHiddenStems": [
+          {
+            "stem": {
+              "name": "辛",
+              "element": "金",
+              "yinYang": "阴",
+              "index": 7
+            },
+            "tenGod": "正财",
+            "relationship": "wealth",
+            "type": "main"
+          }
+        ],
+        "branchPrimaryTenGod": "正财"
+      },
+      {
+        "position": "month",
+        "lifeDomain": "อาชีพ/พี่น้อง · วัยหนุ่มสาว",
+        "stem": {
+          "name": "壬",
+          "element": "水",
+          "yinYang": "阳",
+          "index": 8
+        },
+        "stemTenGod": "七杀",
+        "stemRelationship": "power",
+        "branch": {
+          "name": "戌",
+          "element": "土",
+          "zodiac": "狗",
+          "direction": "中",
+          "hiddenStems": [
+            {
+              "stem": {
+                "name": "戊",
+                "element": "土",
+                "yinYang": "阳",
+                "index": 4
+              },
+              "type": "main"
+            },
+            {
+              "stem": {
+                "name": "辛",
+                "element": "金",
+                "yinYang": "阴",
+                "index": 7
+              },
+              "type": "middle"
+            },
+            {
+              "stem": {
+                "name": "丁",
+                "element": "火",
+                "yinYang": "阴",
+                "index": 3
+              },
+              "type": "residual"
+            }
+          ]
+        },
+        "branchHiddenStems": [
+          {
+            "stem": {
+              "name": "戊",
+              "element": "土",
+              "yinYang": "阳",
+              "index": 4
+            },
+            "tenGod": "食神",
+            "relationship": "output",
+            "type": "main"
+          },
+          {
+            "stem": {
+              "name": "辛",
+              "element": "金",
+              "yinYang": "阴",
+              "index": 7
+            },
+            "tenGod": "正财",
+            "relationship": "wealth",
+            "type": "middle"
+          },
+          {
+            "stem": {
+              "name": "丁",
+              "element": "火",
+              "yinYang": "阴",
+              "index": 3
+            },
+            "tenGod": "劫财",
+            "relationship": "companion",
+            "type": "residual"
+          }
+        ],
+        "branchPrimaryTenGod": "食神"
+      },
+      {
+        "position": "day",
+        "lifeDomain": "ตัวเอง (stem) · คู่ครอง (branch)",
+        "stem": {
+          "name": "丙",
+          "element": "火",
+          "yinYang": "阳",
+          "index": 2
+        },
+        "stemTenGod": "比肩",
+        "stemRelationship": "companion",
+        "branch": {
+          "name": "寅",
+          "element": "木",
+          "zodiac": "虎",
+          "direction": "东",
+          "hiddenStems": [
+            {
+              "stem": {
+                "name": "甲",
+                "element": "木",
+                "yinYang": "阳",
+                "index": 0
+              },
+              "type": "main"
+            },
+            {
+              "stem": {
+                "name": "丙",
+                "element": "火",
+                "yinYang": "阳",
+                "index": 2
+              },
+              "type": "middle"
+            },
+            {
+              "stem": {
+                "name": "戊",
+                "element": "土",
+                "yinYang": "阳",
+                "index": 4
+              },
+              "type": "residual"
+            }
+          ]
+        },
+        "branchHiddenStems": [
+          {
+            "stem": {
+              "name": "甲",
+              "element": "木",
+              "yinYang": "阳",
+              "index": 0
+            },
+            "tenGod": "偏印",
+            "relationship": "resource",
+            "type": "main"
+          },
+          {
+            "stem": {
+              "name": "丙",
+              "element": "火",
+              "yinYang": "阳",
+              "index": 2
+            },
+            "tenGod": "比肩",
+            "relationship": "companion",
+            "type": "middle"
+          },
+          {
+            "stem": {
+              "name": "戊",
+              "element": "土",
+              "yinYang": "阳",
+              "index": 4
+            },
+            "tenGod": "食神",
+            "relationship": "output",
+            "type": "residual"
+          }
+        ],
+        "branchPrimaryTenGod": "偏印"
+      },
+      {
+        "position": "hour",
+        "lifeDomain": "ลูก/ผลงาน · บั้นปลาย",
+        "stem": {
+          "name": "甲",
+          "element": "木",
+          "yinYang": "阳",
+          "index": 0
+        },
+        "stemTenGod": "偏印",
+        "stemRelationship": "resource",
+        "branch": {
+          "name": "午",
+          "element": "火",
+          "zodiac": "马",
+          "direction": "南",
+          "hiddenStems": [
+            {
+              "stem": {
+                "name": "丁",
+                "element": "火",
+                "yinYang": "阴",
+                "index": 3
+              },
+              "type": "main"
+            },
+            {
+              "stem": {
+                "name": "己",
+                "element": "土",
+                "yinYang": "阴",
+                "index": 5
+              },
+              "type": "middle"
+            }
+          ]
+        },
+        "branchHiddenStems": [
+          {
+            "stem": {
+              "name": "丁",
+              "element": "火",
+              "yinYang": "阴",
+              "index": 3
+            },
+            "tenGod": "劫财",
+            "relationship": "companion",
+            "type": "main"
+          },
+          {
+            "stem": {
+              "name": "己",
+              "element": "土",
+              "yinYang": "阴",
+              "index": 5
+            },
+            "tenGod": "伤官",
+            "relationship": "output",
+            "type": "middle"
+          }
+        ],
+        "branchPrimaryTenGod": "劫财"
+      }
+    ],
+    "spouse": {
+      "position": "day",
+      "lifeDomain": "ตัวเอง (stem) · คู่ครอง (branch)",
+      "stem": {
+        "name": "丙",
+        "element": "火",
+        "yinYang": "阳",
+        "index": 2
+      },
+      "stemTenGod": "比肩",
+      "stemRelationship": "companion",
+      "branch": {
+        "name": "寅",
+        "element": "木",
+        "zodiac": "虎",
+        "direction": "东",
+        "hiddenStems": [
+          {
+            "stem": {
+              "name": "甲",
+              "element": "木",
+              "yinYang": "阳",
+              "index": 0
+            },
+            "type": "main"
+          },
+          {
+            "stem": {
+              "name": "丙",
+              "element": "火",
+              "yinYang": "阳",
+              "index": 2
+            },
+            "type": "middle"
+          },
+          {
+            "stem": {
+              "name": "戊",
+              "element": "土",
+              "yinYang": "阳",
+              "index": 4
+            },
+            "type": "residual"
+          }
+        ]
+      },
+      "branchHiddenStems": [
+        {
+          "stem": {
+            "name": "甲",
+            "element": "木",
+            "yinYang": "阳",
+            "index": 0
+          },
+          "tenGod": "偏印",
+          "relationship": "resource",
+          "type": "main"
+        },
+        {
+          "stem": {
+            "name": "丙",
+            "element": "火",
+            "yinYang": "阳",
+            "index": 2
+          },
+          "tenGod": "比肩",
+          "relationship": "companion",
+          "type": "middle"
+        },
+        {
+          "stem": {
+            "name": "戊",
+            "element": "土",
+            "yinYang": "阳",
+            "index": 4
+          },
+          "tenGod": "食神",
+          "relationship": "output",
+          "type": "residual"
+        }
+      ],
+      "branchPrimaryTenGod": "偏印"
+    },
+    "self": {
+      "stem": {
+        "name": "丙",
+        "element": "火",
+        "yinYang": "阳",
+        "index": 2
+      },
+      "position": "day"
+    }
+  },
+  "luckFavorability": {
+    "pillars": [
+      {
+        "index": 0,
+        "startAge": 2,
+        "endAge": 11,
+        "sixtyCycleName": "辛酉",
+        "isCurrent": false,
+        "favorability": "favorable",
+        "favorabilityTh": "รุ่ง",
+        "score": 2,
+        "reasons": [
+          "stem 金 = 用神 (เติมธาตุประโยชน์หลัก)",
+          "branch 金 = 用神 (เติมธาตุประโยชน์หลัก)"
+        ]
+      },
+      {
+        "index": 1,
+        "startAge": 12,
+        "endAge": 21,
+        "sixtyCycleName": "庚申",
+        "isCurrent": false,
+        "favorability": "favorable",
+        "favorabilityTh": "รุ่ง",
+        "score": 2,
+        "reasons": [
+          "stem 金 = 用神 (เติมธาตุประโยชน์หลัก)",
+          "branch 金 = 用神 (เติมธาตุประโยชน์หลัก)"
+        ]
+      },
+      {
+        "index": 2,
+        "startAge": 22,
+        "endAge": 31,
+        "sixtyCycleName": "己未",
+        "isCurrent": false,
+        "favorability": "neutral",
+        "favorabilityTh": "กลาง",
+        "score": 0,
+        "reasons": [
+          "大运 己未 ไม่เติม 用/喜/忌 โดยตรง"
+        ]
+      },
+      {
+        "index": 3,
+        "startAge": 32,
+        "endAge": 41,
+        "sixtyCycleName": "戊午",
+        "isCurrent": true,
+        "favorability": "unfavorable",
+        "favorabilityTh": "ระวัง",
+        "score": -1,
+        "reasons": [
+          "branch 火 = 忌神 (เติมธาตุควรหลีกเลี่ยง)"
+        ]
+      },
+      {
+        "index": 4,
+        "startAge": 42,
+        "endAge": 51,
+        "sixtyCycleName": "丁巳",
+        "isCurrent": false,
+        "favorability": "unfavorable",
+        "favorabilityTh": "ระวัง",
+        "score": -2,
+        "reasons": [
+          "stem 火 = 忌神 (เติมธาตุควรหลีกเลี่ยง)",
+          "branch 火 = 忌神 (เติมธาตุควรหลีกเลี่ยง)"
+        ]
+      },
+      {
+        "index": 5,
+        "startAge": 52,
+        "endAge": 61,
+        "sixtyCycleName": "丙辰",
+        "isCurrent": false,
+        "favorability": "unfavorable",
+        "favorabilityTh": "ระวัง",
+        "score": -1,
+        "reasons": [
+          "stem 火 = 忌神 (เติมธาตุควรหลีกเลี่ยง)"
+        ]
+      },
+      {
+        "index": 6,
+        "startAge": 62,
+        "endAge": 71,
+        "sixtyCycleName": "乙卯",
+        "isCurrent": false,
+        "favorability": "unfavorable",
+        "favorabilityTh": "ระวัง",
+        "score": -2,
+        "reasons": [
+          "stem 木 = 忌神 (เติมธาตุควรหลีกเลี่ยง)",
+          "branch 木 = 忌神 (เติมธาตุควรหลีกเลี่ยง)"
+        ]
+      },
+      {
+        "index": 7,
+        "startAge": 72,
+        "endAge": 81,
+        "sixtyCycleName": "甲寅",
+        "isCurrent": false,
+        "favorability": "unfavorable",
+        "favorabilityTh": "ระวัง",
+        "score": -2,
+        "reasons": [
+          "stem 木 = 忌神 (เติมธาตุควรหลีกเลี่ยง)",
+          "branch 木 = 忌神 (เติมธาตุควรหลีกเลี่ยง)"
+        ]
+      }
+    ],
+    "current": {
+      "index": 3,
+      "startAge": 32,
+      "endAge": 41,
+      "sixtyCycleName": "戊午",
+      "isCurrent": true,
+      "favorability": "unfavorable",
+      "favorabilityTh": "ระวัง",
+      "score": -1,
+      "reasons": [
+        "branch 火 = 忌神 (เติมธาตุควรหลีกเลี่ยง)"
+      ]
+    },
+    "annual": {
+      "index": -1,
+      "startAge": 2026,
+      "endAge": 2026,
+      "sixtyCycleName": "丙午",
+      "isCurrent": true,
+      "favorability": "unfavorable",
+      "favorabilityTh": "ระวัง",
+      "score": -2,
+      "reasons": [
+        "stem 火 = 忌神 (เติมธาตุควรหลีกเลี่ยง)",
+        "branch 火 = 忌神 (เติมธาตุควรหลีกเลี่ยง)"
+      ]
+    }
+  },
+  "timelineSummary": {
+    "total": 8,
+    "favorable": 2,
+    "neutral": 1,
+    "unfavorable": 5,
+    "peak": {
+      "index": 0,
+      "startAge": 2,
+      "endAge": 11,
+      "sixtyCycleName": "辛酉",
+      "isCurrent": false,
+      "favorability": "favorable",
+      "favorabilityTh": "รุ่ง",
+      "score": 2,
+      "reasons": [
+        "stem 金 = 用神 (เติมธาตุประโยชน์หลัก)",
+        "branch 金 = 用神 (เติมธาตุประโยชน์หลัก)"
+      ]
+    },
+    "valley": {
+      "index": 4,
+      "startAge": 42,
+      "endAge": 51,
+      "sixtyCycleName": "丁巳",
+      "isCurrent": false,
+      "favorability": "unfavorable",
+      "favorabilityTh": "ระวัง",
+      "score": -2,
+      "reasons": [
+        "stem 火 = 忌神 (เติมธาตุควรหลีกเลี่ยง)",
+        "branch 火 = 忌神 (เติมธาตุควรหลีกเลี่ยง)"
+      ]
+    },
+    "summary": "ตลอด 8 ช่วง: รุ่ง 2 · กลาง 1 · ระวัง 5 — รุ่งสุดที่ 辛酉 (2–11) · ระวังสุดที่ 丁巳 (42–51)"
+  },
+  "narrative": {
+    "profileName": "เคสอ้างอิง (ชาย ลำปาง)",
+    "dayMasterName": "丙",
+    "elementThai": "ไฟ",
+    "yinYangThai": "หยาง",
+    "archetypeTitle": "ผู้ส่องสว่างร้อนแรง",
+    "archetypeMotto": "ส่องแสงสว่าง ให้ความร้อนแก่โลก",
+    "opening": "เจ้าวันของ เคสอ้างอิง (ชาย ลำปาง)คือ 丙ไฟ (หยาง) — \"ส่องแสงสว่าง ให้ความร้อนแก่โลก\" เจ้าวันแข็ง: มีพลังเพียงพอ ค่อนข้างมั่นคง — แกนเด่นในดวงของคุณคือ 2 ครั้งของ 劫财",
+    "sections": [
+      {
+        "id": "personality",
+        "title": "บุคลิกและแกนเด่น",
+        "intro": "เจ้าวัน \"ผู้ส่องสว่างร้อนแรง\" — แกนเด่นในดวงของคุณคือ ปล้นทรัพย์ (劫财) ทำให้บุคลิกโดยรวมเป็นแนวที่วิเคราะห์ได้จาก day master + ten god ที่เด่น",
+        "bullets": [
+          "มีพลังงานสูงมาก กระตือรือร้น",
+          "เป็นคนร่าเริง และเปิดเผย",
+          "ชอบอยู่ในจุดศูนย์กลาง",
+          "กล้าหาญ กระตือรือร้น ใจกว้างแต่ขี้อวด",
+          "ชอบเสี่ยง ไม่กลัวความขัดแย้ง"
+        ]
+      },
+      {
+        "id": "career",
+        "title": "การงาน",
+        "intro": "ดวงควบคุมทรัพย์และเป้าหมายได้ดี — จุดเด่นคือหาเงิน ธุรกิจ และความสัมพันธ์ที่เป็นมั่นคง — ส่วนใหญ่เส้นทางการงานจะเอื้อตามจุดนี้",
+        "bullets": [
+          "นักแสดง/นักดนตรี/ศิลปิน",
+          "ผู้ดำเนินรายการ/พิธีกร",
+          "ครู/อาจารย์ด้านสาธารณะ",
+          "เหมาะงานที่ต้องแข่งขัน การขาย กีฬา ธุรกิจผันผวน",
+          "เก่งการโน้มน้าวผู้คน"
+        ]
+      },
+      {
+        "id": "wealth",
+        "title": "การเงิน",
+        "intro": "ดวงคุณทรัพย์ (财) เด่น — แนวโน้ม ทรัพย์หลัก: รายได้คงที่ เงินเดือน ภรรยา — ทรัพย์ที่มั่นคง มาจากงาน",
+        "bullets": [
+          "รายได้คงที่ สะสมช้าแต่นาน มั่นคง",
+          "ทรัพย์จากการทำงานหนัก"
+        ]
+      },
+      {
+        "id": "relationship",
+        "title": "ความรักและคู่ครอง",
+        "intro": "spouse palace (วันกิ่ง = 寅) — hidden หลักเป็น 偏印 (ตราข้าง). คู่ลึกลับ สนใจเรื่องปรัชญา/เหนือธรรมชาติ — ค่อนข้างเก็บตัว ต้องให้พื้นที่",
+        "bullets": [
+          "ค่อนข้างเก็บตัว คู่ต้องให้พื้นที่ส่วนตัว",
+          "อาจมีความสัมพันธ์ลึกซึ้งแต่ไม่โลกภายนอกรู้",
+          "⚠️ companion เด่น — อาจมีคู่แข่ง/แรงดึงดูดจากคนนอก ควรสื่อสารให้ชัด"
+        ]
+      },
+      {
+        "id": "health",
+        "title": "สุขภาพ",
+        "intro": "สุขภาพอ่านจากธาตุที่เสีย — เด่นเกินหรือขาด. ดวงนี้เด่น ไฟ / น้อย น้ำ",
+        "bullets": [
+          "ไฟ (火): ธาตุไฟเสีย/เด่นเกิน — มักร้อนใน นอนไม่หลับ ใจสั่น ปากแห้ง ควรพักผ่อนให้เพียงพอและหลีกเลี่ยงความเร่งรีบ",
+          "น้ำ (水): ธาตุน้ำเสีย/ขาด — มักเหนื่อยล้า กลัว/ไม่มั่นใจ ปวดหลัง-เอว กระดูกอ่อนแอ ควรพักผ่อนและดูแลไต",
+          "⚠️ นี่เป็นแนวโน้มตามหลักธาตุ — ไม่ใช่การวินิจฉัยโรค หากมีอาการควรพบแพทย์"
+        ]
+      },
+      {
+        "id": "timing",
+        "title": "จังหวะเวลา",
+        "intro": "รอบดวงปัจจุบัน 戊午 (อายุ 32–41) = ช่วงที่ luck เติม 忌神 — พลังดวงตก เจอแรงต้าน สิ่งกีดขวาง | รายปี 丙午: ช่วงที่ luck เติม 忌神 — พลังดวงตก เจอแรงต้าน สิ่งกีดขวาง | ภาพรวม: ตลอด 8 ช่วง: รุ่ง 2 · กลาง 1 · ระวัง 5 — รุ่งสุดที่ 辛酉 (2–11) · ระวังสุดที่ 丁巳 (42–51)",
+        "bullets": [
+          "branch 火 = 忌神 (เติมธาตุควรหลีกเลี่ยง)",
+          "คำแนะนำ: ระวัง อย่าเสี่ยงใหญ่ อย่าตัดสินใจ impulsive — รักษา ๆ ไว้ สะสมพลัง และคอยจังหวะถัดไป (ช่วงนี้ผ่านไปเร็ว)"
+        ]
+      },
+      {
+        "id": "family",
+        "title": "ครอบครัว",
+        "intro": "อ่านครอบครัวจาก palace — ปี (พ่อแม่) · เดือน (พี่น้อง/อาชีพ) · ยาม (ลูก/บั้นปลาย)",
+        "bullets": [
+          "พ่อแม่/บรรพบุรุษ: 酉 → 正财 (ทรัพย์หลัก) — ครอบครัวมั่นคงทรัพย์ พ่อแม่ขยัน",
+          "อาชีพ/พี่น้อง: 戌 → 食神 (เทพแห่งโภชน์) — อาชีพศิลปะ/สอน/อาหาร สร้างสรรค์",
+          "ลูก/ผลงาน: 午 → 劫财 (ปล้นทรัพย์) — ลูกแข่งขัน ผันผวน ต้องสอนคุณธรรม"
+        ]
+      }
+    ],
+    "closingNote": "นี่เป็นการตีความตามหลักปาจื้อ เพื่อใช้เป็น “แผนที่” เข้าใจแนวโน้มของตัวเอง — ทุกข้อเป็นแนวโน้ม ไม่ใช่โชคชะตาตายตัว ชีวิตเปลี่ยนแปลงได้เสมอ (โดยเฉพาะเรื่องสุขภาพ หากมีอาการควรพบแพทย์). อยากเจาะลึกเรื่องใด ถาม 天机 ได้เลย"
+  },
+  "aiContextText": "## ข้อมูลผู้ใช้\nชื่อ: เคสอ้างอิง (ชาย ลำปาง)\nเพศ: ชาย\nวันเกิด: 12 ตุลาคม 2536 (1993-10-12)\nเวลาเกิด: 12:55 น. (โซน: Asia/Bangkok)\nลองจิจูด: 99.5° (สำหรับ True Solar Time)\n\n## 4 เสา (Natal Chart) - BaZi Chart\nปีหลัก: 癸酉 (กุยโย่ว) - ธาตุน้ำ หยิน - 生肖ไก่\nเดือนหลัก: 壬戌 (เหรินสวี่) - ธาตุน้ำ หยาง - 生肖หมา\nวันหลัก: 丙寅 (ปิ่งอิม) - ธาตุไฟ หยาง - 生肖เสือ\nชั่วโมงหลัก: 甲午 (เกียอู่) - ธาตุไม้ หยาง - 生肖ม้า\n\n## Day Master (เจ้าวัน)\nเจ้าวัน: 丙 (ปิ่ง)\nธาตุ: ไฟ หยาง\nลักษณะ: กระตือรือร้น มีพลังงานสูง ขยัน เปี่ยมด้วยความรู้สึก มีเสน่ห์\n\n## Strength Analysis (ความแข็ง/อ่อนของเจ้าวัน)\nระดับ: แข็ง\nคะแนน: +1\nสรุป: เจ้าวัน 丙 (ไฟ) แข็ง เพราะ เกิดในฤดูที่ไม่เสริม, มีรากฐาน (root) เหมาะสม, ถูก天干ระบายพลัง\n\nปัจจัย:\n- 得令 / 失令 (Season): สูญเสียแรงสนับสนุนจากฤดู (คะแนน -2)\n  • เจ้าวัน (ไฟ) สร้างเดือน (ดิน) = ระบายพลัง → 泄气\n- 得地 / 失地 (Root): มีรากฐาน (root) ในหลักต่างๆ (คะแนน +4)\n  • หลัก 戌 (ดิน): มีธาตุซ่อน ไฟ (คงเหลือ) = ธาตุเดียวกัน\n  • หลัก 寅 (ไม้): มีธาตุซ่อน ไม้ = ธาตุที่สร้างเจ้าวัน (2x - อยู่วันหลัก)\n  • หลัก 寅 (ไม้): มีธาตุซ่อน ไฟ (กลาง) = ธาตุเดียวกัน\n  • หลัก 午 (ไฟ): มีธาตุซ่อน ไฟ = ธาตุเดียวกัน\n- 得势 / 失势 (Support): สูญเสียพลังไปกับ天干อื่น (คะแนน -1)\n  • ปี (癸): ธาตุที่คุมเจ้าวัน → อ่อน -1\n  • เดือน (壬): ธาตุที่คุมเจ้าวัน → อ่อน -1\n  • ชั่วโมง (甲): ธาตุที่สร้างเจ้าวัน → เสริม +1\n\n## Structure Analysis (格局)\nโครงสร้าง: 格局ปกติ (正格)\nชื่อจีน: 正格\nคำอธิบาย: Chart เป็นแบบปกติ (เจ้าวัน 丙 (ไฟ) แข็ง เพราะ เกิดในฤดูที่ไม่เสริม, มีรากฐาน (root) เหมาะสม, ถูก天干ระบายพลัง) มีทั้ง support และ control สมดุลพอสมควร\n\nเหตุผล:\n- Day master เจ้าวัน 丙 (ไฟ) แข็ง เพราะ เกิดในฤดูที่ไม่เสริม, มีรากฐาน (root) เหมาะสม, ถูก天干ระบายพลัง\n- มีทั้งธาตุที่เสริมและธาตุที่ควบคุม\n- ไม่เข้าเงื่อนไขโครงสร้างพิเศษ (Follower/Vibrant/Special)\n- ใช้ Useful God ตาม strength (strong → need wealth/power/output; weak → need resource/companion)\n\nผลกระทบ: ชีวิตสมดุลพอสมควร ต้องหา Useful God (ธาตุที่เป็นประโยชน์) ตามความแข็ง/อ่อนของ Day Master เพื่อเสริมชีวิตให้ดีขึ้น\n\n## Useful God (用神 - ธาตุที่เป็นประโยชน์)\nประเภท: ธาตุโลหะ (财 (ทรัพย์สิน))\nชื่อจีน: 用神：金（财）\nคำอธิบาย: เจ้าวัน ไฟ (丙) แข็ง (格局ปกติ (正格)) → ต้องการ weaken: ธาตุโลหะ (wealth) เพื่อใช้พลัง\n\nเหตุผล:\n- เจ้าวันแข็ง (strength score: 1)\n- ธาตุโลหะ (wealth 我克) ใช้พลังเจ้าวัน → เป็น useful god หลัก (priority #1)\n- ธาตุน้ำ (power 克我) ช่วยคุมเจ้าวัน → เป็น喜神รอง\n- หลีกเลี่ยง ไม้、ไฟ (resource+companion) — ทำให้เจ้าวันแข็งขึ้นเกินไป\n\nวิธีนำไปใช้: ธาตุหลัก โลหะ (金): สีขาว/ทอง/เงิน/เทา · ทิศตะวันตก · อาชีพ: การเงิน, ธนาคาร, กฎหมาย, วิศวกรรม\nธาตุรอง น้ำ (水): สีดำ/น้ำเงิน/กรมท่า/เทาเข้ม · ทิศเหนือ · อาชีพ: สื่อสาร, การตลาด, ขนส่ง, ท่องเที่ยว, บันเทิง\nหลีกเลี่ยง: ไม้、ไฟ\n\n## 10 Gods (十神)\nปี (年): 正官 (正官 (ยศตรง))\nเดือน (月): 七杀 (七杀 (เจ็ดสังหาร))\nชั่วโมง (时): 偏印 (偏印 (ตราข้าง))\n\n藏干 (Hidden Stems) ในวันหลัก:\n- 偏印 (偏印 (ตราข้าง))\n- 比肩 (比肩 (เพื่อนเคียงบ่า))\n- 食神 (食神 (เทพแห่งโภชน์))\n\n## Stars (神煞 - ดาวมงคล/อัปมงคล)\nดาวมงคล:\n- 天乙贵人 (天乙贵人 (ผู้ใหญ่ผู้มีอุปการคุณ)) - ตำแหน่ง: year - ดาวแห่งโชคลาภและผู้อุปถัมภ์ ชีวิตได้รับความช่วยเหลือจากบุคคลผู้ใหญ่\n- 华盖 (华盖 (ฉัตร/มาลา)) - ตำแหน่ง: month - ดาวแห่งศาสนาและปรัชญา มีความสนใจในเรื่องลึกลับหรือศาสนา\n\nดาวอัปมงคล:\n- 羊刃 (羊刃 (คมดาบ)) - ตำแหน่ง: hour - ดาวแห่งความรุนแรงและการตัดสินใจเด็ดขาด อาจนำมาซึ่งอุบัติเหตุหรือการบาดเจ็บ\n\nสรุป: มีดาวมงคล 2 ดวง, อัปมงคล 1 ดวง\n\n## Hidden Stems (藏干 - ธาตุซ่อนใน地支)\nปี: 辛 (ซิน) - ธาตุโลหะ (ธาตุหลัก)\nเดือน: 戊 (อู้) - ธาตุดิน (ธาตุหลัก), 辛 (ซิน) - ธาตุโลหะ (ธาตุกลาง), 丁 (ติง) - ธาตุไฟ (ธาตุคงเหลือ)\nวัน: 甲 (เกีย) - ธาตุไม้ (ธาตุหลัก), 丙 (ปิ่ง) - ธาตุไฟ (ธาตุกลาง), 戊 (อู้) - ธาตุดิน (ธาตุคงเหลือ)\nชั่วโมง: 丁 (ติง) - ธาตุไฟ (ธาตุหลัก), 己 (จี้) - ธาตุดิน (ธาตุกลาง)\n\n## Branch Interactions (ปฏิสัมพันธ์ระหว่าง地支)\n⚠️ ระยำ (害): ปี (酉) ระยำกับ เดือน (戌) - สร้างปัญหาซ่อนเร้น ความสัมพันธ์ซับซ้อน\n\n## Element Composition (สัดส่วน 5 ธาตุ)\nสรุป: ธาตุไฟเด่น (27.0%), ธาตุน้ำน้อยที่สุด (14.2%), สมดุลดี\n\nรายละเอียด:\n- ธาตุไม้: 21.3% (3) - ปานกลาง\n- ธาตุไฟ: 27% (3.8) - เด่น\n- ธาตุดิน: 19.9% (2.8) - ปานกลาง\n- ธาตุโลหะ: 17.7% (2.5) - ปานกลาง\n- ธาตุน้ำ: 14.2% (2) - ปานกลาง\n\n## Luck Pillars (大运 - ช่วงเวลา 10 ปี)\nทิศทาง: ย้อนหลัง\nเริ่มที่ 2 ปี\n\nช่วงปัจจุบัน (32-41 ปี):\n- 戊午 (อู้อู่)\n- 10 God: 食神 (食神 (เทพแห่งโภชน์))\n\nปีปัจจุบัน (2026 ค.ศ.):\n- 丙午 (ปิ่งอู่)\n- 10 God: 比肩 (比肩 (เพื่อนเคียงบ่า))\n\nการเปลี่ยนเสาครั้งต่อไป:\n- อีก 9 ปี (ที่ 42 ปี): เข้าสู่ 丁巳\n- อีก 19 ปี (ที่ 52 ปี): เข้าสู่ 丙辰\n- อีก 29 ปี (ที่ 62 ปี): เข้าสู่ 乙卯\n\n## Transit Forecasting Context (บริบทสำหรับการทำนายอนาคต)\nปีปัจจุบัน: 2026 ค.ศ.\nช่วง Luck Pillar ปัจจุบัน: 32-41 ปี\n10 God ของปีปัจจุบัน: 比肩 (比肩 (เพื่อนเคียงบ่า))\n10 God ของ Luck Pillar ปัจจุบัน: 食神 (食神 (เทพแห่งโภชน์))\n\n---\nContext จบลงที่นี่ - AI ควรใช้ข้อมูลข้างต้นเท่านั้น ห้ามเดูข้อมูลที่ไม่ได้ให้มา"
+}

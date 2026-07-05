@@ -15,6 +15,9 @@ import { analyzeGodsAndStars } from "./gods-stars";
 import { analyzeLuck } from "./luck";
 import { analyzeXkdg } from "./xkdg";
 import { analyzeElements } from "./elements";
+import { analyzeTenGodProfile } from "./ten-god-profile";
+import { analyzePalace } from "./palace";
+import { analyzeLuckFavorability } from "./luck-favorability";
 import type { BaZiChart } from "./types";
 import type { StrengthAnalysis } from "@/types/bazi-strength";
 import type { StructureAnalysis } from "@/types/bazi-structure";
@@ -23,6 +26,9 @@ import type { GodsAndStarsAnalysis } from "@/types/bazi-gods-stars";
 import type { LuckAnalysis } from "@/types/bazi-luck";
 import type { XkdgAnalysis } from "@/types/bazi-xkdg";
 import type { ElementComposition } from "@/types/bazi-elements";
+import type { TenGodProfile } from "./ten-god-profile";
+import type { PalaceAnalysis } from "./palace";
+import type { LuckFavorabilityAnalysis } from "./luck-favorability";
 
 /**
  * ผลการวิเคราะห์ BaZi ทั้งหมด (รวมทุก analysis)
@@ -36,6 +42,10 @@ export interface BaZiAnalysis {
   luck: LuckAnalysis;
   xkdg: XkdgAnalysis;
   elements: ElementComposition;
+  /** 子平 depth analyzers (Phase B) */
+  tenGodProfile: TenGodProfile;
+  palace: PalaceAnalysis;
+  luckFavorability: LuckFavorabilityAnalysis;
 }
 
 /**
@@ -63,6 +73,10 @@ export function useBaZiAnalysis(
     const luck = analyzeLuck(profile, chart, currentYear ?? new Date().getFullYear());
     const xkdg = analyzeXkdg(profile, chart);
     const elements = analyzeElements(chart);
+    // 子平 depth analyzers (Phase B) — pure, derived from chart + usefulGod/luck
+    const tenGodProfile = analyzeTenGodProfile(chart);
+    const palace = analyzePalace(chart);
+    const luckFavorability = analyzeLuckFavorability(luck, usefulGod);
 
     return {
       chart,
@@ -73,6 +87,9 @@ export function useBaZiAnalysis(
       luck,
       xkdg,
       elements,
+      tenGodProfile,
+      palace,
+      luckFavorability,
     };
   }, [profile, currentYear]);
 }

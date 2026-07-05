@@ -13,11 +13,13 @@ import Link from "next/link";
 import {
   User,
   Sparkles,
-  AlertTriangle,
   Briefcase,
-  Scale,
   Clock,
   Cloud,
+  Coins,
+  Heart,
+  HeartPulse,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -42,15 +44,16 @@ const ELEMENT_COLOR_MAP: Record<string, string> = {
 };
 
 /**
- * Section icons mapping
+ * Section icons mapping — 7 life domains (narrative v2)
  */
 const SECTION_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   personality: User,
-  strengths: Sparkles,
-  cautions: AlertTriangle,
   career: Briefcase,
-  balance: Scale,
-  luck: Clock,
+  wealth: Coins,
+  relationship: Heart,
+  health: HeartPulse,
+  timing: Clock,
+  family: Users,
 };
 
 /**
@@ -96,7 +99,7 @@ export function InsightNarrative({ narrative }: InsightNarrativeProps) {
         </CardContent>
       </Card>
 
-      {/* 6 sections */}
+      {/* 7 life-domain sections (narrative v2) */}
       {sections.map((section) => {
         const IconComponent = SECTION_ICONS[section.id];
 

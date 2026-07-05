@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MarkdownRenderer } from "@/components/ui/markdown";
 import { PageReveal } from "@/components/ui/motion";
 import { useBaZiAnalysis } from "@/lib/bazi/use-bazi-analysis";
-import { buildBaZiNarrative } from "@/lib/bazi/narrative";
+import { buildBaZiNarrativeV2 } from "@/lib/bazi/narrative-v2";
 import { getArchetype } from "@/lib/bazi/archetypes";
 import { ELEMENT_THAI } from "@/lib/bazi/types";
 import type { Profile } from "@/types/profile";
@@ -56,9 +56,12 @@ export function HomeHub({ profile }: HomeHubProps) {
     yinYang: analysis.chart.dayMaster.yinYang === "阴" ? "yin" : "yang",
   });
 
-  const narrative = buildBaZiNarrative({
+  const narrative = buildBaZiNarrativeV2({
     profileName: profile.name,
     analysis,
+    tenGodProfile: analysis.tenGodProfile,
+    palace: analysis.palace,
+    luckFavorability: analysis.luckFavorability,
     archetype,
   });
 

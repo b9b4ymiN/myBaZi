@@ -4,7 +4,7 @@ import { analyzeStrength } from '../src/lib/bazi/strength.ts';
 import { analyzeStructure } from '../src/lib/bazi/structure.ts';
 import { analyzeUsefulGod } from '../src/lib/bazi/useful-god.ts';
 import { analyzeLuck } from '../src/lib/bazi/luck.ts';
-import { analyzeLuckFavorability } from '../src/lib/bazi/luck-favorability.ts';
+import { analyzeLuckFavorability, summarizeLuckTimeline } from '../src/lib/bazi/luck-favorability.ts';
 
 let pass = 0, fail = 0;
 function check(label, actual, expected) {
@@ -108,6 +108,19 @@ checkTrue('2.x มีอย่างน้อย 1 pillar favorable', hasFav);
 let serializable = true;
 try { JSON.parse(JSON.stringify(real)); } catch { serializable = false; }
 check('2.x serializable', serializable, true);
+
+// ── D.3 summarizeLuckTimeline ─────────────────────────────────────────
+console.log('\n═══ summarizeLuckTimeline (D.3) ═══');
+const summary = summarizeLuckTimeline(real);
+console.log('summary:', summary.summary);
+check('3.1 summary.total = 8 pillars', summary.total, 8);
+checkTrue('3.2 summary.favorable >= 0', summary.favorable >= 0);
+checkTrue('3.3 summary ครบ favorable+neutral+unfavorable = total',
+  summary.favorable + summary.neutral + summary.unfavorable === summary.total);
+checkTrue('3.4 summary.summary ไม่ว่าง + มีคำ รุ่ง/ระวัง',
+  /รุ่ง|ระวัง/.test(summary.summary));
+// peak = score สูงสุด, valley = score ต่ำสุด
+checkTrue('3.5 peak.score >= valley.score', (summary.peak?.score ?? 0) >= (summary.valley?.score ?? 0));
 
 console.log(`\n═══ SUMMARY ═══\n✅ Passed: ${pass}\n❌ Failed: ${fail}\nTotal: ${pass + fail}`);
 process.exit(fail > 0 ? 1 : 0);
