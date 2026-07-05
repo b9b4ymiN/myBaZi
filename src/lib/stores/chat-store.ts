@@ -17,7 +17,9 @@ export interface ChatMessageUI {
 interface ChatStore {
   messages: ChatMessageUI[];
   isThinking: boolean;
-  addMessage: (message: Omit<ChatMessageUI, 'id' | 'timestamp'>) => void;
+  addMessage: (message: Omit<ChatMessageUI, 'id' | 'timestamp'>) => string;
+  appendDelta: (id: string, delta: string) => void;
+  patchMessage: (id: string, patch: Partial<Omit<ChatMessageUI, 'id'>>) => void;
   setThinking: (thinking: boolean) => void;
   clear: () => void;
   removeMessage: (id: string) => void;
@@ -29,16 +31,30 @@ export const useChatStoreBase = create<ChatStore>()(
       messages: [],
       isThinking: false,
 
-      addMessage: (message) =>
+      addMessage: (message) => {
+        const id = crypto.randomUUID();
+        const timestamp = Date.now();
         set((state) => ({
-          messages: [
-            ...state.messages,
-            {
-              ...message,
-              id: crypto.randomUUID(),
-              timestamp: Date.now(),
-            },
-          ],
+          messages: [...state.messages, { ...message, id, timestamp }],
+        }));
+        return id;
+      },
+
+      // Append a streaming token-delta to a live assistant message.
+      appendDelta: (id, delta) =>
+        set((state) => ({
+          messages: state.messages.map((m) =>
+            m.id === id ? { ...m, content: m.content + delta } : m
+          ),
+        })),
+
+      // Merge metadata (intent/layersUsed/error) into a message — used to
+      // finalize a streamed message once the response completes.
+      patchMessage: (id, patch) =>
+        set((state) => ({
+          messages: state.messages.map((m) =>
+            m.id === id ? { ...m, ...patch } : m
+          ),
         })),
 
       setThinking: (thinking) => set({ isThinking: thinking }),
@@ -76,6 +92,8 @@ export function useChatSafe() {
   const messages = useChatStoreBase((state) => state.messages);
   const isThinking = useChatStoreBase((state) => state.isThinking);
   const addMessage = useChatStoreBase((state) => state.addMessage);
+  const appendDelta = useChatStoreBase((state) => state.appendDelta);
+  const patchMessage = useChatStoreBase((state) => state.patchMessage);
   const setThinking = useChatStoreBase((state) => state.setThinking);
   const clear = useChatStoreBase((state) => state.clear);
   const removeMessage = useChatStoreBase((state) => state.removeMessage);
@@ -84,6 +102,8 @@ export function useChatSafe() {
     messages,
     isThinking,
     addMessage,
+    appendDelta,
+    patchMessage,
     setThinking,
     clear,
     removeMessage,

@@ -14,7 +14,7 @@ const WEEKDAYS = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
 
 const RATING_COLORS = {
   very_auspicious: "bg-green-700 text-white border-green-800",
-  auspicious: "bg-green-500 text-white border-green-600",
+  auspicious: "bg-green-600 text-white border-green-700",
   neutral: "bg-gray-400 text-white border-gray-500",
   inauspicious: "bg-orange-500 text-white border-orange-600",
   very_inauspicious: "bg-red-600 text-white border-red-700"
@@ -48,9 +48,14 @@ export function CalendarGrid({ days, selectedDay, onDaySelect }: CalendarGridPro
                 "flex flex-col items-start justify-between",
                 isPadding
                   ? "bg-muted/30 border-muted text-muted-foreground cursor-not-allowed"
-                  : "bg-background border-border hover:border-primary/50 cursor-pointer",
-                isSelected && "border-primary ring-2 ring-primary/20"
+                  : "bg-card border-border hover:border-jade/50 cursor-pointer",
+                isSelected && "border-jade ring-2 ring-jade/20"
               )}
+              aria-label={
+                isPadding
+                  ? "ไม่มีข้อมูล"
+                  : `${calendarDay.date.getDate()} ${calendarDay.info?.dayOfficer.nameTh} คะแนน ${calendarDay.info?.powerScore}`
+              }
             >
               {/* Day number and today indicator */}
               <div className="flex items-center justify-between w-full">

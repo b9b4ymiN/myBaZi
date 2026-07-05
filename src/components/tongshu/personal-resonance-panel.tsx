@@ -14,23 +14,23 @@ interface PersonalResonancePanelProps {
 const RATING_BADGES = {
   very_good: {
     label: "เข้ากันมาก",
-    className: "bg-green-700 text-white hover:bg-green-800",
+    className: "bg-green-700 text-white hover:bg-green-800 border-green-800",
   },
   good: {
     label: "เข้ากันดี",
-    className: "bg-green-500 text-white hover:bg-green-600",
+    className: "bg-green-600 text-white hover:bg-green-700 border-green-700",
   },
   neutral: {
     label: "ปานกลาง",
-    className: "bg-gray-400 text-white hover:bg-gray-500",
+    className: "bg-gray-400 text-white hover:bg-gray-500 border-gray-500",
   },
   challenging: {
     label: "ท้าทาย",
-    className: "bg-orange-500 text-white hover:bg-orange-600",
+    className: "bg-orange-500 text-white hover:bg-orange-600 border-orange-600",
   },
   very_challenging: {
     label: "ท้าทายมาก",
-    className: "bg-red-600 text-white hover:bg-red-700",
+    className: "bg-red-600 text-white hover:bg-red-700 border-red-700",
   },
 };
 

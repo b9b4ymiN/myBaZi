@@ -20,12 +20,12 @@ export function TopBar() {
         )}
       >
         <Image
-          src="/assets/brand/ornament-cloud-divider.png"
+          src="/assets/brand/logo.png"
           alt=""
           aria-hidden="true"
-          width={37}
-          height={20}
-          className="h-5 w-[37px]"
+          width={32}
+          height={32}
+          className="h-8 w-8 object-contain"
         />
         myBaZi
       </Link>

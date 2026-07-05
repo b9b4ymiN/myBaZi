@@ -1,27 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { CalendarDays, ShieldCheck, Sparkles, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useProfiles } from "@/lib/stores/use-hydrated";
+import { useProfiles, useActiveProfileSafe } from "@/lib/stores/use-hydrated";
+import { HomeHub } from "@/components/home/home-hub";
 
 export default function Home() {
-  const router = useRouter();
-  const { profiles, activeProfileId, isHydrated } = useProfiles();
-  const hasActiveProfile = profiles.some((profile) => profile.id === activeProfileId);
+  const { isHydrated } = useProfiles();
+  const activeProfile = useActiveProfileSafe();
 
-  useEffect(() => {
-    if (isHydrated && hasActiveProfile) {
-      router.replace("/bazi");
-    }
-  }, [hasActiveProfile, isHydrated, router]);
-
-  if (!isHydrated || hasActiveProfile) {
+  // Skeleton during hydration or while computing active profile
+  if (!isHydrated || (activeProfile === null && isHydrated)) {
     return (
       <main className="min-h-[calc(100vh-3.5rem)] px-4 py-8">
         <div className="mx-auto max-w-5xl space-y-6">
@@ -34,6 +27,11 @@ export default function Home() {
         </div>
       </main>
     );
+  }
+
+  // Hub when user has active profile
+  if (activeProfile !== null) {
+    return <HomeHub profile={activeProfile} />;
   }
 
   return (
@@ -103,7 +101,7 @@ export default function Home() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Image
-                  src="/assets/brand/mascot-profile.png"
+                  src="/assets/brand/logo.png"
                   alt=""
                   aria-hidden="true"
                   width={58}

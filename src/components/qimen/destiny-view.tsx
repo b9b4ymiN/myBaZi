@@ -81,7 +81,7 @@ export function DestinyView({ profile, chart }: DestinyViewProps) {
 
         {/* Destiny Palace */}
         {destinyPalace ? (
-          <div className="p-4 rounded-lg bg-primary/10 border border-primary/20 space-y-2">
+          <div className="p-4 rounded-lg bg-jade/10 border border-jade/40 space-y-2">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium">Destiny Palace (ปราสาทชะตา)</p>
@@ -89,7 +89,7 @@ export function DestinyView({ profile, chart }: DestinyViewProps) {
                   Palace ที่天盘 (เส้นท้องฟ้า) ตรงกับ Day Master ของคุณ
                 </p>
               </div>
-              <Badge className="bg-primary text-primary-foreground">
+              <Badge className="bg-jade text-primary-foreground">
                 Palace {destinyPalace.palaceNumber}
               </Badge>
             </div>

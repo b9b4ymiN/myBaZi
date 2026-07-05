@@ -1,7 +1,7 @@
 # myBaZi PWA UI Master Plan
 
 วันที่จัดทำ: 2026-07-05
-สถานะ: In progress — Phase 2 foundation implemented, route visual QA pending
+สถานะ: Phase 3-5 (PWA UI Rebuild) implementation done — 3 requirements met, full validation green. Visual screenshot QA deferred (env libnspr4 blocker — needs user to `sudo npx playwright install chrome`)
 Visual north star pack:
 - `docs/assets/mybazi-pwa-reference-v1.png` — original combined PWA mockup
 - `docs/assets/mybazi-mobile-dashboard-reference-v1.png` — mobile screen target
@@ -718,6 +718,22 @@ Validation evidence:
 - Asset reference check after QA correction: `rg` ไม่พบ `.svg` asset reference หรือ `image/svg+xml` ค้างใน `src`, `public`, `docs`
 - Public asset check after QA correction: `public/assets/brand/` และ `public/assets/pwa/` เหลือ production PNG assets เท่านั้น
 - Phase 1.3 QA correction + Phase 2.3 code validation: `npm run typecheck && npm run lint && npm run build` pass, with same 2 lint warnings and no errors
+
+### 2026-07-05 / Phase 3-5 (PWA UI Rebuild — execution rounds A/B/C)
+
+Execution model: loop engineering, one task at a time, swarm agents for independent UI builds + verify DOD myself (files real + typecheck/lint/build + engine regression + tests). User scope decisions: +motion +streaming, no service worker, home = BOTH `/` hub and `/bazi` narrative, 3 requirements first.
+
+- **Task A0 (foundation):** install `react-markdown` `remark-gfm` `rehype-sanitize` `motion`; create `src/components/ui/markdown.tsx` (MarkdownRenderer + sanitize + code-copy) and `src/components/ui/motion.tsx` (PageReveal/SectionReveal/FadeIn, reduced-motion safe). Tests: `markdown:test` (render + XSS sanitize). PASS.
+- **Task A1 (Req #2 — Tianji markdown + streaming):** `streamChatCompletion` (SSE parser) + `askTianjiStream` + chat-store `appendDelta`/`patchMessage` (addMessage now returns id); token-by-token UI w/ 60ms throttle; stop/copy/regenerate actions; non-stream fallback; rebrand purple→jade/gold; `100dvh` keyboard-safe height. Tests: `stream:test` (3 cases incl server-error throws), `ai:hallucination`. PASS.
+- **Task A2 (Req #3 — home hub + BaZi narrative):** NEW `src/lib/bazi/narrative.ts` (pure builder, Zero Hallucination — derives from engine + authored archetype library, probabilistic framing) + `InsightNarrative` component wired as `/bazi` SECTION 2 ("สิ่งที่คุณอยากรู้": personality/strengths/cautions/career/balance/luck); ArchetypeCard removed (subsumed). Home `/` rewritten: 3-state (skeleton/hub/welcome) — hub shows greeting + day master + current luck pillar + useful god + narrative preview + 4 module shortcuts. Tests: `narrative:test` (derivation + no undefined/NaN + Zero Hallucination), `bazi:test` 21/21. PASS.
+- **Task A3 (Req #1 — mobile sweep):** ThemeToggle 36→44px; AppShell `pb-24 lg:pb-0` mobile bottom-nav clearance (all routes); NEW `src/app/error.tsx` + `not-found.tsx` (branded). Screenshot QA gate DEFERRED — env missing libnspr4 (chromium won't launch), user can't sudo; closed A3 on code-level verify.
+- **Task B (polish + asset integration, user-emphasized):** swarm 5 agents (home/tongshu/qimen/bazi/profiles) wired ALL previously-unused brand assets — `tool-{calendar,compass-qimen,tianji-star}` in route headers/shortcuts, `element-{wood,fire,earth,metal,water}` in element/useful-god/day-master cards (via NEW `src/components/bazi/element-asset.ts` helper), `man.png`/`woman.png` gendered avatars in profiles, `logo.png` in app identity (sidebar + top-bar + greeting + profiles/settings headers), `mascot-rabbit` in TongShu empty state, `ornament-cloud-divider` separators. Off-brand colors purged (purple in tianji, yellow-600/emerald-950 in profiles → jade/gold tokens). QiMen palace badges yellow/orange→jade/gold; overflow-safe cells. TongShu/QiMen loading skeletons + ARIA labels. Motion: `PageReveal` on home hub. I verified independently + fixed Profiles off-brand frame + app-shell logo myself.
+- **Task C (final verification):** full suite green — `engine:validate` 18/18, `bazi:test` 21/21, `bazi:tst` (TST critical), `bazi:luck`, `tongshu:test`, `qimen:test`, `ai:hallucination`, `markdown:test`, `stream:test`, `narrative:test`, `typecheck`, `lint` (0 errors, 1 baseline warning), `build` (all routes static). Security: api_key only in Authorization header (never logged), rehype-sanitize on all AI markdown, no service worker (no cache risk per user choice).
+
+Known gaps / not done:
+- Visual screenshot QA not run (env blocker). Layout verified via code review + build + engine regression only.
+- Route-level motion pass minimal (only home hub has PageReveal; /bazi /tongshu /qimen could add it but deferred to avoid re-touching stabilized agent files without visual verification).
+- Archetype library has some pre-existing Thai text corruptions (e.g. "มังสวิกะก", "เบยอาจาระ") — surfacing now via narrative; content-quality fix is a separate authoring task, out of scope.
 
 ## Security notes
 

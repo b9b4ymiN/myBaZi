@@ -9,10 +9,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ElementBadge } from "@/components/bazi/element-badge";
+import { elementAssetPath } from "./element-asset";
 import { AlertCircle, CheckCircle2, Minus } from "lucide-react";
 import type { ElementComposition } from "@/types/bazi-elements";
-import { ELEMENT_THAI } from "@/lib/bazi/types";
+import { ELEMENT_THAI, type ElementName } from "@/lib/bazi/types";
 import { ELEMENT_LEVEL_THAI, BALANCE_STATUS_THAI } from "@/types/bazi-elements";
+import Image from "next/image";
 
 interface ElementCompositionViewProps {
   elements: ElementComposition;
@@ -51,6 +53,16 @@ function ElementBar({
       {/* Label + Stats */}
       <div className="flex items-center justify-between text-sm">
         <div className="flex items-center gap-2">
+          <div className="relative h-6 w-6 flex-shrink-0">
+            <Image
+              src={elementAssetPath(element as ElementName)}
+              alt=""
+              aria-hidden="true"
+              fill
+              className="object-contain"
+              sizes="24px"
+            />
+          </div>
           <span className="text-lg">{element}</span>
           <span className="font-medium">{thaiName}</span>
           <Badge variant="outline" className="text-xs">

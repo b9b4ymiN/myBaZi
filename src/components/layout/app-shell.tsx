@@ -17,7 +17,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Main content */}
         <main className="flex-1 lg:ml-60">
-          <div className="min-h-[calc(100vh-4rem)]">
+          {/* pb-24 clears the mobile bottom nav (h-20 + safe area); lg:pb-0 removes it on desktop */}
+          <div className="min-h-[calc(100vh-4rem)] pb-24 lg:pb-0">
             {children}
           </div>
         </main>

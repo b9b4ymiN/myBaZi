@@ -27,12 +27,12 @@ export function Sidebar() {
       {/* Logo */}
       <div className="relative flex h-16 items-center gap-3 border-b border-sidebar-border px-5">
         <Image
-          src="/assets/pwa/app-icon-512.png"
+          src="/assets/brand/logo.png"
           alt=""
           aria-hidden="true"
-          width={38}
-          height={38}
-          className="h-10 w-10 rounded-2xl"
+          width={40}
+          height={40}
+          className="h-10 w-10 rounded-2xl object-contain"
         />
         <Link href="/" className="font-serif text-3xl font-bold tracking-tight text-jade">
           myBaZi

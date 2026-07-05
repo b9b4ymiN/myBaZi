@@ -15,10 +15,11 @@ import { StarsView } from "@/components/bazi/stars-view";
 import { LuckTimelineView } from "@/components/bazi/luck-timeline";
 import { ElementCompositionView } from "@/components/bazi/element-composition-view";
 import { DestinyHero } from "@/components/bazi/destiny-hero";
-import { ArchetypeCard } from "@/components/bazi/archetype-card";
+import { InsightNarrative } from "@/components/bazi/insight-narrative";
 import { useActiveProfileSafe } from "@/lib/stores/use-hydrated";
 import { useBaZiAnalysis } from "@/lib/bazi/use-bazi-analysis";
 import { getArchetype } from "@/lib/bazi/archetypes";
+import { buildBaZiNarrative } from "@/lib/bazi/narrative";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -72,6 +73,13 @@ export default function BaziPage() {
     yinYang: chart.dayMaster.yinYang ? "yin" : "yang",
   });
 
+  // Build narrative insight flow
+  const narrative = buildBaZiNarrative({
+    profileName: activeProfile.name,
+    analysis,
+    archetype,
+  });
+
   return (
     <PageFrame>
       <RouteHeader
@@ -96,9 +104,9 @@ export default function BaziPage() {
         />
       </PageSection>
 
-      {/* SECTION 2: Archetype - ลักษณะนิสัยลึก */}
-      <PageSection>
-        <ArchetypeCard archetype={archetype} dayMasterName={strength.dayMaster.name} />
+      {/* SECTION 2: Insight Narrative - สิ่งที่คุณอยากรู้ */}
+      <PageSection title="สิ่งที่คุณอยากรู้">
+        <InsightNarrative narrative={narrative} />
       </PageSection>
 
       {/* SECTION 3: Natal Chart - แผนผัง 4 เสา */}

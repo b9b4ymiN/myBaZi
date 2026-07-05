@@ -18,7 +18,7 @@ export function ChartSummary({ chart, chartType }: ChartSummaryProps) {
 
   return (
     <div className="space-y-4">
-      <Card>
+      <Card className="surface-paper">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             สรุปแผนผัง (Chart Summary)

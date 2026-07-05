@@ -82,14 +82,14 @@ function PalaceCell({ palace, compact }: PalaceCellProps) {
   return (
     <Card
       className={cn(
-        "relative p-3 space-y-2 transition-all",
-        palace.isZhiFu && "border-2 border-yellow-500 bg-yellow-50 dark:bg-yellow-950",
+        "relative p-3 space-y-2 transition-all min-w-0 overflow-hidden",
+        palace.isZhiFu && "border-2 border-jade/40 bg-jade/10 dark:bg-jade/5",
         !compact && "min-h-[140px]"
       )}
     >
       {/* 值符 badge */}
       {palace.isZhiFu && (
-        <Badge className="absolute top-2 right-2 bg-yellow-500 hover:bg-yellow-600">
+        <Badge className="absolute top-2 right-2 bg-jade/15 border border-jade/40 text-jade hover:bg-jade/25">
           值符
         </Badge>
       )}
@@ -98,7 +98,7 @@ function PalaceCell({ palace, compact }: PalaceCellProps) {
       {palace.isZhiShi && (
         <Badge
           className={cn(
-            "absolute top-2 right-2 bg-orange-500 hover:bg-orange-600",
+            "absolute top-2 right-2 bg-gold/20 border border-gold/50 text-gold hover:bg-gold/30",
             palace.isZhiFu && "top-8"
           )}
         >
@@ -115,7 +115,7 @@ function PalaceCell({ palace, compact }: PalaceCellProps) {
 
         {/* Stems */}
         <div className="space-y-0.5">
-          <div className="text-xs text-muted-foreground">
+          <div className="text-[0.8rem] text-muted-foreground">
             地: {palace.earthStem || (isZhongGong ? "寄" : "-")}
           </div>
           <div className="text-sm font-bold">
@@ -124,17 +124,17 @@ function PalaceCell({ palace, compact }: PalaceCellProps) {
         </div>
 
         {/* 九星 */}
-        <div className="text-xs">
+        <div className="text-[0.8rem]">
           <span className="text-muted-foreground">星:</span> {palace.star}
         </div>
 
         {/* 八门 */}
-        <div className="text-xs">
+        <div className="text-[0.8rem]">
           <span className="text-muted-foreground">门:</span> {palace.door}
         </div>
 
         {/* 八神 */}
-        <div className="text-xs">
+        <div className="text-[0.8rem]">
           <span className="text-muted-foreground">神:</span> {palace.deity}
         </div>
 

@@ -11,7 +11,7 @@
 import type { Profile } from "@/types/profile";
 import type { AiSettings } from "@/types/ai-settings";
 import type { ChatMessage } from "./client";
-import { chatCompletion } from "./client";
+import { chatCompletion, streamChatCompletion } from "./client";
 import { TIANJI_SYSTEM_PROMPT } from "./system-prompt";
 import { buildBaZiContext } from "./bazi-context";
 import { detectIntent, type DetectedIntent } from "./intent-detector";
@@ -136,4 +136,88 @@ export async function askTianji(req: TianjiRequest): Promise<TianjiResponse> {
       intent,
     };
   }
+}
+
+export interface TianjiStreamHandlers {
+  onDelta: (delta: string) => void;
+}
+
+/**
+ * Streaming variant of askTianji. Builds the same 3-layer context, then
+ * streams tokens via `onDelta`. Returns the final TianjiResponse when done.
+ *
+ * Unlike `askTianji`, this THROWS on error (after context build) so the
+ * caller can decide: keep partial content, or fall back to the non-stream
+ * `askTianji`. Validation failures (no profile / disabled) still return a
+ * benign reply instead of throwing.
+ */
+export async function askTianjiStream(
+  req: TianjiRequest,
+  handlers: TianjiStreamHandlers,
+  signal?: AbortSignal
+): Promise<TianjiResponse> {
+  const { profile, userMessage, settings, history = [], currentYear } = req;
+  const { onDelta } = handlers;
+
+  if (!profile) {
+    return {
+      reply: "กรุณาเลือก profile ก่อนค่ะ/ครับ",
+      layersUsed: { natal: false, dynamic: false },
+      intent: { intent: "general" },
+    };
+  }
+
+  if (!settings.enabled) {
+    return {
+      reply: "กรุณาตั้งค่า AI ในหน้า Settings ก่อนค่ะ/ครับ",
+      layersUsed: { natal: false, dynamic: false },
+      intent: { intent: "general" },
+    };
+  }
+
+  // ===== Layer 0-2: identical to askTianji =====
+  const intent = detectIntent(userMessage, currentYear);
+  const baZiContext = buildBaZiContext(profile, currentYear);
+
+  let dynamicContextText = "";
+  let dynamicComputed = false;
+
+  if (intent.intent !== "natal" && intent.intent !== "general") {
+    const dynamicResult = await buildDynamicContext(profile, intent, currentYear);
+    dynamicContextText = dynamicResult.text;
+    dynamicComputed = dynamicResult.computed;
+  }
+
+  const systemMessages: ChatMessage[] = [
+    { role: "system", content: TIANJI_SYSTEM_PROMPT },
+    {
+      role: "system",
+      content: `## BaZi Natal Context (ดวงประจำตัว)\n\n${baZiContext.text}`,
+    },
+  ];
+
+  if (dynamicContextText && dynamicComputed) {
+    systemMessages.push({
+      role: "system",
+      content: `## Dynamic Context (ข้อมูลวัน/ปีเป้าหมาย)\n\n${dynamicContextText}`,
+    });
+  }
+
+  const messages: ChatMessage[] = [
+    ...systemMessages,
+    ...history,
+    { role: "user", content: userMessage },
+  ];
+
+  // Throws on stream error — caller handles fallback.
+  const reply = await streamChatCompletion(
+    { messages, settings, signal },
+    { onDelta }
+  );
+
+  return {
+    reply,
+    layersUsed: { natal: true, dynamic: dynamicComputed },
+    intent,
+  };
 }

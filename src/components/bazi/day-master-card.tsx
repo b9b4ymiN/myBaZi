@@ -7,7 +7,9 @@
 
 import type { StrengthAnalysis } from "@/types/bazi-strength";
 import { ElementBadge } from "./element-badge";
+import { elementAssetPath } from "./element-asset";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 
 interface DayMasterCardProps {
   strength: StrengthAnalysis;
@@ -71,11 +73,23 @@ export function DayMasterCard({ strength }: DayMasterCardProps) {
           <ElementBadge element={dayMaster.element} size="lg" />
         </div>
 
-        {/* Emoji + บุคลิก */}
+        {/* Brand asset + Emoji + บุคลิก */}
         <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg border border-border">
-          <span className="text-4xl">{archetype.emoji}</span>
+          <div className="relative h-16 w-16 flex-shrink-0">
+            <Image
+              src={elementAssetPath(dayMaster.element)}
+              alt=""
+              aria-hidden="true"
+              fill
+              className="object-contain"
+              sizes="64px"
+            />
+          </div>
           <div className="flex-1 space-y-1">
-            <div className="font-medium text-sm">{archetype.traits}</div>
+            <div className="font-medium text-sm flex items-center gap-2">
+              {archetype.traits}
+              <span className="text-2xl" aria-hidden="true">{archetype.emoji}</span>
+            </div>
             <div className="text-sm text-muted-foreground">{archetype.description}</div>
           </div>
         </div>

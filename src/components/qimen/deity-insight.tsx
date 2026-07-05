@@ -88,7 +88,7 @@ export function DeityInsight({ chart }: DeityInsightProps) {
             return (
               <div
                 key={deity}
-                className="p-3 rounded-lg border bg-card space-y-2"
+                className="p-3 rounded-lg border border-gold/40 bg-card space-y-2"
               >
                 {/* Header */}
                 <div className="flex items-center justify-between">

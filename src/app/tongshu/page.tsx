@@ -12,9 +12,11 @@ import { useBaZiAnalysis } from "@/lib/bazi/use-bazi-analysis";
 import { useActiveProfileSafe } from "@/lib/stores/use-hydrated";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import type { TongShuDayInfo } from "@/types/tongshu";
 import { PageFrame, PageSection, RouteHeader } from "@/components/layout/page-patterns";
+import Image from "next/image";
 
 const THAI_MONTHS = [
   "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
@@ -94,10 +96,21 @@ export default function TongShuPage() {
 
   return (
     <PageFrame maxWidth="wide">
-      <RouteHeader
-        eyebrow="通勝"
-        title="ปฏิทินมงคล"
-        description="เลือกวันดี ชั่วโมงเหมาะสม และดู resonance กับโปรไฟล์ที่เลือก"
+      <div className="flex items-center gap-4 mb-6">
+        <div className="relative h-12 w-12 flex-shrink-0">
+          <Image
+            src="/assets/brand/tool-calendar.png"
+            alt="TongShu icon"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+        <div className="flex-1">
+          <RouteHeader
+            eyebrow="通勝"
+            title="ปฏิทินมงคล"
+            description="เลือกวันดี ชั่วโมงเหมาะสม และดู resonance กับโปรไฟล์ที่เลือก"
         meta={
           <span className="text-sm font-medium text-element-earth">
             {thaiMonthName} {thaiYear}
@@ -105,48 +118,89 @@ export default function TongShuPage() {
         }
         actions={
           <>
-            <Button variant="outline" size="icon" onClick={prevMonth}>
+            <Button variant="outline" size="icon" onClick={prevMonth} aria-label="เดือนก่อนหน้า">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={nextMonth}>
+            <Button variant="outline" size="icon" onClick={nextMonth} aria-label="เดือนถัดไป">
               <ChevronRight className="h-4 w-4" />
             </Button>
             <Button variant="outline" onClick={goToday}>
-              <CalendarDays className="mr-2 h-4 w-4" />
+              <CalendarDays className="mr-2 h-4 w-4" aria-hidden="true" />
               วันนี้
             </Button>
           </>
         }
       />
+        </div>
+      </div>
 
       {/* Main content - responsive layout */}
       <PageSection title={`${thaiMonthName} ${thaiYear}`} description="แตะวันที่เพื่อดูรายละเอียดเทพประจำวัน ฤกษ์ยาม และคะแนนส่วนตัว">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-          {/* Calendar grid - 60% on desktop */}
-          <div className="lg:col-span-3">
-            <Card>
-              <CardContent className="p-4">
-                <CalendarGrid
-                  days={days}
-                  selectedDay={selectedDay}
-                  onDaySelect={handleDaySelect}
-                />
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Day detail panel - 40% on desktop */}
-          <div className="lg:col-span-2">
-            <div className="sticky top-4">
-              <DayDetailPanel
-                info={selectedDayInfo}
-                hours={hours}
-                personalResonance={personalResonance}
-                scoredHours={scoredHours}
-              />
+        {days.length === 0 ? (
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+            <div className="lg:col-span-3">
+              <Card>
+                <CardContent className="p-4 space-y-4">
+                  <div className="space-y-2">
+                    <Skeleton className="h-8 w-full" />
+                    <div className="grid grid-cols-7 gap-2">
+                      {Array.from({ length: 7 }).map((_, i) => (
+                        <Skeleton key={i} className="h-10 w-full" />
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-7 gap-2">
+                      {Array.from({ length: 35 }).map((_, i) => (
+                        <Skeleton key={i} className="h-24 w-full" />
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="lg:col-span-2">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                    <div className="pt-4 space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+            {/* Calendar grid - 60% on desktop */}
+            <div className="lg:col-span-3">
+              <Card>
+                <CardContent className="p-4">
+                  <CalendarGrid
+                    days={days}
+                    selectedDay={selectedDay}
+                    onDaySelect={handleDaySelect}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Day detail panel - 40% on desktop */}
+            <div className="lg:col-span-2">
+              <div className="sticky top-4">
+                <DayDetailPanel
+                  info={selectedDayInfo}
+                  hours={hours}
+                  personalResonance={personalResonance}
+                  scoredHours={scoredHours}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </PageSection>
 
       {/* Reference Library - full width below */}

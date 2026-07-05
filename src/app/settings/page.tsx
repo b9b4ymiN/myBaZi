@@ -1,13 +1,26 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AiSettingsForm } from "@/components/ai/ai-settings-form";
+import Image from "next/image";
 
 export default function SettingsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto mb-6">
+        <div className="flex items-center gap-3">
+          <Image
+            src="/assets/brand/logo.png"
+            alt="myBaZi logo"
+            width={32}
+            height={32}
+            className="h-8 w-8"
+          />
+          <h1 className="text-2xl font-bold">ตั้งค่า (設定)</h1>
+        </div>
+      </div>
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle className="text-2xl">ตั้งค่า (設定)</CardTitle>
-          <CardDescription>การตั้งค่าแอปพลิเคชัน</CardDescription>
+          <CardTitle className="text-xl">การตั้งค่าแอปพลิเคชัน</CardTitle>
+          <CardDescription>ตั้งค่า myBaZi ตามความต้องการของคุณ</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* AI Settings Section */}

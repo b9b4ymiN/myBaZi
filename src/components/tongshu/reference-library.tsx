@@ -39,9 +39,9 @@ export function ReferenceLibrary({
                     className={cn(
                       "p-3 rounded-lg border",
                       info.auspicious
-                        ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800"
+                        ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800 surface-paper"
                         : "bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800",
-                      selectedDayOfficer === name && "ring-2 ring-blue-500"
+                      selectedDayOfficer === name && "ring-2 ring-jade"
                     )}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -59,7 +59,7 @@ export function ReferenceLibrary({
                         <div className="text-xs text-muted-foreground mt-1">{info.meaning}</div>
                       </div>
                       {selectedDayOfficer === name && (
-                        <Badge className="bg-blue-500 text-white">วันนี้</Badge>
+                        <Badge className="bg-jade text-white">วันนี้</Badge>
                       )}
                     </div>
                   </div>
@@ -79,9 +79,9 @@ export function ReferenceLibrary({
                     className={cn(
                       "p-3 rounded-lg border",
                       info.auspicious
-                        ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800"
+                        ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800 surface-paper"
                         : "bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800",
-                      selectedYellowBlackStar === name && "ring-2 ring-blue-500"
+                      selectedYellowBlackStar === name && "ring-2 ring-jade"
                     )}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -98,7 +98,7 @@ export function ReferenceLibrary({
                         <div className="text-sm mt-1">{info.nameTh}</div>
                       </div>
                       {selectedYellowBlackStar === name && (
-                        <Badge className="bg-blue-500 text-white">วันนี้</Badge>
+                        <Badge className="bg-jade text-white">วันนี้</Badge>
                       )}
                     </div>
                   </div>
@@ -118,9 +118,9 @@ export function ReferenceLibrary({
                     className={cn(
                       "p-3 rounded-lg border",
                       info.auspicious
-                        ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800"
+                        ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800 surface-paper"
                         : "bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800",
-                      selectedConstellation28 === name && "ring-2 ring-blue-500"
+                      selectedConstellation28 === name && "ring-2 ring-jade"
                     )}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -137,7 +137,7 @@ export function ReferenceLibrary({
                         <div className="text-sm mt-1">{info.nameTh}</div>
                       </div>
                       {selectedConstellation28 === name && (
-                        <Badge className="bg-blue-500 text-white">วันนี้</Badge>
+                        <Badge className="bg-jade text-white">วันนี้</Badge>
                       )}
                     </div>
                   </div>

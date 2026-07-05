@@ -18,7 +18,7 @@ const RECOMMENDATION_BADGES = {
   },
   good: {
     label: "ดี",
-    className: "bg-green-500 text-white hover:bg-green-600 border-green-600",
+    className: "bg-green-600 text-white hover:bg-green-700 border-green-700",
   },
   neutral: {
     label: "ปานกลาง",
@@ -66,8 +66,8 @@ function HourCard({ hour }: { hour: ScoredHour }) {
       className={cn(
         "p-3 rounded-lg border space-y-2 transition-colors",
         isBest
-          ? "bg-green-50 border-green-300 dark:bg-green-950 dark:border-green-800"
-          : "bg-background border-border"
+          ? "bg-green-50 border-green-300 dark:bg-green-950 dark:border-green-800 surface-paper"
+          : "bg-card border-border"
       )}
     >
       {/* Header: Hour Name + Time Range */}

@@ -17,7 +17,7 @@ interface SuggestionChipsProps {
 
 export function SuggestionChips({ onPick }: SuggestionChipsProps) {
   return (
-    <Card className="p-4 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 border-purple-100 dark:border-purple-900">
+    <Card className="p-4 bg-gradient-to-br from-gold/10 to-jade/10 border-gold/40">
       <div className="space-y-3">
         <p className="text-sm text-muted-foreground font-medium">ลองถาม天机ดู:</p>
         <div className="flex flex-wrap gap-2">
@@ -27,7 +27,7 @@ export function SuggestionChips({ onPick }: SuggestionChipsProps) {
               variant="outline"
               size="sm"
               onClick={() => onPick(suggestion)}
-              className="text-xs h-7 px-3 border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/30"
+              className="text-xs h-8 px-3 border-jade/30 hover:bg-jade/10 hover:text-jade"
             >
               {suggestion}
             </Button>

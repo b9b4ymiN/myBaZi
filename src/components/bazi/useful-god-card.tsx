@@ -7,10 +7,12 @@
 
 import type { UsefulGodAnalysis } from "@/types/bazi-useful-god";
 import { ElementBadge } from "./element-badge";
+import { elementAssetPath } from "./element-asset";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 
 interface UsefulGodCardProps {
   usefulGod: UsefulGodAnalysis;
@@ -51,11 +53,24 @@ export function UsefulGodCard({ usefulGod }: UsefulGodCardProps) {
         {/* Primary Element (用神) */}
         <div className="space-y-2">
           <div className="text-sm font-medium">ธาตุหลักที่เป็นประโยชน์ (用神)</div>
-          <div className="flex flex-wrap items-center gap-2">
-            <ElementBadge element={primaryElement} size="lg" />
-            <Badge variant="outline" className="text-sm">
-              {RELATIONSHIP_SHORT_THAI[primaryRelationship]}
-            </Badge>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <ElementBadge element={primaryElement} size="lg" />
+              <Badge variant="outline" className="text-sm">
+                {RELATIONSHIP_SHORT_THAI[primaryRelationship]}
+              </Badge>
+            </div>
+            {/* Brand asset watermark */}
+            <div className="relative h-20 w-20 flex-shrink-0 ml-auto">
+              <Image
+                src={elementAssetPath(primaryElement)}
+                alt=""
+                aria-hidden="true"
+                fill
+                className="object-contain opacity-30"
+                sizes="80px"
+              />
+            </div>
           </div>
           <div className="text-xs text-muted-foreground">{labelCn}</div>
         </div>

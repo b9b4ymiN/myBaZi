@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { PersonalResonancePanel } from "./personal-resonance-panel";
 import { HoursView } from "./hours-view";
+import Image from "next/image";
 
 interface DayDetailPanelProps {
   info: TongShuDayInfo | null;
@@ -17,18 +18,26 @@ interface DayDetailPanelProps {
 }
 
 const RATING_BADGES = {
-  very_auspicious: { label: "มงคลมาก", className: "bg-green-700 text-white hover:bg-green-800" },
-  auspicious: { label: "มงคล", className: "bg-green-500 text-white hover:bg-green-600" },
-  neutral: { label: "ปานกลาง", className: "bg-gray-400 text-white hover:bg-gray-500" },
-  inauspicious: { label: "อัปมงคล", className: "bg-orange-500 text-white hover:bg-orange-600" },
-  very_inauspicious: { label: "อัปมงคลมาก", className: "bg-red-600 text-white hover:bg-red-700" }
+  very_auspicious: { label: "มงคลมาก", className: "bg-green-700 text-white hover:bg-green-800 border-green-800" },
+  auspicious: { label: "มงคล", className: "bg-green-600 text-white hover:bg-green-700 border-green-700" },
+  neutral: { label: "ปานกลาง", className: "bg-gray-400 text-white hover:bg-gray-500 border-gray-500" },
+  inauspicious: { label: "อัปมงคล", className: "bg-orange-500 text-white hover:bg-orange-600 border-orange-600" },
+  very_inauspicious: { label: "อัปมงคลมาก", className: "bg-red-600 text-white hover:bg-red-700 border-red-700" }
 };
 
 export function DayDetailPanel({ info, hours, personalResonance, scoredHours }: DayDetailPanelProps) {
   if (!info) {
     return (
       <Card className="h-full">
-        <CardContent className="flex items-center justify-center h-full min-h-[400px]">
+        <CardContent className="flex flex-col items-center justify-center h-full min-h-[400px] gap-4">
+          <div className="relative h-24 w-24">
+            <Image
+              src="/assets/brand/mascot-rabbit-tongshu.png"
+              alt="กระต่ายนำโชค"
+              fill
+              className="object-contain"
+            />
+          </div>
           <p className="text-muted-foreground text-center">
             เลือกวันจากปฏิทิน<br/>เพื่อดูรายละเอียด
           </p>
@@ -120,9 +129,9 @@ export function DayDetailPanel({ info, hours, personalResonance, scoredHours }: 
           {/* XKDG Information */}
           <div className="space-y-2">
             <h4 className="text-sm font-medium">XKDG (玄空大卦):</h4>
-            <div className="p-3 rounded-lg border bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800">
+            <div className="p-3 rounded-lg border surface-paper border-gold/40">
               <div className="text-xs text-muted-foreground">วันหลัก</div>
-              <div className="font-medium">{info.xkdg.sixtyCycle}</div>
+              <div className="font-medium text-ink">{info.xkdg.sixtyCycle}</div>
               <div className="text-xs text-muted-foreground mt-1">
                 ซำ{info.xkdg.periodGroupName} (Period {info.xkdg.periodGroup})
               </div>
@@ -279,11 +288,11 @@ function InfoCard({
     <div className={cn(
       "p-3 rounded-lg border",
       auspicious
-        ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800"
+        ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800 surface-paper"
         : "bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800"
     )}>
       <div className="text-xs text-muted-foreground mb-1">{title}</div>
-      <div className="font-medium">{nameTh}</div>
+      <div className={cn("font-medium", auspicious && "text-jade")}>{nameTh}</div>
       {meaning && (
         <div className="text-xs text-muted-foreground mt-1">{meaning}</div>
       )}
@@ -298,7 +307,7 @@ function HourBadge({ hour }: { hour: TongShuHour }) {
       className={cn(
         "justify-start text-xs py-2 h-auto",
         hour.auspicious
-          ? "border-green-500 text-green-700 dark:text-green-400"
+          ? "border-green-500 text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950"
           : "border-muted-foreground text-muted-foreground"
       )}
     >

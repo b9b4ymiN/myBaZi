@@ -27,7 +27,7 @@ export function PageFrame({ children, className, maxWidth = "default" }: PageFra
 }
 
 interface RouteHeaderProps {
-  title: string;
+  title: string | ReactNode;
   eyebrow?: string;
   description?: string;
   meta?: ReactNode;
@@ -123,7 +123,7 @@ export function EmptyStatePanel({
   title,
   description,
   children,
-  image = "/assets/brand/mascot-profile.png",
+  image = "/assets/brand/logo.png",
   imageAlt = "",
 }: EmptyStatePanelProps) {
   return (
