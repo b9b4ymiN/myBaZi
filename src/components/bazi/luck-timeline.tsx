@@ -1,0 +1,197 @@
+/**
+ * LuckTimelineView - แสดงเสาชะตาระยะยาว (大运) + ดวงรายปี (流年)
+ * Timeline แนวนอน 8 luck pillars พร้อม highlight pillar ปัจจุบัน
+ */
+
+"use client";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ElementBadge } from "@/components/bazi/element-badge";
+import { Calendar, TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
+import type { LuckAnalysis } from "@/types/bazi-luck";
+
+interface LuckTimelineViewProps {
+  luck: LuckAnalysis;
+}
+
+/**
+ * ชื่อตำแหน่งภาษาไทย
+ */
+const POSITION_LABELS = {
+  forward: "ไปข้างหน้า (順行)",
+  backward: "ย้อนหลัง (逆行)",
+};
+
+/**
+ * แสดง 1 Luck Pillar
+ */
+function LuckPillarBlock({
+  pillar,
+  isCurrent,
+}: {
+  pillar: LuckAnalysis["pillars"][number];
+  isCurrent: boolean;
+}) {
+  return (
+    <div
+      className={`flex-shrink-0 w-32 p-3 rounded-lg border-2 space-y-2 ${
+        isCurrent
+          ? "border-primary bg-primary/5 shadow-md"
+          : "border-border bg-card"
+      }`}
+    >
+      {/* ชื่อ Pillar + ปัจจุบัน badge */}
+      <div className="space-y-1">
+        <div className="flex items-center justify-between">
+          <span className="font-bold text-lg">{pillar.sixtyCycleName}</span>
+          {isCurrent && (
+            <Badge className="text-xs">ปัจจุบัน</Badge>
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          อายุ {pillar.startAge}-{pillar.endAge}
+        </p>
+      </div>
+
+      {/* 10 God + Element Badges */}
+      <div className="space-y-1">
+        {pillar.tenGod && (
+          <Badge variant="outline" className="text-xs w-full justify-center">
+            {pillar.tenGod}
+          </Badge>
+        )}
+        <div className="flex items-center gap-1 justify-center">
+          <ElementBadge
+            element={pillar.stem.element}
+            size="sm"
+            showThai={false}
+          />
+          <span className="text-xs text-muted-foreground">/</span>
+          <ElementBadge
+            element={pillar.branch.element}
+            size="sm"
+            showThai={false}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * LuckTimelineView Component
+ */
+export function LuckTimelineView({ luck }: LuckTimelineViewProps) {
+  const {
+    direction,
+    startAge,
+    pillars,
+    currentAnnual,
+    upcomingTransitions,
+  } = luck;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-xl flex items-center gap-2">
+          <Calendar className="h-5 w-5" />
+          เสาชะตาระยะยาว (大运)
+        </CardTitle>
+        <CardDescription>
+          ชะตา 10 ปีต่อเสา - เริ่มอายุ {startAge} ปี, {direction === "forward" ? "ไปข้างหน้า" : "ย้อนหลัง"}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6">
+          {/* Direction Summary */}
+          <div className="flex items-center gap-2 text-sm">
+            {direction === "forward" ? (
+              <TrendingUp className="h-4 w-4 text-green-600" />
+            ) : (
+              <TrendingDown className="h-4 w-4 text-blue-600" />
+            )}
+            <span className="font-medium">
+              ทิศทาง: {POSITION_LABELS[direction]}
+            </span>
+            <span className="text-muted-foreground">
+              • เริ่มเสาแรกอายุ {startAge}
+            </span>
+          </div>
+
+          {/* Timeline แนวนอน - Desktop */}
+          <div className="hidden md:block">
+            <ScrollArea className="w-full">
+              <div className="flex items-center gap-3 pb-4">
+                {pillars.map((pillar) => (
+                  <LuckPillarBlock
+                    key={pillar.index}
+                    pillar={pillar}
+                    isCurrent={pillar.isCurrent}
+                  />
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+
+          {/* Timeline แนวตั้ง - Mobile */}
+          <div className="md:hidden space-y-3">
+            {pillars.map((pillar) => (
+              <LuckPillarBlock
+                key={pillar.index}
+                pillar={pillar}
+                isCurrent={pillar.isCurrent}
+              />
+            ))}
+          </div>
+
+          {/* Current Annual */}
+          {currentAnnual && (
+            <>
+              <div className="border-t pt-4">
+                <h4 className="font-medium text-sm mb-2 flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4" />
+                  ดวงรายปีปัจจุบัน (流年)
+                </h4>
+                <div className="flex items-center gap-3">
+                  <Badge variant="outline" className="text-sm">
+                    พ.ศ. {currentAnnual.year + 543}
+                  </Badge>
+                  <span className="font-medium">{currentAnnual.sixtyCycleName}</span>
+                  {currentAnnual.tenGod && (
+                    <Badge variant="secondary">{currentAnnual.tenGod}</Badge>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Upcoming Transitions */}
+          {upcomingTransitions.length > 0 && (
+            <div className="border-t pt-4">
+              <h4 className="font-medium text-sm mb-3">
+                เสาเปลี่ยน (Transitions) - 3 ครั้งถัดไป
+              </h4>
+              <div className="space-y-2">
+                {upcomingTransitions.map((transition, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-3 text-sm p-2 rounded bg-muted/50"
+                  >
+                    <Badge variant="outline" className="text-xs">
+                      อีก {transition.yearsAway} ปี
+                    </Badge>
+                    <span className="font-medium">อายุ {transition.age}</span>
+                    <span className="text-muted-foreground">→</span>
+                    <span className="font-medium">{transition.pillar}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
