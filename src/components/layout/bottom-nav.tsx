@@ -2,43 +2,63 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { House } from "lucide-react";
-import { NAV_ITEMS } from "@/config/nav";
+import {
+  House,
+  ScrollText,
+  Calendar,
+  Grid3x3,
+  Sparkles,
+  Users,
+  Settings,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+
+interface MobileNavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+// 7 ช่อง — 4 modules + หน้าแรก + โปรไฟล์ + ตั้งค่า (เข้า settings/profiles จาก mobile ได้)
+const MOBILE_ITEMS: MobileNavItem[] = [
+  { href: "/", label: "หน้าแรก", icon: House },
+  { href: "/bazi", label: "ปาจื้อ", icon: ScrollText },
+  { href: "/tongshu", label: "ปฏิทิน", icon: Calendar },
+  { href: "/qimen", label: "ฉีเหมือน", icon: Grid3x3 },
+  { href: "/tianji", label: "เทียนจี", icon: Sparkles },
+  { href: "/profiles", label: "โปรไฟล์", icon: Users },
+  { href: "/settings", label: "ตั้งค่า", icon: Settings },
+];
 
 export function BottomNav() {
   const pathname = usePathname();
 
-  const isActive = (href: string) => pathname === href;
-  const mobileItems = [
-    { href: "/", label: "หน้าหลัก", labelCn: "หลัก", icon: House },
-    ...NAV_ITEMS,
-  ];
-
   return (
     <nav
-      className="safe-area-inset-bottom fixed bottom-0 left-0 right-0 z-40 flex h-20 items-center justify-around border-t border-border bg-card/94 px-1 shadow-[0_-12px_32px_rgba(76,57,25,0.10)] backdrop-blur lg:hidden"
+      className="safe-area-inset-bottom fixed bottom-0 left-0 right-0 z-40 flex items-stretch justify-around border-t border-border bg-card/94 px-0.5 shadow-[0_-12px_32px_rgba(76,57,25,0.10)] backdrop-blur lg:hidden"
       aria-label="Mobile navigation"
     >
-      {mobileItems.map((item) => {
+      {MOBILE_ITEMS.map((item) => {
         const Icon = item.icon;
-        const active = item.href === "/" ? pathname === "/" : isActive(item.href);
+        const active =
+          item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
         return (
           <Link
             key={item.href}
             href={item.href}
             className={cn(
-              "flex min-h-14 min-w-14 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-[0.68rem] font-medium transition-all",
+              "flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-[0.6rem] font-medium leading-tight transition-all",
               "hover:bg-accent hover:text-accent-foreground",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               active
-                ? "surface-jade shadow-[0_10px_24px_rgba(47,122,104,0.22)]"
-                : "text-muted-foreground"
+                ? "surface-jade shadow-[0_8px_20px_rgba(47,122,104,0.20)]"
+                : "text-muted-foreground",
             )}
             aria-current={active ? "page" : undefined}
           >
-            <Icon className="h-5 w-5" />
-            <span className="max-w-12 truncate">{item.labelCn}</span>
+            <Icon className="h-[18px] w-[18px] shrink-0" />
+            <span className="max-w-full truncate">{item.label}</span>
           </Link>
         );
       })}

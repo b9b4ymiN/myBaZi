@@ -175,9 +175,9 @@ export function ChatWindow({ profile, settings }: ChatWindowProps) {
   const isEmpty = messages.length === 0;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-220px)] min-h-[460px]">
+    <div className="flex flex-col overflow-hidden h-[calc(100dvh-260px)] md:h-[calc(100dvh-220px)] min-h-[440px]">
       {/* Messages area */}
-      <ScrollArea className="flex-1 px-4">
+      <ScrollArea className="min-h-0 flex-1 px-4">
         <div className="max-w-3xl mx-auto py-4 space-y-6">
           {isEmpty ? (
             <div className="flex flex-col items-center justify-center h-full py-12">

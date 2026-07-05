@@ -10,6 +10,7 @@ import { ElementBadge } from "./element-badge";
 import { STEM_PINYIN, BRANCH_PINYIN, STEM_THAI, BRANCH_THAI, ZODIAC_THAI } from "@/lib/bazi/pinyin";
 import { HIDDEN_STEM_TYPE_THAI } from "@/lib/bazi/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface NatalChartProps {
   chart: BaZiChart;
@@ -19,9 +20,19 @@ interface NatalChartProps {
  * แสดง Pillar เดียว (Year/Month/Day/Hour)
  */
 function PillarColumn({ pillar, label }: { pillar: Pillar | null; label: string }) {
+  const isDay = label.startsWith("วัน");
+  const wrapperClass = cn(
+    "min-w-0 p-3 sm:p-4 rounded-lg border",
+    isDay
+      ? "bg-jade/5 border-jade/60 ring-2 ring-jade/25"
+      : pillar
+        ? "bg-card border-border"
+        : "bg-muted/50 border-border",
+  );
+
   if (!pillar) {
     return (
-      <div className="flex-1 min-w-[140px] p-4 bg-muted/50 rounded-lg border border-border">
+      <div className={wrapperClass}>
         <div className="text-center space-y-3">
           <div className="text-sm font-medium text-muted-foreground">{label}</div>
           <div className="text-muted-foreground text-sm">ไม่ทราบเวลา</div>
@@ -33,12 +44,12 @@ function PillarColumn({ pillar, label }: { pillar: Pillar | null; label: string 
   const { stem, branch, sixtyCycleName } = pillar;
 
   return (
-    <div className="flex-1 min-w-[140px] p-4 bg-card rounded-lg border border-border">
-      <div className="space-y-4">
+    <div className={wrapperClass}>
+      <div className="space-y-3 sm:space-y-4">
         {/* Header */}
         <div className="text-center">
-          <div className="text-sm font-medium text-muted-foreground">{label}</div>
-          <div className="text-lg font-bold text-primary">{sixtyCycleName}</div>
+          <div className="text-xs sm:text-sm font-medium text-muted-foreground">{label}</div>
+          <div className="text-base sm:text-lg font-bold text-primary">{sixtyCycleName}</div>
         </div>
 
         {/* Heavenly Stem (天干) */}
@@ -119,8 +130,8 @@ export function NatalChart({ chart }: NatalChartProps) {
         <CardTitle>ปาจื้อ 4 เสา (八字四柱)</CardTitle>
       </CardHeader>
       <CardContent>
-        {/* Desktop: 4 คอลัมน์ | Mobile: scroll แนวนอน */}
-        <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+        {/* Mobile: 2×2 grid (compact, no horizontal scroll) | Desktop: 4 columns */}
+        <div className="grid grid-cols-2 gap-3 md:flex md:flex-nowrap md:gap-3">
           {pillars.map((item, idx) => (
             <PillarColumn key={idx} pillar={item.pillar} label={item.label} />
           ))}

@@ -5,6 +5,8 @@
 
 "use client";
 
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 import { NatalChart } from "@/components/bazi/natal-chart";
 import { DayMasterCard } from "@/components/bazi/day-master-card";
 import { StrengthCard } from "@/components/bazi/strength-card";
@@ -33,6 +35,7 @@ import {
 export default function BaziPage() {
   const activeProfile = useActiveProfileSafe();
   const analysis = useBaZiAnalysis(activeProfile);
+  const [tab, setTab] = useState<"overview" | "chart" | "details">("overview");
 
   // Hydration state - แสดง skeleton ระหว่างรอ
   if (activeProfile === null) {
@@ -93,46 +96,80 @@ export default function BaziPage() {
         }
       />
 
-      {/* SECTION 1: Destiny Hero - Summary กระชับด้านบน */}
-      <PageSection>
-        <DestinyHero
-          strength={strength}
-          structure={structure}
-          usefulGod={usefulGod}
-          profileName={activeProfile.name}
-          birthDate={activeProfile.birthDate}
-        />
-      </PageSection>
-
-      {/* SECTION 2: Insight Narrative - สิ่งที่คุณอยากรู้ */}
-      <PageSection title="สิ่งที่คุณอยากรู้">
-        <InsightNarrative narrative={narrative} />
-      </PageSection>
-
-      {/* SECTION 3: Natal Chart - แผนผัง 4 เสา */}
-      <PageSection title="แผนผัง 4 เสา (Natal Chart)">
-        <NatalChart chart={chart} />
-      </PageSection>
-
-      {/* SECTION 4: Detail Cards - การวิเคราะห์เชิงลึก */}
-      <PageSection title="การวิเคราะห์เชิงลึก">
-        <div className="grid gap-6 md:grid-cols-2">
-          <DayMasterCard strength={strength} />
-          <StrengthCard strength={strength} />
-          <StructureCard structure={structure} />
-          <UsefulGodCard usefulGod={usefulGod} />
+      {/* Mobile tab bar — เฉพาะ mobile. Desktop เห็นทุก section เพราะ max-md:hidden ไม่มีผลที่ md+ */}
+      <div className="sticky top-16 z-30 -mx-4 mb-1 px-4 md:hidden">
+        <div
+          role="tablist"
+          aria-label="ส่วนของดวง"
+          className="flex gap-1 rounded-xl bg-muted p-1"
+        >
+          {(
+            [
+              ["overview", "ภาพรวม"],
+              ["chart", "แผนผัง"],
+              ["details", "รายละเอียด"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              role="tab"
+              aria-selected={tab === id}
+              onClick={() => setTab(id)}
+              className={cn(
+                "flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+                tab === id ? "bg-card text-ink shadow-sm" : "text-muted-foreground",
+              )}
+            >
+              {label}
+            </button>
+          ))}
         </div>
-      </PageSection>
+      </div>
 
-      {/* SECTION 5: Extended Views - รายละเอียดเพิ่มเติม */}
-      <PageSection title="รายละเอียดเพิ่มเติม">
-        <div className="grid gap-6 lg:grid-cols-2">
-          <TenGodsView godsAndStars={godsAndStars} chart={chart} />
-          <StarsView godsAndStars={godsAndStars} />
-          <LuckTimelineView luck={luck} />
+      {/* ภาพรวม — DestinyHero + InsightNarrative */}
+      <div className={tab !== "overview" ? "max-md:hidden" : undefined}>
+        <PageSection>
+          <DestinyHero
+            strength={strength}
+            structure={structure}
+            usefulGod={usefulGod}
+            profileName={activeProfile.name}
+            birthDate={activeProfile.birthDate}
+          />
+        </PageSection>
+        <PageSection title="สิ่งที่คุณอยากรู้">
+          <InsightNarrative narrative={narrative} />
+        </PageSection>
+      </div>
+
+      {/* แผนผัง — NatalChart + ElementComposition */}
+      <div className={tab !== "chart" ? "max-md:hidden" : undefined}>
+        <PageSection title="แผนผัง 4 เสา (Natal Chart)">
+          <NatalChart chart={chart} />
+        </PageSection>
+        <PageSection title="สมดุลธาตุ">
           <ElementCompositionView elements={elements} />
-        </div>
-      </PageSection>
+        </PageSection>
+      </div>
+
+      {/* รายละเอียด — 4 detail cards + TenGods/Stars/Luck */}
+      <div className={tab !== "details" ? "max-md:hidden" : undefined}>
+        <PageSection title="การวิเคราะห์เชิงลึก">
+          <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+            <DayMasterCard strength={strength} />
+            <StrengthCard strength={strength} />
+            <StructureCard structure={structure} />
+            <UsefulGodCard usefulGod={usefulGod} />
+          </div>
+        </PageSection>
+        <PageSection title="รายละเอียดเพิ่มเติม">
+          <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+            <TenGodsView godsAndStars={godsAndStars} chart={chart} />
+            <StarsView godsAndStars={godsAndStars} />
+            <LuckTimelineView luck={luck} />
+          </div>
+        </PageSection>
+      </div>
     </PageFrame>
   );
 }
