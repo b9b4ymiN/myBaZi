@@ -5,6 +5,7 @@ import { User, Calendar, Clock, Globe, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveProfileSafe } from "@/lib/stores/use-hydrated";
+import { formatThaiDate } from "@/lib/utils";
 
 export function ActiveProfileInfo() {
   const router = useRouter();
@@ -58,11 +59,7 @@ export function ActiveProfileInfo() {
           <Calendar className="h-4 w-4 text-muted-foreground" />
           <span className="text-muted-foreground">วันเกิด:</span>
           <span className="font-medium">
-            {new Date(activeProfile.birthDate).toLocaleDateString("th-TH", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+            {formatThaiDate(activeProfile.birthDate)}
           </span>
         </div>
 

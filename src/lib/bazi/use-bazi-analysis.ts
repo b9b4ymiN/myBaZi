@@ -18,6 +18,9 @@ import { analyzeElements } from "./elements";
 import { analyzeTenGodProfile } from "./ten-god-profile";
 import { analyzePalace } from "./palace";
 import { analyzeLuckFavorability } from "./luck-favorability";
+import { analyzeInteractions, type BranchInteraction } from "./interactions";
+import { detectThreeHarmony, type ThreeHarmonyResult } from "./three-harmony";
+import { analyzeStemCombinations, type StemCombinationMatch } from "./stem-combinations";
 import type { BaZiChart } from "./types";
 import type { StrengthAnalysis } from "@/types/bazi-strength";
 import type { StructureAnalysis } from "@/types/bazi-structure";
@@ -46,6 +49,10 @@ export interface BaZiAnalysis {
   tenGodProfile: TenGodProfile;
   palace: PalaceAnalysis;
   luckFavorability: LuckFavorabilityAnalysis;
+  /** ปฏิสัมพันธ์ในดวง (Phase C — interactions/harmonies/combinations) */
+  interactions: BranchInteraction[];
+  threeHarmony: ThreeHarmonyResult;
+  stemCombinations: StemCombinationMatch[];
 }
 
 /**
@@ -77,6 +84,13 @@ export function useBaZiAnalysis(
     const tenGodProfile = analyzeTenGodProfile(chart);
     const palace = analyzePalace(chart);
     const luckFavorability = analyzeLuckFavorability(luck, usefulGod);
+    // ปฏิสัมพันธ์ในดวง (Phase C)
+    const interactions = analyzeInteractions(chart);
+    const branches = [chart.year.branch.name, chart.month.branch.name, chart.day.branch.name, chart.hour?.branch.name].filter(
+      (b): b is string => Boolean(b)
+    ) as ThreeHarmonyResult["presentBranches"];
+    const threeHarmony = detectThreeHarmony(branches);
+    const stemCombinations = analyzeStemCombinations(chart);
 
     return {
       chart,
@@ -90,6 +104,9 @@ export function useBaZiAnalysis(
       tenGodProfile,
       palace,
       luckFavorability,
+      interactions,
+      threeHarmony,
+      stemCombinations,
     };
   }, [profile, currentYear]);
 }

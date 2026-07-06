@@ -46,6 +46,10 @@ next-env.d.ts
 .omx/
 .codegraph/
 
+# playwright MCP output (snapshots/logs) + baseline screenshots (artifact ชั่วคราว)
+.playwright-mcp/
+baseline-*.jpeg
+
 
 # local anchor charts (PII — birth data, never commit)
 scripts/*.local.mjs

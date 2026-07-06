@@ -12,6 +12,7 @@ import { STRENGTH_LEVEL_THAI } from "@/types/bazi-strength";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ElementBadge } from "@/components/bazi/element-badge";
+import { formatThaiDate } from "@/lib/utils";
 
 interface DestinyHeroProps {
   strength: StrengthAnalysis;
@@ -56,11 +57,7 @@ export function DestinyHero({
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <h2 className="text-2xl font-bold">{profileName}</h2>
             <div className="text-sm text-muted-foreground sm:text-base">
-              {new Date(birthDate).toLocaleDateString("th-TH", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {formatThaiDate(birthDate)}
             </div>
           </div>
 

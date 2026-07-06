@@ -19,6 +19,7 @@ import type { LuckFavorabilityAnalysis } from "./luck-favorability";
 import type { BaZiNarrative, InsightSection } from "./narrative";
 import { interpretBaZi, type InterpretInput } from "./interpret";
 import { ELEMENT_THAI, YINYANG_THAI } from "./types";
+import { TEN_GOD_THAI } from "../../types/bazi-gods-stars";
 import { STRENGTH_LEVEL_THAI, STRENGTH_LEVEL_DESC } from "../../types/bazi-strength";
 import type { Gender } from "../../types/profile";
 
@@ -60,7 +61,7 @@ export function buildBaZiNarrativeV2(input: BuildNarrativeV2Input): BaZiNarrativ
   // opening: day master + archetype + strength + แกนเด่น (top ten god)
   const topGod = tenGodProfile.dominantGods[0];
   const topGodClause = topGod
-    ? ` — แกนเด่นในดวงของคุณคือ ${tenGodProfile.counts[topGod]} ครั้งของ ${topGod}`
+    ? ` — ดวงของคุณหนักไปทาง “${TEN_GOD_THAI[topGod]}” (พบ ${tenGodProfile.counts[topGod]} ตำแหน่งในดวง)`
     : "";
   const opening =
     `เจ้าวันของ${profileName ? ` ${profileName}` : "คุณ"}คือ ${dm.name}${elementThai} ` +

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SectionReveal } from "@/components/ui/motion";
 
 interface PageFrameProps {
   children: ReactNode;
@@ -89,7 +90,7 @@ interface PageSectionProps {
 
 export function PageSection({ title, description, children, className }: PageSectionProps) {
   return (
-    <section className={cn("space-y-3", className)}>
+    <SectionReveal className={cn("space-y-3", className)}>
       {(title || description) && (
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -107,7 +108,7 @@ export function PageSection({ title, description, children, className }: PageSec
         </div>
       )}
       {children}
-    </section>
+    </SectionReveal>
   );
 }
 
