@@ -101,6 +101,72 @@ export interface CompatibilitySignal {
 }
 
 /**
+ * การให้คะแนนแต่ละสัญญาณ (transparent breakdown)
+ */
+export interface ScoreContribution {
+  /** ป้ายกำกับภาษาไทย — บอกว่าสัญญาณนี้คืออะไร */
+  label: string;
+  /** น้ำหนักเป็นตัวเลข (high=3, medium=2, low=1) */
+  weight: number;
+  /** ทิศทาง: กลมกลืน/ตึงเครียด/เป็นกลาง */
+  direction: "harmonious" | "tense" | "neutral";
+  /** ค่าเป็นบวก/ลบที่ contributr ไปยัง总分: harmonious=positive, tense=negative, neutral=0 */
+  contribution: number;
+  /** หมายเหตุสั้นๆ */
+  note: string;
+}
+
+/**
+ * คะแนนความเข้ากันรวม (0-100) พร้อม breakdown เปิดเผยทั้งหมด
+ */
+export interface CompatibilityScore {
+  /** คะแนน 0-100, center 50 = neutral. คำนวณจาก signed contributions normalized */
+  score: number;
+  /** ระดับความเข้ากัน — probabilistic framing ไม่ใช่ verdict */
+  band: "harmonious-tendency" | "balanced" | "tension-tendency";
+  /** ป้ายกำกับภาษาไทย — probabilistic, ไม่ฟันธง */
+  bandLabelTh: string;
+  /** การกระจายคะแนนรายสัญญาณ — full transparent breakdown */
+  breakdown: ScoreContribution[];
+  /** ผลรวมส่วนบวก (harmonious contributions) */
+  positive: number;
+  /** ผลรวมส่วนลบ (absolute value of tense contributions) */
+  negative: number;
+  /** ค่าสูงสุดที่เป็นไปได้ (สำหรับใช้เปรียบเทียบขนาด) */
+  maxPossible: number;
+}
+
+/**
+ * การแปลง weight categories → numeric weights
+ */
+export const SIGNAL_WEIGHT: Record<"high" | "medium" | "low", number> = {
+  high: 3,
+  medium: 2,
+  low: 1,
+};
+
+/**
+ * ค่าสูงสุดทางทฤษฎี (THEORETICAL MAX) สำหรับคะแนนความเข้ากัน
+ *
+ * คำนวณจากผลรวมน้ำหนักสูงสุดของ signal categories ทั้งหมดที่ "COULD exist"
+ * ใน cross-chart analysis (ไม่ใช่ sum ของ signals ที่เกิดขึ้นจริง)
+ *
+ * หมวดหมู่ signals ที่อาจเกิดขึ้น (จาก buildSignals):
+ *   1. Day stem 五合 (high=3) — มากสุด 1 ครั้ง
+ *   2. Day branch interaction: 冲/合/害/刑 (high=3) — มากสุด 1 (mutually exclusive สำหรับ day-day)
+ *   3. Three-harmony สามัคคี (medium=2) — มากสุด 1
+ *   4. Day-vs-other-pillar interaction (medium=2) — มากสุด 1 (day-year)
+ *   5. Element harmony (low=1) — มากสุด 1
+ *   6. Other pillar stem combos (low=1 each) — สมมุติ base 3 combos realistic
+ *
+ * รวม = 3 + 3 + 2 + 2 + 1 + 3 = 14
+ *
+ * หมายเหตุ: ค่านี้เป็น capacity ที่ทำให้ score ไม่ max ที่ 100 เมื่อมีแค่ "few harmonious signals"
+ * ตัวอย่าง: couple ที่มี positive=5, negative=0 → score = 50 + (5/14)*50 ≈ 68 (believable)
+ */
+const MAX_POSSIBLE_SCORE = 14;
+
+/**
  * ผลลัพธ์การวิเคราะห์ cross-chart compatibility
  */
 export interface CrossChartAnalysis {
@@ -118,6 +184,8 @@ export interface CrossChartAnalysis {
   threeHarmony: ThreeHarmonyResult;
   /** สัญญาณความเข้ากันแบบ weighted (transparent, no black-box score) */
   signals: CompatibilitySignal[];
+  /** คะแนนความเข้ากัน (optional composite score 0-100) */
+  score?: CompatibilityScore;
   /** สรุปภาษาไทย (probabilistic, holistic, no doom-say) */
   overall: string;
 }
@@ -447,6 +515,122 @@ function buildSignals(
 }
 
 /**
+ * คำนวณคะแนนความเข้ากัน (composite score 0-100) จาก signals
+ *
+ * @param signals - สัญญาณความเข้ากันทั้งหมด
+ * @param opts - ตัวเลือกเพิ่มเติม (stemCombines, threeHarmonyFound)
+ * @returns CompatibilityScore - คะแนน 0-100 พร้อม breakdown
+ *
+ * สูตรคำนวณ:
+ * - แต่ละ signal มี contribution = weight * (+1 harmonious | -1 tense | 0 neutral)
+ * - positive = ผลรวม contribution เป็นบวก, negative = ผลรวม contribution เป็นลบ (absolute value)
+ * - maxPossible = THEORETICAL MAX (MAX_POSSIBLE_SCORE = 14) ครอบคลุม categories ทั้งหมดที่ COULD exist
+ * - score = 50 + Math.round((positive - negative) / maxPossible * 50) → clamp [0,100]
+ * - band: score >= 62 → harmonious-tendency; score <= 38 → tension-tendency; else balanced
+ *
+ * หมายเหตุ: score 50 = neutral (ไม่ดีไม่แย่), 100 = ดีที่สุด, 0 = แย่ที่สุด
+ * ใช้ theoretical max (ไม่ใช่ sum ของ existing signals) เพื่อให้ couple ที่มีแค่ few harmonious
+ * ไม่ max ที่ 100 — เหลือ headroom สำหรับ "exceptional" couples
+ */
+export function computeCompatibilityScore(
+  signals: CompatibilitySignal[],
+  opts?: { stemCombines?: boolean; threeHarmonyFound?: boolean }
+): CompatibilityScore {
+  // 1. สร้าง breakdown จาก signals ที่มี
+  const breakdown: ScoreContribution[] = signals.map((signal) => {
+    const weight = SIGNAL_WEIGHT[signal.weight];
+    let contribution = 0;
+
+    if (signal.direction === "harmonious") {
+      contribution = weight;
+    } else if (signal.direction === "tense") {
+      contribution = -weight;
+    }
+    // neutral → contribution 0
+
+    return {
+      label: signal.label,
+      weight,
+      direction: signal.direction,
+      contribution,
+      note: signal.note,
+    };
+  });
+
+  // 2. เพิ่ม extras ถ้ามี (stemCombines, threeHarmonyFound)
+  // ตรวจสอบก่อนว่ามีใน signals แล้วหรือยัง เพื่อไม่ double-count
+  const hasStemCombinesSignal = signals.some(s => s.label.includes("五合"));
+  const hasThreeHarmonySignal = signals.some(s => s.label.includes("三合"));
+
+  if (opts?.stemCombines && !hasStemCombinesSignal) {
+    breakdown.push({
+      label: "ดาวเสาวัน 五合",
+      weight: SIGNAL_WEIGHT.high,
+      direction: "harmonious",
+      contribution: SIGNAL_WEIGHT.high,
+      note: "เสาวันผนึกกัน (ส่วนเสริมจาก extras)",
+    });
+  }
+
+  if (opts?.threeHarmonyFound && !hasThreeHarmonySignal) {
+    breakdown.push({
+      label: "三合/半三合",
+      weight: SIGNAL_WEIGHT.medium,
+      direction: "harmonious",
+      contribution: SIGNAL_WEIGHT.medium,
+      note: "พบ三合/半三合 (ส่วนเสริมจาก extras)",
+    });
+  }
+
+  // 3. คำนวณ positive, negative (sums of actual contributions)
+  const positive = breakdown
+    .filter((b) => b.contribution > 0)
+    .reduce((sum, b) => sum + b.contribution, 0);
+
+  const negative = Math.abs(
+    breakdown
+      .filter((b) => b.contribution < 0)
+      .reduce((sum, b) => sum + b.contribution, 0)
+  );
+
+  // 4. maxPossible = THEORETICAL MAX (constant, ไม่ใช่ sum ของ existing weights)
+  // เพื่อให้ score เหลือ headroom และไม่ inflate เมื่อ couple มีแค่ few signals
+  const maxPossible = MAX_POSSIBLE_SCORE;
+
+  // 5. คำนวณ score (center 50, range [0, 100])
+  // net = positive - negative (range: [-maxPossible, +maxPossible] ในทางทฤษฎี)
+  // score = 50 + (net / maxPossible) * 50 → [0, 100]
+  const net = positive - negative;
+  let score = 50 + Math.round((net / maxPossible) * 50);
+  score = Math.max(0, Math.min(100, score)); // clamp to [0, 100]
+
+  // 5. กำหนด band
+  let band: CompatibilityScore["band"];
+  let bandLabelTh: string;
+
+  if (score >= 62) {
+    band = "harmonious-tendency";
+    bandLabelTh = "แนวโน้มเข้ากันดี";
+  } else if (score <= 38) {
+    band = "tension-tendency";
+    bandLabelTh = "แนวโน้มมีแรงเสียดสี (ไม่ใช่ว่าไม่เข้ากัน)";
+  } else {
+    band = "balanced";
+    bandLabelTh = "สมดุล (มีทั้งปัจจัยเสริมและต้าน)";
+  }
+
+  return {
+    score,
+    band,
+    bandLabelTh,
+    breakdown,
+    positive,
+    negative,
+    maxPossible,
+  };
+}
+
+/**
  * สร้างสรุปภาษาไทย (probabilistic, holistic, no doom-say)
  */
 function buildOverall(
@@ -537,6 +721,12 @@ export function analyzeCrossChart(
   // 6. Overall
   const overall = buildOverall(dayMasterComparison, signals);
 
+  // 7. Compatibility score (optional composite)
+  const score = computeCompatibilityScore(signals, {
+    stemCombines: dayMasterComparison.stemCombines,
+    threeHarmonyFound: threeHarmony.found,
+  });
+
   return {
     ownerDayMaster,
     relatedDayMaster,
@@ -545,6 +735,7 @@ export function analyzeCrossChart(
     branchMatrix,
     threeHarmony,
     signals,
+    score,
     overall,
   };
 }

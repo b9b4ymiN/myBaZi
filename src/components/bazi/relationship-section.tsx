@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { analyzeSpouse } from "@/lib/bazi/spouse-analysis";
 import { scanMarriageWindows } from "@/lib/bazi/marriage-timing";
 import { getSixRelatives } from "@/lib/bazi/six-relatives";
+import { analyzeRomanceStars } from "@/lib/bazi/romance-stars";
 import { RELATIONSHIP_ROLE_LABELS } from "@/lib/bazi/relationship-labels";
 import { TEN_GOD_THAI } from "@/types/bazi-gods-stars";
 
@@ -34,13 +35,16 @@ export function RelationshipSection({ profile, analysis }: RelationshipSectionPr
     analysis.palace
   );
 
+  const currentYear = new Date().getFullYear();
   const marriageTiming = scanMarriageWindows(
     analysis.luck,
     profile,
-    analysis.chart
+    analysis.chart,
+    currentYear
   );
 
   const sixRelatives = getSixRelatives(profile.gender);
+  const romanceStars = analyzeRomanceStars(analysis.chart, profile.gender);
 
   return (
     <div className="space-y-6">
@@ -170,7 +174,59 @@ export function RelationshipSection({ profile, analysis }: RelationshipSectionPr
         </CardContent>
       </Card>
 
-      {/* 2. ครอบครัว (六亲) */}
+      {/* 2. ดาวความรัก (Romance Stars) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">ดาวความรัก (Romance Stars)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Stars List */}
+          <div className="space-y-3">
+            {romanceStars.relevantForGender.map((star) => (
+              <div
+                key={star.name}
+                className="flex items-start justify-between gap-3 p-3 rounded-lg border border-border"
+              >
+                <div className="space-y-1 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{star.nameTh}</span>
+                    <Badge variant={star.present ? "default" : "outline"} className="text-xs">
+                      {star.present ? "ปรากฏ" : "ไม่ปรากฏ"}
+                    </Badge>
+                  </div>
+                  <div className="text-xs text-muted-foreground">{star.meaning}</div>
+                  {star.present && star.positions.length > 0 && (
+                    <div className="text-xs text-muted-foreground mt-1">
+                      ตำแหน่ง:{" "}
+                      {star.positions.map((pos) =>
+                        pos === "year"
+                          ? "ปี"
+                          : pos === "month"
+                            ? "เดือน"
+                            : pos === "day"
+                              ? "วัน"
+                              : "ชั่วโมง"
+                      ).join("、")}
+                    </div>
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {star.starBranch}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <Separator />
+
+          {/* Reading */}
+          <div className="text-sm text-muted-foreground whitespace-pre-line">
+            {romanceStars.reading}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 3. ครอบครัว (六亲) */}
       <Card>
         <CardHeader>
           <CardTitle className="text-xl">ครอบครัว (六亲)</CardTitle>
@@ -224,7 +280,7 @@ export function RelationshipSection({ profile, analysis }: RelationshipSectionPr
         </CardContent>
       </Card>
 
-      {/* 3. จังหวะความรัก (Marriage Timing) */}
+      {/* 4. จังหวะความรัก (Marriage Timing) */}
       <Card>
         <CardHeader>
           <CardTitle className="text-xl">จังหวะความรัก (Marriage Timing)</CardTitle>
@@ -247,31 +303,70 @@ export function RelationshipSection({ profile, analysis }: RelationshipSectionPr
 
           {/* Marriage Windows */}
           {marriageTiming.windows.length > 0 ? (
-            <div className="space-y-2">
-              <div className="text-sm font-medium">ช่วงเวลาที่มีแนวโน้ม</div>
-              <div className="space-y-2">
-                {marriageTiming.windows.map((window, idx) => (
-                  <div
-                    key={idx}
-                    className="p-3 rounded-lg border border-border bg-muted/30"
-                  >
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="text-sm font-medium">
-                        อายุ {window.ageRange}
-                      </span>
-                      <Badge variant="outline" className="text-xs">
-                        {window.type === "spouse_star_stem" && "ดาวคู่"}
-                        {window.type === "spouse_palace_branch" && "คู่สมรส"}
-                        {window.type === "spouse_palace_combined" && "หกธรรม"}
-                        {window.type === "spouse_palace_clashed" && "ชง"}
-                      </Badge>
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {window.signal}
-                    </div>
+            <div className="space-y-4">
+              {/* Decade Windows (大运) */}
+              {marriageTiming.decadeWindows.length > 0 && (
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">大运 (ทศวัตร)</div>
+                  <div className="space-y-2">
+                    {marriageTiming.decadeWindows.map((window, idx) => (
+                      <div
+                        key={`decade-${idx}`}
+                        className="p-3 rounded-lg border border-border bg-muted/30"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-sm font-medium">
+                            อายุ {window.ageRange}
+                          </span>
+                          <Badge variant="outline" className="text-xs">
+                            {window.type === "spouse_star_stem" && "ดาวคู่"}
+                            {window.type === "spouse_palace_branch" && "คู่สมรส"}
+                            {window.type === "spouse_palace_combined" && "หกธรรม"}
+                            {window.type === "spouse_palace_clashed" && "ชง"}
+                          </Badge>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {window.signal}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
+
+              {/* Annual Windows (流年) */}
+              {marriageTiming.annualWindows.length > 0 && (
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">流年 (รายปี)</div>
+                  <div className="space-y-2">
+                    {marriageTiming.annualWindows.map((window, idx) => {
+                      const birthYear = parseInt(profile.birthDate.split('-')[0], 10);
+                      const age = window.year ? window.year - birthYear : "N/A";
+                      return (
+                        <div
+                          key={`annual-${idx}`}
+                          className="p-3 rounded-lg border border-border bg-muted/30"
+                        >
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <span className="text-sm font-medium">
+                              ปี {window.year} (อายุ ~{age})
+                            </span>
+                            <Badge variant="outline" className="text-xs">
+                              {window.type === "spouse_star_stem" && "ดาวคู่"}
+                              {window.type === "spouse_palace_branch" && "คู่สมรส"}
+                              {window.type === "spouse_palace_combined" && "หกธรรม"}
+                              {window.type === "spouse_palace_clashed" && "ชง"}
+                            </Badge>
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {window.signal}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-sm text-muted-foreground">
@@ -288,12 +383,12 @@ export function RelationshipSection({ profile, analysis }: RelationshipSectionPr
 
           {/* Scope Note */}
           <div className="text-xs text-muted-foreground italic">
-            อ่านระดับ大运 (ทศวัฒน์) — 流年 (วัตถุปัจจัยประจำปี) จะเพิ่มในเฟสถัดไป
+            อ่านระดับ大运 (ทศวัฒน์) + 流年 (วัตถุปัจจัยประจำปี) — เดือน (月运) ยังไม่รวม
           </div>
         </CardContent>
       </Card>
 
-      {/* 4. สรุป (Synthesis) */}
+      {/* 5. สรุป (Synthesis) */}
       <Card>
         <CardHeader>
           <CardTitle className="text-xl">สรุป</CardTitle>
