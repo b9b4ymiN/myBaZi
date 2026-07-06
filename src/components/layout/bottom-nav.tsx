@@ -8,6 +8,7 @@ import {
   Calendar,
   Grid3x3,
   Sparkles,
+  Heart,
   Users,
   Settings,
   type LucideIcon,
@@ -21,13 +22,15 @@ interface MobileNavItem {
   icon: LucideIcon;
 }
 
-// 7 ช่อง — 4 modules + หน้าแรก + โปรไฟล์ + ตั้งค่า (เข้า settings/profiles จาก mobile ได้)
+// 7 ช่องที่แสดง (qimen hidden) — home + bazi + tongshu + tianji + relationships + profiles + settings
+// เมื่อ qimen เปิดกลับมา = 8 ช่อง (toggle ใน nav.ts)
 const ALL_MOBILE_ITEMS: MobileNavItem[] = [
   { href: "/", label: "หน้าแรก", icon: House },
   { href: "/bazi", label: "ปาจื้อ", icon: ScrollText },
   { href: "/tongshu", label: "ปฏิทิน", icon: Calendar },
   { href: "/qimen", label: "ฉีเหมือน", icon: Grid3x3 },
   { href: "/tianji", label: "เทียนจี", icon: Sparkles },
+  { href: "/relationships", label: "ความสัมพันธ์", icon: Heart },
   { href: "/profiles", label: "โปรไฟล์", icon: Users },
   { href: "/settings", label: "ตั้งค่า", icon: Settings },
 ];

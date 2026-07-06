@@ -4,6 +4,7 @@ import {
   Calendar,
   Grid3x3,
   Sparkles,
+  Heart,
   Settings,
 } from "lucide-react";
 
@@ -45,6 +46,12 @@ const ALL_NAV_ITEMS: NavItem[] = [
     label: "เทียนจี",
     labelCn: "天机",
     icon: Sparkles,
+  },
+  {
+    href: "/relationships",
+    label: "ความสัมพันธ์",
+    labelCn: "关系",
+    icon: Heart,
   },
 ];
 

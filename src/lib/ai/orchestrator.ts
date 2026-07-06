@@ -15,6 +15,7 @@ import { TIANJI_SYSTEM_PROMPT } from "./system-prompt";
 import { buildBaZiContext } from "./bazi-context";
 import { detectIntent, type DetectedIntent } from "./intent-detector";
 import { buildDynamicContext } from "./dynamic-context";
+import { buildRelationshipContext } from "./relationship-context";
 
 export interface TianjiRequest {
   /** ข้อมูลผู้ใช้ (required) */
@@ -25,6 +26,8 @@ export interface TianjiRequest {
   history?: ChatMessage[];
   /** ปีปัจจุบัน (ค.ศ.) - required for SSR safety */
   currentYear: number;
+  /** ข้อมูลคู่ครอง (optional) — ใช้สำหรับคำถามความสัมพันธ์ */
+  partnerProfile?: Profile | null;
 }
 
 export interface TianjiResponse {
@@ -46,7 +49,7 @@ export interface TianjiResponse {
  * @returns TianjiResponse
  */
 export async function askTianji(req: TianjiRequest): Promise<TianjiResponse> {
-  const { profile, userMessage, history = [], currentYear } = req;
+  const { profile, userMessage, history = [], currentYear, partnerProfile } = req;
 
   // ===== Validation =====
   if (!profile) {
@@ -90,6 +93,15 @@ export async function askTianji(req: TianjiRequest): Promise<TianjiResponse> {
     systemMessages.push({
       role: "system",
       content: `## Dynamic Context (ข้อมูลวัน/ปีเป้าหมาย)\n\n${dynamicContextText}`,
+    });
+  }
+
+  // ===== Layer 4: Relationship Context (ถ้ามี partner profile + six_relative intent) =====
+  if (intent.intent === "six_relative" && partnerProfile && profile) {
+    const relCtx = buildRelationshipContext(profile, partnerProfile, currentYear);
+    systemMessages.push({
+      role: "system",
+      content: `## Relationship Context (คู่เทียบดวง)\n\n${relCtx.text}`,
     });
   }
 
@@ -144,7 +156,7 @@ export async function askTianjiStream(
   handlers: TianjiStreamHandlers,
   signal?: AbortSignal
 ): Promise<TianjiResponse> {
-  const { profile, userMessage, history = [], currentYear } = req;
+  const { profile, userMessage, history = [], currentYear, partnerProfile } = req;
   const { onDelta } = handlers;
 
   if (!profile) {
@@ -180,6 +192,15 @@ export async function askTianjiStream(
     systemMessages.push({
       role: "system",
       content: `## Dynamic Context (ข้อมูลวัน/ปีเป้าหมาย)\n\n${dynamicContextText}`,
+    });
+  }
+
+  // ===== Layer 4: Relationship Context (ถ้ามี partner profile + six_relative intent) =====
+  if (intent.intent === "six_relative" && partnerProfile && profile) {
+    const relCtx = buildRelationshipContext(profile, partnerProfile, currentYear);
+    systemMessages.push({
+      role: "system",
+      content: `## Relationship Context (คู่เทียบดวง)\n\n${relCtx.text}`,
     });
   }
 
