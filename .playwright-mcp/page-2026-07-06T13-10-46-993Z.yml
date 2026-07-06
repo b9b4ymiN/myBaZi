@@ -1,0 +1,58 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "myBaZi" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e5]
+        - text: myBaZi
+      - generic [ref=e6]:
+        - button "เพิ่มโปรไฟล์" [ref=e7]:
+          - img
+          - text: เพิ่มโปรไฟล์
+        - generic [ref=e8]:
+          - button "การแจ้งเตือน" [ref=e9]:
+            - img
+            - generic [ref=e10]: การแจ้งเตือน
+          - button "บันทึก" [ref=e11]:
+            - img
+            - generic [ref=e12]: บันทึก
+        - button "Toggle theme" [ref=e13]:
+          - img [ref=e14]
+    - main [ref=e17]:
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - img "myBaZi logo" [ref=e21]
+          - heading "โปรไฟล์ (Profile)" [level=1] [ref=e22]
+        - generic [ref=e26]:
+          - heading "จัดการโปรไฟล์" [level=1] [ref=e27]
+          - paragraph [ref=e28]: กำลังโหลด...
+    - navigation "Mobile navigation" [ref=e29]:
+      - link "หน้าแรก" [ref=e30] [cursor=pointer]:
+        - /url: /
+        - img [ref=e31]
+        - generic [ref=e34]: หน้าแรก
+      - link "ปาจื้อ" [ref=e35] [cursor=pointer]:
+        - /url: /bazi
+        - img [ref=e36]
+        - generic [ref=e39]: ปาจื้อ
+      - link "ปฏิทิน" [ref=e40] [cursor=pointer]:
+        - /url: /tongshu
+        - img [ref=e41]
+        - generic [ref=e43]: ปฏิทิน
+      - link "เทียนจี" [ref=e44] [cursor=pointer]:
+        - /url: /tianji
+        - img [ref=e45]
+        - generic [ref=e48]: เทียนจี
+      - link "โปรไฟล์" [ref=e49] [cursor=pointer]:
+        - /url: /profiles
+        - img [ref=e50]
+        - generic [ref=e55]: โปรไฟล์
+      - link "ตั้งค่า" [ref=e56] [cursor=pointer]:
+        - /url: /settings
+        - img [ref=e57]
+        - generic [ref=e60]: ตั้งค่า
+    - link "ถาม 天机 — AI ที่ปรึกษาดวง" [ref=e61] [cursor=pointer]:
+      - /url: /tianji
+      - img [ref=e62]
+      - generic [ref=e65]: ถาม 天机
+  - alert [ref=e66]

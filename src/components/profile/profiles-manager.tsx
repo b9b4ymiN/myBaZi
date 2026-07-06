@@ -25,8 +25,8 @@ import { useProfileStoreBase } from "@/lib/stores/profile-store";
 import { useProfiles } from "@/lib/stores/use-hydrated";
 import { Plus, MoreVertical, Edit, Trash2, Check, UserPlus } from "lucide-react";
 import { toast } from "sonner";
-import Image from "next/image";
 import type { Profile } from "@/types/profile";
+import { DayMasterAvatar } from "./day-master-avatar";
 
 export function ProfilesManager() {
   const router = useRouter();
@@ -160,20 +160,8 @@ export function ProfilesManager() {
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3">
-                    <div className="h-12 w-12 rounded-full border-2 border-gold/60 bg-jade/10 flex items-center justify-center overflow-hidden relative">
-                      <Image
-                        src={
-                          profile.gender === "male"
-                            ? "/assets/brand/man.png"
-                            : profile.gender === "female"
-                              ? "/assets/brand/woman.png"
-                              : "/assets/brand/logo.png"
-                        }
-                        alt={`avatar โปรไฟล์ ${profile.name}`}
-                        width={48}
-                        height={48}
-                        className="object-cover"
-                      />
+                    <div className="rounded-full border-2 border-gold/60 bg-jade/10 p-0.5">
+                      <DayMasterAvatar profile={profile} size={48} />
                     </div>
                     <div>
                       <CardTitle className="flex items-center gap-2">

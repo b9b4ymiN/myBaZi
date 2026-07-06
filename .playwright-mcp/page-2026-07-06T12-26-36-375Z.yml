@@ -1,0 +1,47 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "myBaZi" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - img [ref=e5]
+      - text: myBaZi
+    - generic [ref=e6]:
+      - generic [ref=e8]:
+        - button "การแจ้งเตือน" [ref=e9]:
+          - img
+          - generic [ref=e10]: การแจ้งเตือน
+        - button "บันทึก" [ref=e11]:
+          - img
+          - generic [ref=e12]: บันทึก
+      - button "Toggle theme" [ref=e13]:
+        - img [ref=e14]
+  - main [ref=e17]:
+    - main [ref=e19]
+  - navigation "Mobile navigation" [ref=e26]:
+    - link "หน้าแรก" [ref=e27] [cursor=pointer]:
+      - /url: /
+      - img [ref=e28]
+      - generic [ref=e31]: หน้าแรก
+    - link "ปาจื้อ" [ref=e32] [cursor=pointer]:
+      - /url: /bazi
+      - img [ref=e33]
+      - generic [ref=e36]: ปาจื้อ
+    - link "ปฏิทิน" [ref=e37] [cursor=pointer]:
+      - /url: /tongshu
+      - img [ref=e38]
+      - generic [ref=e40]: ปฏิทิน
+    - link "เทียนจี" [ref=e41] [cursor=pointer]:
+      - /url: /tianji
+      - img [ref=e42]
+      - generic [ref=e45]: เทียนจี
+    - link "โปรไฟล์" [ref=e46] [cursor=pointer]:
+      - /url: /profiles
+      - img [ref=e47]
+      - generic [ref=e52]: โปรไฟล์
+    - link "ตั้งค่า" [ref=e53] [cursor=pointer]:
+      - /url: /settings
+      - img [ref=e54]
+      - generic [ref=e57]: ตั้งค่า
+  - link "ถาม 天机 — AI ที่ปรึกษาดวง" [ref=e58] [cursor=pointer]:
+    - /url: /tianji
+    - img [ref=e59]
+    - generic [ref=e62]: ถาม 天机

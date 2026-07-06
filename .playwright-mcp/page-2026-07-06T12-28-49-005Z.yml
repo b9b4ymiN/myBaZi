@@ -1,0 +1,254 @@
+- generic [ref=f3e2]:
+  - banner [ref=f3e3]:
+    - link "myBaZi" [ref=f3e4] [cursor=pointer]:
+      - /url: /
+      - img [ref=f3e5]
+      - text: myBaZi
+    - generic [ref=f3e6]:
+      - generic [ref=f3e8]:
+        - button "การแจ้งเตือน" [ref=f3e9]:
+          - img
+          - generic [ref=f3e10]: การแจ้งเตือน
+        - button "บันทึก" [ref=f3e11]:
+          - img
+          - generic [ref=f3e12]: บันทึก
+      - button "Toggle theme" [ref=f3e13]:
+        - img [ref=f3e14]
+  - main [ref=f3e17]:
+    - generic [ref=f3e20]:
+      - generic [ref=f3e21]:
+        - img [ref=f3e23]
+        - generic [ref=f3e25]:
+          - generic [ref=f3e26]:
+            - generic [ref=f3e27]:
+              - img [ref=f3e28]
+              - generic [ref=f3e29]: 通勝
+              - generic [ref=f3e30]: กรกฎาคม 2569
+            - generic [ref=f3e31]:
+              - heading "ปฏิทินมงคล" [level=1] [ref=f3e32]
+              - paragraph [ref=f3e33]: วันนี้เป็นยังไงสำหรับคุณ · เลือกวันดีตามดวง · ตรวจ冲/合 สาดวง
+          - generic [ref=f3e34]:
+            - button "เดือนก่อนหน้า" [ref=f3e35]:
+              - img
+            - button "เดือนถัดไป" [ref=f3e36]:
+              - img
+            - button "วันนี้" [ref=f3e37]:
+              - img
+              - text: วันนี้
+      - generic [ref=f3e40]:
+        - generic [ref=f3e41]:
+          - generic [ref=f3e42]:
+            - generic [ref=f3e43]: วันนี้ของคุณ
+            - heading "วันจันทร์ 6/7/2569" [level=2] [ref=f3e44]
+            - generic [ref=f3e45]:
+              - text: 五月廿二 · 辛巳
+              - generic [ref=f3e46]: · ปลาย 夏至
+          - img [ref=f3e47]
+        - generic [ref=f3e48]:
+          - generic [ref=f3e49]:
+            - generic [ref=f3e50]: คะแนนวัน
+            - generic [ref=f3e51]: "-37"
+          - generic [ref=f3e52]: อัปมงคลมาก
+        - generic [ref=f3e53]: เลือกโปรไฟล์เพื่อดู “วันนี้เข้ากับดวงคุณหรือไม่” + ตรวจ冲/合 สาดวง
+        - paragraph [ref=f3e54]: วันนี้อัปมงคลมาก (五月廿二) ประจำวันคือปิด (ปิดกิจการ, หยุดกิจกรรม, ซ่อมแซม) ดาวนักรบดำ คะแนนพลัง -37
+      - generic [ref=f3e57]:
+        - generic [ref=f3e58]:
+          - img [ref=f3e59]
+          - heading "วันดีเดือนนี้ (ทั่วไป)" [level=3] [ref=f3e62]
+        - paragraph [ref=f3e63]: เรียงตามคะแนนมงคล · เลือกโปรไฟล์เพื่อดูแบบส่วนตัว
+        - list [ref=f3e64]:
+          - listitem [ref=f3e65]:
+            - button "16 พฤ · 初三 辛卯 มงคล" [ref=f3e66]:
+              - generic [ref=f3e68]:
+                - generic [ref=f3e69]: 16 พฤ · 初三
+                - generic [ref=f3e70]: 辛卯
+              - generic [ref=f3e71]: มงคล
+          - listitem [ref=f3e72]:
+            - button "28 อ · 十五 癸卯 มงคล" [ref=f3e73]:
+              - generic [ref=f3e75]:
+                - generic [ref=f3e76]: 28 อ · 十五
+                - generic [ref=f3e77]: 癸卯
+              - generic [ref=f3e78]: มงคล
+          - listitem [ref=f3e79]:
+            - button "11 ส · 廿七 丙戌 มงคล" [ref=f3e80]:
+              - generic [ref=f3e82]:
+                - generic [ref=f3e83]: 11 ส · 廿七
+                - generic [ref=f3e84]: 丙戌
+              - generic [ref=f3e85]: มงคล
+          - listitem [ref=f3e86]:
+            - button "18 ส · 初五 癸巳 มงคล" [ref=f3e87]:
+              - generic [ref=f3e89]:
+                - generic [ref=f3e90]: 18 ส · 初五
+                - generic [ref=f3e91]: 癸巳
+              - generic [ref=f3e92]: มงคล
+          - listitem [ref=f3e93]:
+            - button "30 พฤ · 十七 乙巳 มงคล" [ref=f3e94]:
+              - generic [ref=f3e96]:
+                - generic [ref=f3e97]: 30 พฤ · 十七
+                - generic [ref=f3e98]: 乙巳
+              - generic [ref=f3e99]: มงคล
+      - generic [ref=f3e100]:
+        - generic [ref=f3e101]:
+          - generic [ref=f3e102]:
+            - heading "กรกฎาคม 2569" [level=2] [ref=f3e103]
+            - paragraph [ref=f3e104]: แตะวันเพื่อดูรายละเอียด · สีจุด = ความเข้ากันกับดวงคุณ
+          - img [ref=f3e105]
+        - generic [ref=f3e110]:
+          - generic [ref=f3e111]:
+            - generic [ref=f3e112]: อา
+            - generic [ref=f3e113]: จ
+            - generic [ref=f3e114]: อ
+            - generic [ref=f3e115]: พ
+            - generic [ref=f3e116]: พฤ
+            - generic [ref=f3e117]: ศ
+            - generic [ref=f3e118]: ส
+          - generic [ref=f3e119]:
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e120]:
+              - generic [ref=f3e122]: "28"
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e123]:
+              - generic [ref=f3e125]: "29"
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e126]:
+              - generic [ref=f3e128]: "30"
+            - button "1 十七 · ท้าทาย" [ref=f3e129] [cursor=pointer]:
+              - generic [ref=f3e131]: "1"
+              - generic [ref=f3e133]: 十七
+            - button "2 十八 · ปานกลาง" [ref=f3e135] [cursor=pointer]:
+              - generic [ref=f3e137]: "2"
+              - generic [ref=f3e139]: 十八
+            - button "3 十九 · ท้าทาย" [ref=f3e141] [cursor=pointer]:
+              - generic [ref=f3e143]: "3"
+              - generic [ref=f3e145]: 十九
+            - button "4 二十 · ท้าทายมาก" [ref=f3e147] [cursor=pointer]:
+              - generic [ref=f3e149]: "4"
+              - generic [ref=f3e151]: 二十
+            - button "5 廿一 · ท้าทาย" [ref=f3e153] [cursor=pointer]:
+              - generic [ref=f3e155]: "5"
+              - generic [ref=f3e157]: 廿一
+            - button "6 廿二 · ท้าทายมาก" [ref=f3e159] [cursor=pointer]:
+              - generic [ref=f3e161]: "6"
+              - generic [ref=f3e164]: 廿二
+            - button "7 廿三 · ท้าทายมาก" [ref=f3e166] [cursor=pointer]:
+              - generic [ref=f3e168]: "7"
+              - generic [ref=f3e170]: 廿三
+            - button "8 廿四 · ท้าทาย" [ref=f3e172] [cursor=pointer]:
+              - generic [ref=f3e174]: "8"
+              - generic [ref=f3e176]: 廿四
+            - button "9 廿五 · เข้ากันดี/มงคล" [ref=f3e178] [cursor=pointer]:
+              - generic [ref=f3e180]: "9"
+              - generic [ref=f3e182]: 廿五
+            - button "10 廿六 · ท้าทาย" [ref=f3e184] [cursor=pointer]:
+              - generic [ref=f3e186]: "10"
+              - generic [ref=f3e188]: 廿六
+            - button "11 廿七 · เข้ากันดี/มงคล" [ref=f3e190] [cursor=pointer]:
+              - generic [ref=f3e192]: "11"
+              - generic [ref=f3e194]: 廿七
+            - button "12 廿八 · เข้ากันดี/มงคล" [ref=f3e196] [cursor=pointer]:
+              - generic [ref=f3e198]: "12"
+              - generic [ref=f3e200]: 廿八
+            - button "13 廿九 · ท้าทาย" [ref=f3e202] [cursor=pointer]:
+              - generic [ref=f3e204]: "13"
+              - generic [ref=f3e206]: 廿九
+            - button "14 初一 · ท้าทายมาก" [ref=f3e208] [cursor=pointer]:
+              - generic [ref=f3e210]: "14"
+              - generic [ref=f3e212]: 初一
+            - button "15 初二 · ปานกลาง" [ref=f3e214] [cursor=pointer]:
+              - generic [ref=f3e216]: "15"
+              - generic [ref=f3e218]: 初二
+            - button "16 初三 · เข้ากันดี/มงคล" [ref=f3e220] [cursor=pointer]:
+              - generic [ref=f3e222]: "16"
+              - generic [ref=f3e224]: 初三
+            - button "17 初四 · ท้าทายมาก" [ref=f3e226] [cursor=pointer]:
+              - generic [ref=f3e228]: "17"
+              - generic [ref=f3e230]: 初四
+            - button "18 初五 · เข้ากันดี/มงคล" [ref=f3e232] [cursor=pointer]:
+              - generic [ref=f3e234]: "18"
+              - generic [ref=f3e236]: 初五
+            - button "19 初六 · ท้าทายมาก" [ref=f3e238] [cursor=pointer]:
+              - generic [ref=f3e240]: "19"
+              - generic [ref=f3e242]: 初六
+            - button "20 初七 · ท้าทาย" [ref=f3e244] [cursor=pointer]:
+              - generic [ref=f3e246]: "20"
+              - generic [ref=f3e248]: 初七
+            - button "21 初八 · เข้ากันดี/มงคล" [ref=f3e250] [cursor=pointer]:
+              - generic [ref=f3e252]: "21"
+              - generic [ref=f3e254]: 初八
+            - button "22 初九 · ท้าทาย" [ref=f3e256] [cursor=pointer]:
+              - generic [ref=f3e258]: "22"
+              - generic [ref=f3e260]: 初九
+            - button "23 初十 · เข้ากันดี/มงคล" [ref=f3e262] [cursor=pointer]:
+              - generic [ref=f3e264]: "23"
+              - generic [ref=f3e266]: 初十
+            - button "24 十一 · ท้าทาย" [ref=f3e268] [cursor=pointer]:
+              - generic [ref=f3e270]: "24"
+              - generic [ref=f3e272]: 十一
+            - button "25 十二 · ท้าทาย" [ref=f3e274] [cursor=pointer]:
+              - generic [ref=f3e276]: "25"
+              - generic [ref=f3e278]: 十二
+            - button "26 十三 · ท้าทายมาก" [ref=f3e280] [cursor=pointer]:
+              - generic [ref=f3e282]: "26"
+              - generic [ref=f3e284]: 十三
+            - button "27 十四 · ปานกลาง" [ref=f3e286] [cursor=pointer]:
+              - generic [ref=f3e288]: "27"
+              - generic [ref=f3e290]: 十四
+            - button "28 十五 · เข้ากันดี/มงคล" [ref=f3e292] [cursor=pointer]:
+              - generic [ref=f3e294]: "28"
+              - generic [ref=f3e296]: 十五
+            - button "29 十六 · ท้าทายมาก" [ref=f3e298] [cursor=pointer]:
+              - generic [ref=f3e300]: "29"
+              - generic [ref=f3e302]: 十六
+            - button "30 十七 · เข้ากันดี/มงคล" [ref=f3e304] [cursor=pointer]:
+              - generic [ref=f3e306]: "30"
+              - generic [ref=f3e308]: 十七
+            - button "31 十八 · ท้าทายมาก" [ref=f3e310] [cursor=pointer]:
+              - generic [ref=f3e312]: "31"
+              - generic [ref=f3e314]: 十八
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e316]:
+              - generic [ref=f3e318]: "1"
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e319]:
+              - generic [ref=f3e321]: "2"
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e322]:
+              - generic [ref=f3e324]: "3"
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e325]:
+              - generic [ref=f3e327]: "4"
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e328]:
+              - generic [ref=f3e330]: "5"
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e331]:
+              - generic [ref=f3e333]: "6"
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e334]:
+              - generic [ref=f3e336]: "7"
+            - button "ไม่มีข้อมูล" [disabled] [ref=f3e337]:
+              - generic [ref=f3e339]: "8"
+          - generic [ref=f3e340]:
+            - generic [ref=f3e341]: ดี
+            - generic [ref=f3e343]: ปานกลาง
+            - generic [ref=f3e345]: ท้าทาย
+            - generic [ref=f3e347]: 冲 สาดวง
+  - navigation "Mobile navigation" [ref=f3e349]:
+    - link "หน้าแรก" [ref=f3e350] [cursor=pointer]:
+      - /url: /
+      - img [ref=f3e351]
+      - generic [ref=f3e354]: หน้าแรก
+    - link "ปาจื้อ" [ref=f3e355] [cursor=pointer]:
+      - /url: /bazi
+      - img [ref=f3e356]
+      - generic [ref=f3e359]: ปาจื้อ
+    - link "ปฏิทิน" [ref=f3e360] [cursor=pointer]:
+      - /url: /tongshu
+      - img [ref=f3e361]
+      - generic [ref=f3e363]: ปฏิทิน
+    - link "เทียนจี" [ref=f3e364] [cursor=pointer]:
+      - /url: /tianji
+      - img [ref=f3e365]
+      - generic [ref=f3e368]: เทียนจี
+    - link "โปรไฟล์" [ref=f3e369] [cursor=pointer]:
+      - /url: /profiles
+      - img [ref=f3e370]
+      - generic [ref=f3e375]: โปรไฟล์
+    - link "ตั้งค่า" [ref=f3e376] [cursor=pointer]:
+      - /url: /settings
+      - img [ref=f3e377]
+      - generic [ref=f3e380]: ตั้งค่า
+  - link "ถาม 天机 — AI ที่ปรึกษาดวง" [ref=f3e381] [cursor=pointer]:
+    - /url: /tianji
+    - img [ref=f3e382]
+    - generic [ref=f3e385]: ถาม 天机

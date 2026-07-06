@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { Plus, Settings, Check, ChevronDown } from "lucide-react";
+import { DayMasterAvatar } from "./day-master-avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -56,20 +56,8 @@ export function ProfileSelector() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="h-10 gap-2 rounded-full border-border bg-card/80 pl-1.5 pr-3">
-          <div className="h-8 w-8 rounded-full border-2 border-gold/60 bg-jade/10 flex items-center justify-center overflow-hidden relative">
-            <Image
-              src={
-                activeProfile.gender === "male"
-                  ? "/assets/brand/man.png"
-                  : activeProfile.gender === "female"
-                    ? "/assets/brand/woman.png"
-                    : "/assets/brand/logo.png"
-              }
-              alt={`avatar โปรไฟล์ ${activeProfile.name}`}
-              width={32}
-              height={32}
-              className="object-cover"
-            />
+          <div className="rounded-full border-2 border-gold/60 bg-jade/10 p-0.5">
+            <DayMasterAvatar profile={activeProfile} size={32} />
           </div>
           <span className="max-w-[120px] truncate">{activeProfile.name}</span>
           <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />

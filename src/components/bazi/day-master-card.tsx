@@ -8,6 +8,7 @@
 import type { StrengthAnalysis } from "@/types/bazi-strength";
 import { ElementBadge } from "./element-badge";
 import { elementAssetPath } from "./element-asset";
+import { characterAssetPath } from "./character-asset";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RichText } from "@/components/ui/rich-text";
 import Image from "next/image";
@@ -68,10 +69,23 @@ export function DayMasterCard({ strength }: DayMasterCardProps) {
         <CardTitle className="text-xl">เจ้าวัน (Day Master)</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* ชื่อจีน + ธาตุ */}
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-4xl font-bold">{dayMaster.name}</span>
-          <ElementBadge element={dayMaster.element} size="lg" />
+        {/* avatar day stem + ชื่อจีน + ธาตุ */}
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="relative h-24 w-24 flex-shrink-0">
+            <Image
+              src={characterAssetPath(dayMaster.name)}
+              alt={`avatar เจ้าวัน ${dayMaster.name}`}
+              fill
+              className="object-contain"
+              sizes="96px"
+            />
+          </div>
+          <div className="space-y-2">
+            <span className="text-4xl font-bold">{dayMaster.name}</span>
+            <div>
+              <ElementBadge element={dayMaster.element} size="lg" />
+            </div>
+          </div>
         </div>
 
         {/* Brand asset + Emoji + บุคลิก */}

@@ -85,6 +85,42 @@ docs/                       # audit-report-1993.md, validation.md
 
 > ⚠️ **Verification lessons**: executor agent มักรายงานเก่งแต่จริง ๆ พลาด (ไม่สร้างไฟล์จริง, scope creep, typo ในรายงาน, test circular). **verify เองทุก Task**: ไฟล์มีจริง + typecheck/lint/build ผ่าน + รัน engine output จริงเทียบ expected.
 
+## UI Testing — Playwright MCP
+
+เทส UI ผ่าน `mcp__playwright__browser_*` tools. เชื่อมกับ **browserless Docker container** (`pw-chrome`) ผ่าน CDP — ไม่ใช่ local chromium (จำ sudo password ไม่ได้ → ลง system deps ไม่ได้). รายละเอียดเพิ่มเติมดูใน memory `playwright-mcp-setup`.
+
+**Container** (รันอยู่ที่ port **3000**, restart-policy `unless-stopped`, auto-restart กับ Docker Desktop):
+```bash
+docker run -d --name pw-chrome -p 3000:3000 --shm-size=1gb \
+  -e MAX_CONCURRENT_SESSIONS=10 -e TIMEOUT=300000 ghcr.io/browserless/chromium
+```
+ถ้า container ตาย: `docker start pw-chrome` → ตรวจ `curl -s http://localhost:3000/json/version` (ต้องตอบ Chrome version)
+
+**⚠️ Port conflict**: browserless ใช้ port 3000 = dev server default → **dev ต้องรัน port อื่น**:
+```bash
+pnpm dev --port 3001
+```
+
+**⚠️ Network bridge (WSL2 + Docker Desktop)**: container อยู่ใน Docker Desktop VM คนละ network กับ WSL2 (next dev) → `localhost`/`172.17.0.1` ใน container เข้าถึง dev server ไม่ได้. ต้องตั้ง **Windows netsh portproxy** forward → WSL2 eth0 IP:
+```powershell
+# ใน PowerShell (Run as Administrator) — แทน <WSL_IP> ด้วยผลของ: ip -4 addr show eth0 | grep -oP 'inet \K[0-9.]+'
+# (WSL2 IP เปลี่ยนทุกครั้งที่ restart WSL → ต้อง update ใหม่)
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=3001 connectaddress=<WSL_IP> connectport=3001
+netsh interface portproxy show v4tov4          # ตรวจ rule
+netsh interface portproxy delete v4tov4 listenaddress=0.0.0.0 listenport=3001   # ลบ
+```
+ทางลัดจาก WSL (elevated prompt จะเด้งบน Windows ให้ approve): ใช้ `powershell.exe Start-Process powershell -Verb RunAs -ArgumentList ...`
+
+**ใช้งาน** — navigate ไป `http://host.docker.internal:3001` (**ไม่ใช่** localhost):
+- `browser_navigate` → `http://host.docker.internal:3001` (หน้าแรก), `/bazi`, `/tongshu`, `/tianji`, ...
+- `browser_snapshot` → accessibility tree (YAML, อ่าน structure/UI text ได้ทันที เหมาะ verify UI)
+- `browser_take_screenshot` → ภาพ (relative path = cwd ของ MCP server = project root)
+- `browser_click` / `browser_type` / `browser_console_messages` — 互动 + เช็ค error
+
+**Known cosmetic error**: WebSocket HMR (`_next/webpack-hmr`) ล้มเหลวด้วย `ERR_INVALID_HTTP_RESPONSE` — เพราะ portproxy เป็น TCP layer ไม่ forward WS handshake. **ไม่กระทบการทดสอบ UI** (hot-reload ตอน dev หยุดทำงานเท่านั้น).
+
+**Output dir**: `.playwright-mcp/` (ใน project root) เก็บ snapshot YAML + console log อัตโนมัติ.
+
 ## File Locations (สำคัญ)
 - Profile type: `src/types/profile.ts` (`birthLongitude`, `useTrueSolarTime`)
 - Profile store: `src/lib/stores/profile-store.ts` (`useProfileStoreBase` + hydration hooks)

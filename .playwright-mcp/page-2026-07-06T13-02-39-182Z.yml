@@ -1,0 +1,61 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "myBaZi" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - img [ref=e5]
+      - text: myBaZi
+    - generic [ref=e6]:
+      - generic [ref=e8]:
+        - button "การแจ้งเตือน" [ref=e9]:
+          - img
+          - generic [ref=e10]: การแจ้งเตือน
+        - button "บันทึก" [ref=e11]:
+          - img
+          - generic [ref=e12]: บันทึก
+      - button "Toggle theme" [ref=e13]:
+        - img [ref=e14]
+  - main [ref=e17]:
+    - generic [ref=e20]:
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - img [ref=e24]
+          - generic [ref=e25]: 八字
+        - generic [ref=e26]:
+          - heading "ปาจื้อ" [level=1] [ref=e27]
+          - paragraph [ref=e28]: โมดูลคำนวณปาจื้อและวิเคราะห์ดวงชะตา
+      - generic [ref=e30]:
+        - img [ref=e31]
+        - generic [ref=e32]:
+          - heading "ยังไม่ได้เลือกโปรไฟล์" [level=2] [ref=e33]
+          - paragraph [ref=e34]: สร้างหรือเลือกโปรไฟล์ก่อนเริ่มวิเคราะห์ เพื่อให้แผนผัง 4 เสาและคำอธิบายอิงข้อมูลเกิดของคุณ
+        - link "ไปที่หน้าโปรไฟล์" [ref=e35] [cursor=pointer]:
+          - /url: /profiles
+  - navigation "Mobile navigation" [ref=e36]:
+    - link "หน้าแรก" [ref=e37] [cursor=pointer]:
+      - /url: /
+      - img [ref=e38]
+      - generic [ref=e41]: หน้าแรก
+    - link "ปาจื้อ" [ref=e42] [cursor=pointer]:
+      - /url: /bazi
+      - img [ref=e43]
+      - generic [ref=e46]: ปาจื้อ
+    - link "ปฏิทิน" [ref=e47] [cursor=pointer]:
+      - /url: /tongshu
+      - img [ref=e48]
+      - generic [ref=e50]: ปฏิทิน
+    - link "เทียนจี" [ref=e51] [cursor=pointer]:
+      - /url: /tianji
+      - img [ref=e52]
+      - generic [ref=e55]: เทียนจี
+    - link "โปรไฟล์" [ref=e56] [cursor=pointer]:
+      - /url: /profiles
+      - img [ref=e57]
+      - generic [ref=e62]: โปรไฟล์
+    - link "ตั้งค่า" [ref=e63] [cursor=pointer]:
+      - /url: /settings
+      - img [ref=e64]
+      - generic [ref=e67]: ตั้งค่า
+  - link "ถาม 天机 — AI ที่ปรึกษาดวง" [ref=e68] [cursor=pointer]:
+    - /url: /tianji
+    - img [ref=e69]
+    - generic [ref=e72]: ถาม 天机
