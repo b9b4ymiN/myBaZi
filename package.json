@@ -30,12 +30,10 @@
     "engine:audit-seq": "tsx scripts/audit-sequence.mjs",
     "tongshu:test": "tsx scripts/test-tongshu.mjs",
     "qimen:test": "tsx scripts/test-qimen.mjs",
-    "ai:test": "tsx scripts/test-ai-client.mjs",
     "ai:context": "tsx scripts/test-bazi-context.mjs",
     "ai:hallucination": "tsx scripts/test-zero-hallucination.mjs",
     "ai:chat": "tsx scripts/test-chat.mjs",
     "markdown:test": "tsx scripts/test-markdown.mjs",
-    "stream:test": "tsx scripts/test-stream.mjs",
     "narrative:test": "tsx scripts/test-narrative.mjs",
     "daybazi:test": "tsx scripts/test-day-bazi.mjs",
     "locations:test": "tsx scripts/test-locations.mjs"

@@ -1,5 +1,3 @@
-import type { AiSettings } from '@/types/ai-settings';
-
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
@@ -7,7 +5,6 @@ export interface ChatMessage {
 
 export interface ChatRequestOptions {
   messages: ChatMessage[];
-  settings: AiSettings;
   signal?: AbortSignal;
 }
 
@@ -25,45 +22,25 @@ export interface ChatCompletionResponse {
 }
 
 /**
- * OpenAI-compatible chat completion client using browser fetch.
- * Supports any OpenAI-compatible endpoint (e.g., GLM, Azure OpenAI, local models).
+ * OpenAI-compatible chat completion client.
+ *
+ * ยิงผ่าน server route `/api/ai/chat` (ไม่ได้ยิง LLM ตรงจาก browser) — เพื่อให้
+ * apiKey/endpoint/model อยู่ฝั่ง server (.env) เท่านั้น ไม่ leak สู่ browser.
+ *
+ * Route เป็น thin proxy: ส่งต่อ response (JSON) กลับมาให้ parse เหมือนเดิม.
  *
  * @throws Error if request fails or returns invalid response
  */
 export async function chatCompletion(
   opts: ChatRequestOptions
 ): Promise<string> {
-  const { messages, settings, signal } = opts;
-
-  if (!settings.enabled) {
-    throw new Error('AI is disabled in settings');
-  }
-
-  if (!settings.endpoint) {
-    throw new Error('AI endpoint is not configured');
-  }
-
-  if (!settings.apiKey) {
-    throw new Error('API key is not configured');
-  }
-
-  if (!settings.model) {
-    throw new Error('Model name is not configured');
-  }
+  const { messages, signal } = opts;
 
   try {
-    const response = await fetch(settings.endpoint, {
+    const response = await fetch('/api/ai/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${settings.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: settings.model,
-        messages,
-        temperature: settings.temperature,
-        stream: false,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages, stream: false }),
       signal,
     });
 
@@ -104,46 +81,23 @@ export interface StreamChatHandlers {
 }
 
 /**
- * Streaming variant of chatCompletion. Sends `stream: true`, parses the
- * Server-Sent-Events stream from the OpenAI-compatible endpoint, and invokes
- * `onDelta` for each token chunk. Returns the full accumulated content when
- * the stream terminates (`[DONE]` or stream end).
+ * Streaming variant of chatCompletion. ส่ง `stream: true` ไปยัง server route
+ * ซึ่ง passthrough SSE จาก upstream กลับมา. parse SSE แต่ละบรรทัด (`data: …`)
+ * เพื่อส่ง delta ผ่าน `onDelta`. คืน content เต็มเมื่อ stream จบ (`[DONE]`).
  *
- * Falls back gracefully: the caller can catch and retry with the non-stream
- * `chatCompletion` if an endpoint refuses streaming.
+ * Caller สามารถ catch แล้ว retry ด้วย `chatCompletion` ได้ถ้า endpoint ปฏิเสธ streaming.
  */
 export async function streamChatCompletion(
   opts: ChatRequestOptions,
   handlers: StreamChatHandlers
 ): Promise<string> {
-  const { messages, settings, signal } = opts;
+  const { messages, signal } = opts;
   const { onDelta } = handlers;
 
-  if (!settings.enabled) {
-    throw new Error('AI is disabled in settings');
-  }
-  if (!settings.endpoint) {
-    throw new Error('AI endpoint is not configured');
-  }
-  if (!settings.apiKey) {
-    throw new Error('API key is not configured');
-  }
-  if (!settings.model) {
-    throw new Error('Model name is not configured');
-  }
-
-  const response = await fetch(settings.endpoint, {
+  const response = await fetch('/api/ai/chat', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${settings.apiKey}`,
-    },
-    body: JSON.stringify({
-      model: settings.model,
-      messages,
-      temperature: settings.temperature,
-      stream: true,
-    }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages, stream: true }),
     signal,
   });
 

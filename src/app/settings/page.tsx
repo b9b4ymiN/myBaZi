@@ -1,5 +1,4 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AiSettingsForm } from "@/components/ai/ai-settings-form";
 import Image from "next/image";
 
 export default function SettingsPage() {
@@ -23,18 +22,8 @@ export default function SettingsPage() {
           <CardDescription>ตั้งค่า myBaZi ตามความต้องการของคุณ</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* AI Settings Section */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold">天机 (เทียนจี) AI Settings</h3>
-              <p className="text-sm text-muted-foreground">
-                ตั้งค่า OpenAI-compatible endpoint และ API key สำหรับบริการ AI
-              </p>
-            </div>
-            <AiSettingsForm />
-          </div>
+          {/* AI config ย้ายไปฝั่ง server (.env / Vercel) แล้ว — ไม่มีใน UI */}
 
-          {/* Other Settings Placeholder */}
           <div className="p-4 rounded-lg border border-border bg-muted/50">
             <h3 className="font-semibold mb-2">การตั้งค่าอื่นๆ</h3>
             <p className="text-sm text-muted-foreground">

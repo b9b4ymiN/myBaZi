@@ -1,16 +1,35 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { ChatWindow } from '@/components/tianji/chat-window';
-import { useActiveProfileSafe, useAiSettingsSafe } from '@/lib/stores/use-hydrated';
-import { Settings, UserCircle } from 'lucide-react';
+import { useActiveProfileSafe } from '@/lib/stores/use-hydrated';
+import { UserCircle, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
+
+type AiStatus = 'loading' | 'ok' | 'not-configured';
 
 export default function TianjiPage() {
   const profile = useActiveProfileSafe();
-  const { settings } = useAiSettingsSafe();
+  const [aiStatus, setAiStatus] = useState<AiStatus>('loading');
+
+  // เช็คว่า server มี AI env ครบหรือไม่ (ไม่ return key/endpoint)
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/ai/status')
+      .then((r) => r.json())
+      .then((data: { ok?: boolean }) => {
+        if (!cancelled) setAiStatus(data.ok ? 'ok' : 'not-configured');
+      })
+      .catch(() => {
+        if (!cancelled) setAiStatus('not-configured');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // No profile selected
   if (!profile) {
@@ -33,19 +52,16 @@ export default function TianjiPage() {
     );
   }
 
-  // AI not configured
-  if (!settings || !settings.enabled) {
+  // AI not configured on server
+  if (aiStatus === 'not-configured') {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="max-w-2xl mx-auto">
           <CardContent className="pt-6">
-            <Alert variant="default">
-              <Settings className="h-4 w-4" />
-              <AlertDescription className="flex items-center justify-between">
-                <span>กรุณาตั้งค่า AI ก่อนใช้งาน 天机 AI</span>
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/settings">ไปที่ตั้งค่า</Link>
-                </Button>
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                AI ยังไม่พร้อม — ผู้ดูแลยังไม่ได้ตั้งค่าบน server
               </AlertDescription>
             </Alert>
           </CardContent>
@@ -54,11 +70,11 @@ export default function TianjiPage() {
     );
   }
 
-  // All good - show chat window
+  // Loading or OK — render chat window (it handles its own loading state)
   return (
     <div className="mx-auto max-w-4xl px-4 pt-4 lg:px-6 lg:pt-6 lg:pb-6">
       <Card className="overflow-hidden">
-        <ChatWindow profile={profile} settings={settings} />
+        <ChatWindow profile={profile} />
       </Card>
     </div>
   );

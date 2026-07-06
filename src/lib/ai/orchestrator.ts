@@ -9,7 +9,6 @@
  */
 
 import type { Profile } from "@/types/profile";
-import type { AiSettings } from "@/types/ai-settings";
 import type { ChatMessage } from "./client";
 import { chatCompletion, streamChatCompletion } from "./client";
 import { TIANJI_SYSTEM_PROMPT } from "./system-prompt";
@@ -22,8 +21,6 @@ export interface TianjiRequest {
   profile: Profile | null;
   /** ข้อความถามจากผู้ใช้ */
   userMessage: string;
-  /** ตั้งค่า AI */
-  settings: AiSettings;
   /** ประวัติการแชท (optional) */
   history?: ChatMessage[];
   /** ปีปัจจุบัน (ค.ศ.) - required for SSR safety */
@@ -49,20 +46,12 @@ export interface TianjiResponse {
  * @returns TianjiResponse
  */
 export async function askTianji(req: TianjiRequest): Promise<TianjiResponse> {
-  const { profile, userMessage, settings, history = [], currentYear } = req;
+  const { profile, userMessage, history = [], currentYear } = req;
 
   // ===== Validation =====
   if (!profile) {
     return {
       reply: "กรุณาเลือก profile ก่อนค่ะ/ครับ",
-      layersUsed: { natal: false, dynamic: false },
-      intent: { intent: "general" },
-    };
-  }
-
-  if (!settings.enabled) {
-    return {
-      reply: "กรุณาตั้งค่า AI ในหน้า Settings ก่อนค่ะ/ครับ",
       layersUsed: { natal: false, dynamic: false },
       intent: { intent: "general" },
     };
@@ -117,7 +106,6 @@ export async function askTianji(req: TianjiRequest): Promise<TianjiResponse> {
   try {
     const reply = await chatCompletion({
       messages,
-      settings,
     });
 
     return {
@@ -156,20 +144,12 @@ export async function askTianjiStream(
   handlers: TianjiStreamHandlers,
   signal?: AbortSignal
 ): Promise<TianjiResponse> {
-  const { profile, userMessage, settings, history = [], currentYear } = req;
+  const { profile, userMessage, history = [], currentYear } = req;
   const { onDelta } = handlers;
 
   if (!profile) {
     return {
       reply: "กรุณาเลือก profile ก่อนค่ะ/ครับ",
-      layersUsed: { natal: false, dynamic: false },
-      intent: { intent: "general" },
-    };
-  }
-
-  if (!settings.enabled) {
-    return {
-      reply: "กรุณาตั้งค่า AI ในหน้า Settings ก่อนค่ะ/ครับ",
       layersUsed: { natal: false, dynamic: false },
       intent: { intent: "general" },
     };
@@ -211,7 +191,7 @@ export async function askTianjiStream(
 
   // Throws on stream error — caller handles fallback.
   const reply = await streamChatCompletion(
-    { messages, settings, signal },
+    { messages, signal },
     { onDelta }
   );
 

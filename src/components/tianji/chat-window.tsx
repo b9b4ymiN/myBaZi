@@ -5,7 +5,6 @@ import { useChatSafe } from '@/lib/stores/chat-store';
 import { askTianji, askTianjiStream } from '@/lib/ai/orchestrator';
 import type { ChatMessageUI } from '@/lib/stores/chat-store';
 import type { Profile } from '@/types/profile';
-import type { AiSettings } from '@/types/ai-settings';
 import { ChatInput } from './chat-input';
 import { SuggestionChips } from './suggestion-chips';
 import { MarkdownRenderer } from '@/components/ui/markdown';
@@ -29,12 +28,11 @@ import {
 
 interface ChatWindowProps {
   profile: Profile;
-  settings: AiSettings;
 }
 
 type ApiHistoryMessage = { role: 'user' | 'assistant'; content: string };
 
-export function ChatWindow({ profile, settings }: ChatWindowProps) {
+export function ChatWindow({ profile }: ChatWindowProps) {
   const {
     messages,
     isThinking,
@@ -99,7 +97,7 @@ export function ChatWindow({ profile, settings }: ChatWindowProps) {
 
     try {
       const result = await askTianjiStream(
-        { profile, userMessage: userText, settings, history, currentYear },
+        { profile, userMessage: userText, history, currentYear },
         { onDelta },
         controller.signal
       );
@@ -135,7 +133,6 @@ export function ChatWindow({ profile, settings }: ChatWindowProps) {
           const r = await askTianji({
             profile,
             userMessage: userText,
-            settings,
             history,
             currentYear,
           });
