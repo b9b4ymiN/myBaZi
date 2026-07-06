@@ -13,6 +13,7 @@
  */
 
 import type { ElementName } from "./types";
+import type { BaZiChart, Pillar } from "./types";
 
 /**
  * ชื่อ天干 (Heavenly Stem) ทั้ง 10 ตัว
@@ -107,4 +108,47 @@ export function detectStemCombination(
  */
 export function stemsCombine(stemA: HeavenStemName, stemB: HeavenStemName): boolean {
   return detectStemCombination(stemA, stemB).combines;
+}
+
+/**
+ * คู่天干ที่ผนึกกัน (五合) ที่พบใน 4 เสาของดวง
+ * ตรวจทุกคู่ระหว่าง year/month/day/hour stems (6 คู่) ว่าผนึกกันและแปรสภาพเป็นธาตุอะไร
+ */
+export interface StemCombinationMatch {
+  /** คู่ stems ที่ผนึกกัน */
+  pair: [HeavenStemName, HeavenStemName];
+  /** ตำแหน่งเสาของแต่ละ stem */
+  positions: [Pillar["position"], Pillar["position"]];
+  /** ธาตุที่แปรสภาพจากการผนึก */
+  transformElement: ElementName;
+}
+
+/**
+ * วิเคราะห์คู่天干五合ทั้งหมดในดวง (ระหว่าง 4 เสา)
+ *
+ * @param chart - แผนผัง BaZi 4 เสา
+ * @returns คู่ที่ผนึกกัน (อาจว่าง ถ้าไม่มีคู่ใดผนึก)
+ */
+export function analyzeStemCombinations(chart: BaZiChart): StemCombinationMatch[] {
+  const pillars: Pillar[] = [chart.year, chart.month, chart.day, chart.hour].filter(
+    (p): p is Pillar => p !== null
+  );
+  const matches: StemCombinationMatch[] = [];
+  for (let i = 0; i < pillars.length; i++) {
+    for (let j = i + 1; j < pillars.length; j++) {
+      const a = pillars[i];
+      const b = pillars[j];
+      const sa = a.stem.name as HeavenStemName;
+      const sb = b.stem.name as HeavenStemName;
+      const r = detectStemCombination(sa, sb);
+      if (r.combines && r.transformElement) {
+        matches.push({
+          pair: [sa, sb],
+          positions: [a.position, b.position],
+          transformElement: r.transformElement,
+        });
+      }
+    }
+  }
+  return matches;
 }
