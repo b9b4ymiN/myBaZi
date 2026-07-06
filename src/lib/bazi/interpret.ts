@@ -91,9 +91,9 @@ function buildPersonality(archetype: Archetype, tp: TenGodProfile): DomainInterp
   const topMeaning = topGod ? TEN_GOD_MEANINGS[topGod] : null;
 
   const intro =
-    `เจ้าวัน "${archetype.title}"` +
-    (topMeaning ? ` — แกนเด่นในดวงของคุณคือ ${topMeaning.nameTh} (${topMeaning.name})` : "") +
-    ` ทำให้บุคลิกโดยรวมเป็นแนวที่วิเคราะห์ได้จาก day master + ten god ที่เด่น`;
+    `ลักษณะเด่นของคนใจนี้คือ “${archetype.title}”` +
+    (topMeaning ? ` ตามด้วยแกนหลัก “${topMeaning.nameTh}” (${topMeaning.name})` : "") +
+    (topMeaning ? ` — ${topMeaning.essence}` : "");
 
   const bullets: string[] = [
     ...archetype.traits.slice(0, 3),
@@ -124,7 +124,7 @@ function buildCareer(
   const topMeaning = topGod ? TEN_GOD_MEANINGS[topGod] : null;
 
   const intro =
-    `${relApp.asUsefulGod} — ส่วนใหญ่เส้นทางการงานจะเอื้อตามจุดนี้`;
+    `${relApp.asUsefulGod} เส้นทางการงานของคุณจึงมักเอื้อไปทางนี้`;
 
   const bullets: string[] = [
     ...archetype.careers.slice(0, 3),
@@ -157,16 +157,16 @@ function buildWealth(tp: TenGodProfile, analysis: BaZiAnalysis): DomainInterpret
 
   if (dominantWealth) {
     const m = TEN_GOD_MEANINGS[dominantWealth];
-    intro = `ดวงคุณทรัพย์ (财) เด่น — แนวโน้ม ${m.nameTh}: ${m.essence}`;
+    intro = `ดวงของคุณมีพลังด้านทรัพย์สินเด่นชัด แบบ “${m.nameTh}” — ${m.essence}`;
     bullets = [...m.wealth];
     sources.push(`dominantWealth=${dominantWealth}`);
   } else if (wealthIsUseful) {
-    intro = `ทรัพย์ (财) เป็นธาตุประโยชน์ (用神) ของคุณ — ${RELATIONSHIP_APPLICATION.wealth.asUsefulGod}`;
+    intro = `ธาตุทรัพย์ (财) เป็นธาตุประโยชน์ (用神) ของคุณ — ${RELATIONSHIP_APPLICATION.wealth.asUsefulGod}`;
     bullets = [...RELATIONSHIP_APPLICATION.wealth.timingNote.split("。")];
     sources.push("wealth=usefulGod");
   } else {
-    intro = `ดวงคุณทรัพย์ไม่ได้เด่นมาก (count ${tp.relationshipCounts.wealth}) — การเงินมาจากความสม่ำเสมอมากกว่าความรวดเร็ว`;
-    bullets = ["เน้นสะสม ระวังรั่ว", "เพิ่มพลังทรัพย์ผ่าน luck ที่เติม 金属"];
+    intro = `ดวงของคุณไม่ได้หนักด้านทรัพย์มากนัก การเงินจึงมาจากความสม่ำเสมอมากกว่าความรวดเร็ว`;
+    bullets = ["เน้นสะสมไว้ ระวังการรั่วไหล", "เสริมพลังด้านทรัพย์ในช่วงรอบดวงที่เติมธาตุโลหะ (金)"];
     sources.push("wealth=balanced");
   }
 
@@ -200,14 +200,14 @@ function buildRelationship(
     const intro = `ดาวคู่ครอง (เพศ${ctx.gender === "male" ? "ชาย" : "หญิง"}): ${spouseAnalysis.star.reading}`;
 
     const bullets: string[] = [
-      `spouse palace: ${spouseAnalysis.palace.reading}`,
+      `ตำแหน่งคู่ครอง: ${spouseAnalysis.palace.reading}`,
       spouseAnalysis.crossCheckReading,
       spouseAnalysis.overall,
     ].filter(Boolean);
 
     // Keep existing companion-dominant warning logic
     if (tp.dominantGods.includes("比肩") || tp.dominantGods.includes("劫财")) {
-      bullets.push("⚠️ companion เด่น — อาจมีคู่แข่ง/แรงดึงดูดจากคนนอก ควรสื่อสารให้ชัด");
+      bullets.push("⚠️ ดาวเพื่อนพี่น้อง (比肩/劫财) เด่น — อาจมีคู่แข่งหรือแรงดึงดูดจากคนนอก ควรสื่อสารให้ชัดเจน");
     }
 
     const sources = [
@@ -232,12 +232,12 @@ function buildRelationship(
   const meaning = TEN_GOD_MEANINGS[spouseTenGod];
 
   const intro =
-    `spouse palace (วันกิ่ง = ${spouse.branch.name}) — hidden หลักเป็น ${TEN_GOD_THAI[spouseTenGod]}. ` +
-    (spouseReading ?? "ความสัมพันธ์อ่านจาก ten god ใน spouse palace");
+    `ตำแหน่งคู่ครองในดวง (เสาวัน กิ่ง ${spouse.branch.name}) บอกว่าคู่ของคุณมีแกน “${TEN_GOD_THAI[spouseTenGod]}” ` +
+    (spouseReading ? `— ${spouseReading}` : "— ลักษณะความสัมพันธ์อ่านจากดาวคู่ในตำแหน่งนี้");
 
   const bullets: string[] = meaning ? [...meaning.relationship] : [];
   if (tp.dominantGods.includes("比肩") || tp.dominantGods.includes("劫财")) {
-    bullets.push("⚠️ companion เด่น — อาจมีคู่แข่ง/แรงดึงดูดจากคนนอก ควรสื่อสารให้ชัด");
+    bullets.push("⚠️ ดาวเพื่อนพี่น้อง (比肩/劫财) เด่น — อาจมีคู่แข่งหรือแรงดึงดูดจากคนนอก ควรสื่อสารให้ชัดเจน");
   }
 
   return {
@@ -260,11 +260,11 @@ function buildHealth(analysis: BaZiAnalysis): DomainInterpretation {
   ].filter((el, idx, arr) => arr.indexOf(el) === idx); // dedupe
 
   const intro =
-    `สุขภาพอ่านจากธาตุที่เสีย — เด่นเกินหรือขาด. ` +
-    `ดวงนี้เด่น ${ELEMENT_THAI[elements.dominantElement]}` +
-    (elements.weakestElement ? ` / น้อย ${ELEMENT_THAI[elements.weakestElement]}` : "") +
+    `ด้านสุขภาพดูจากธาตุที่เสียสมดุลในดวง (เด่นเกินหรือขาด) ` +
+    `ดวงนี้ธาตุ${ELEMENT_THAI[elements.dominantElement]} (${elements.dominantElement}) เด่น` +
+    (elements.weakestElement ? ` ส่วน${ELEMENT_THAI[elements.weakestElement]}น้อย` : "") +
     (elements.missingElements.length > 0
-      ? ` / ขาด ${elements.missingElements.map((e) => ELEMENT_THAI[e]).join("、")}`
+      ? ` และขาด ${elements.missingElements.map((e) => ELEMENT_THAI[e]).join("、")}`
       : "");
 
   const bullets: string[] = [];

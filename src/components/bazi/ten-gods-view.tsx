@@ -8,6 +8,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { ElementBadge } from "@/components/bazi/element-badge";
 import type { GodsAndStarsAnalysis, TenGodInfo, TenGodName } from "@/types/bazi-gods-stars";
 import type { BaZiChart } from "@/lib/bazi/types";
@@ -154,18 +160,26 @@ export function TenGodsView({ godsAndStars, chart }: TenGodsViewProps) {
             )}
           </div>
 
-          {/* Summary Legend */}
+          {/* Summary Legend — collapsible (เทคนิค ซ่อน default) */}
           <Separator />
-          <div className="text-xs text-muted-foreground space-y-1">
-            <p className="font-medium">สรุป 10 เทพเจ้า:</p>
-            <div className="grid grid-cols-2 gap-1">
-              <div>• 同我 (เพื่อน): 比肩, 劫财</div>
-              <div>• 我生 (ผลผลิต): 食神, 伤官</div>
-              <div>• 我克 (ทรัพย์): 偏财, 正财</div>
-              <div>• 克我 (อำนาจ): 七杀, 正官</div>
-              <div>• 生我 (ทรัพย์สิน): 偏印, 正印</div>
-            </div>
-          </div>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="legend" className="border-b-0">
+              <AccordionTrigger className="text-xs text-muted-foreground py-2">
+                ตารางสรุปความสัมพันธ์ 10 เทพเจ้า (十神)
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="text-xs text-muted-foreground space-y-1 pb-2">
+                  <div className="grid grid-cols-2 gap-1">
+                    <div>• 同我 (เพื่อน): 比肩, 劫财</div>
+                    <div>• 我生 (ผลผลิต): 食神, 伤官</div>
+                    <div>• 我克 (ทรัพย์): 偏财, 正财</div>
+                    <div>• 克我 (อำนาจ): 七杀, 正官</div>
+                    <div>• 生我 (ทรัพย์สิน): 偏印, 正印</div>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </CardContent>
     </Card>
