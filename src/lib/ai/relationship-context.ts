@@ -14,7 +14,8 @@
  * 7. Overall compatibility assessment
  */
 
-import type { Profile } from "@/types/profile";
+import type { Profile, RelationshipRole } from "@/types/profile";
+import type { SixRelativeTargetRole } from "./intent-detector";
 import { calculateBaZi } from "@/lib/bazi/calculate";
 import { analyzeStrength } from "@/lib/bazi/strength";
 import { analyzeStructure } from "@/lib/bazi/structure";
@@ -39,6 +40,70 @@ export interface RelationshipContextResult {
 }
 
 /**
+ * Priority order สำหรับ targetRole="any-relative" (คำถามกว้าง "ครอบครัว/พ่อแม่")
+ * เลือกคนแรกที่เจอตามลำดับ: คู่ครอง → แม่ → พ่อ → ลูกชาย → ลูกสาว → พี่น้อง
+ */
+const ANY_RELATIVE_PRIORITY: RelationshipRole[] = [
+  "spouse", "mother", "father", "son", "daughter", "sibling",
+];
+
+/**
+ * ผลลัพธ์จาก findRelativeProfile() — profile ที่ match + metadata สำหรับ note
+ */
+export interface RelativeMatch {
+  /** Profile ของ relative ที่ match (createdAt เร็วที่สุดใน role เดียวกัน) */
+  profile: Profile;
+  /** Role จริงของ relative ที่ match */
+  role: RelationshipRole;
+  /** จำนวน relative ใน role เดียวกัน — >1 → context จะเพิ่ม note "มีหลายคน" */
+  sameRoleCount: number;
+}
+
+/**
+ * แม็พ targetRole (จาก intent) → รายการ role ใน store ที่จะค้นหา
+ */
+function resolveSearchRoles(targetRole: SixRelativeTargetRole): RelationshipRole[] {
+  if (targetRole === "any-relative") return ANY_RELATIVE_PRIORITY;
+  if (targetRole === "child") return ["son", "daughter"];
+  return [targetRole as RelationshipRole];
+}
+
+/**
+ * หา relative profile ที่ตรงกับ role ที่ user ถาม (N=1)
+ *
+ * - exclude self (id ตรง หรือ relationship==="self")
+ * - ค้นตาม priority ของ role (เฉพาะ any-relative/child มีหลาย role)
+ * - หลายคนใน role เดียวกัน → เลือก createdAt เร็วที่สุด + sameRoleCount > 1 (สำหรับ note)
+ *
+ * @param profiles - ทุก profile ใน store
+ * @param self - profile ที่เป็นตัวเอง
+ * @param targetRole - role ที่ user ถาม (จาก detectSixRelativeRole)
+ * @returns RelativeMatch หรือ null ถ้าไม่มี relative ตรงในระบบ
+ */
+export function findRelativeProfile(
+  profiles: Profile[],
+  self: Profile,
+  targetRole: SixRelativeTargetRole
+): RelativeMatch | null {
+  const candidates = profiles.filter(
+    (p) => p.id !== self.id && p.relationship && p.relationship !== "self"
+  );
+
+  const searchRoles = resolveSearchRoles(targetRole);
+
+  for (const role of searchRoles) {
+    const matches = candidates
+      .filter((p) => p.relationship === role)
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    if (matches.length > 0) {
+      return { profile: matches[0], role, sameRoleCount: matches.length };
+    }
+  }
+
+  return null;
+}
+
+/**
  * สร้าง Relationship Context (คู่เทียบดวง) — compressed digest
  *
  * @param self - Profile ของตัวเอง
@@ -49,8 +114,11 @@ export interface RelationshipContextResult {
 export function buildRelationshipContext(
   self: Profile,
   partner: Profile,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  currentYear: number // Reserved for future date-specific compatibility analysis
+  _currentYear: number, // Reserved for future date-specific compatibility analysis
+  options?: {
+    /** จำนวน relative ใน role เดียวกัน — >1 → เพิ่ม note "มีหลายคนในระบบ" */
+    sameRoleCount?: number;
+  }
 ): RelationshipContextResult {
   // ===== Compute charts & analyzers =====
   const selfChart = calculateBaZi(self);
@@ -91,7 +159,18 @@ export function buildRelationshipContext(
   const sections: string[] = [];
 
   // ===== Header =====
-  sections.push("## ความสัมพันธ์ข้ามดวง (合婚 Context)");
+  // relabel ตาม role จริงของ relative ("ความสัมพันธ์กับแม่" แทน "合婚 Context")
+  // fallback "คู่เทียบดวง" ถ้า profile นั้นไม่ได้ตั้ง relationship
+  const partnerRoleLabel = relationshipLabel(partner.relationship);
+  const headerRole = partnerRoleLabel !== "—" ? partnerRoleLabel : "คู่เทียบดวง";
+  sections.push(`## ความสัมพันธ์กับ ${headerRole}`);
+
+  // Note: ถ้ามี relative หลายคนใน role เดียวกัน → flag ให้ AI รู้ว่า context นี้เฉพาะคนที่เลือก
+  if (options?.sameRoleCount && options.sameRoleCount > 1) {
+    sections.push(
+      `> ⚠️ หมายเหตุ: มี${headerRole} ${options.sameRoleCount} คนในระบบ — context นี้วิเคราะห์เฉพาะ "${partner.name}" (เพิ่มก่อนสุด) เท่านั้น`
+    );
+  }
 
   // ===== Self one-liner =====
   const selfDMThai = STEM_THAI[selfChart.dayMaster.name] || selfChart.dayMaster.name;

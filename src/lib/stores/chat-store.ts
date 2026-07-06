@@ -11,6 +11,7 @@ export interface ChatMessageUI {
   layersUsed?: {
     natal: boolean;
     dynamic: boolean;
+    relationship: boolean;
   };
   error?: boolean;
 }

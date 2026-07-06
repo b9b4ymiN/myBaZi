@@ -29,11 +29,13 @@ import {
 
 interface ChatWindowProps {
   profile: Profile;
+  /** ทุก profile ใน store — ส่งเข้า orchestrator เพื่อ resolve relative สำหรับคำถาม六亲 */
+  profiles: Profile[];
 }
 
 type ApiHistoryMessage = { role: 'user' | 'assistant'; content: string };
 
-export function ChatWindow({ profile }: ChatWindowProps) {
+export function ChatWindow({ profile, profiles }: ChatWindowProps) {
   const {
     messages,
     isThinking,
@@ -98,7 +100,7 @@ export function ChatWindow({ profile }: ChatWindowProps) {
 
     try {
       const result = await askTianjiStream(
-        { profile, userMessage: userText, history, currentYear },
+        { profile, userMessage: userText, history, currentYear, profiles },
         { onDelta },
         controller.signal
       );
@@ -136,6 +138,7 @@ export function ChatWindow({ profile }: ChatWindowProps) {
             userMessage: userText,
             history,
             currentYear,
+            profiles,
           });
           addMessage({
             role: 'assistant',
@@ -331,6 +334,11 @@ export function ChatWindow({ profile }: ChatWindowProps) {
                               {message.layersUsed?.dynamic && (
                                 <Badge variant="secondary" className="text-xs px-2 py-0">
                                   ดวงชะตาเคลื่อนไหว
+                                </Badge>
+                              )}
+                              {message.layersUsed?.relationship && (
+                                <Badge variant="secondary" className="text-xs px-2 py-0">
+                                  ความสัมพันธ์
                                 </Badge>
                               )}
                             </>

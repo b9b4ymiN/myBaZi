@@ -10,7 +10,17 @@
  * - general: คำถามทั่วไป (ไม่ต้องการคำนวณเพิ่ม)
  */
 
+import type { RelationshipRole } from "@/types/profile";
+
 export type Intent = "natal" | "future_year" | "future_month" | "future_day" | "six_relative" | "general";
+
+/**
+ * Role เป้าหมายที่ user ถามในคำถาม六亲
+ * - RelationshipRole เฉพาะเจาะจง (spouse/mother/father/son/daughter/sibling)
+ * - "any-relative": ถามกว้าง ("ครอบครัว", "พ่อแม่") — findRelativeProfile ใช้ priority
+ * - "child": ถาม "ลูก" generic ไม่ระบุเพศ — findRelativeProfile หา son หรือ daughter
+ */
+export type SixRelativeTargetRole = RelationshipRole | "any-relative" | "child";
 
 export interface DetectedIntent {
   intent: Intent;
@@ -19,7 +29,69 @@ export interface DetectedIntent {
     month?: number;
     day?: number;
     relativeDay?: number; // 0=today, 1=tomorrow, -1=yesterday
+    targetRole?: SixRelativeTargetRole; // ใช้เฉพาะ intent === "six_relative"
   };
+}
+
+/**
+ * คำประกอบที่มี "พ่อ/แม่/ลูก" แต่ไม่ใช่ relative — sanitize ออกก่อน match
+ * (ไทยไม่มี word-boundary → "พ่อค้า" จะถูก match เป็น "พ่อ" ถ้าไม่กำจัดก่อน)
+ */
+const RELATIVE_BLACKLIST_WORDS = [
+  "พ่อค้า", "แม่ค้า", "พ่อแม่ค้า", "พ่อมด", "แม่มด", "แม่น้ำ", "แม่บ้าน", "แม่พิมพ์", "แม่แบบ", "แม่เหล็ก",
+  "ลูกชิ้น", "ลูกน้ำ", "ลูกบาศก์", "ลูกตา", "ลูกศร", "ลูกเสียง", "ลูกโลก", "ลูกกรง", "ลูกจ้าง", "ลูกค้า",
+  "ลูกผสม", "ลูกปัด", "ลูกกวาด", "ลูกกลิ้ง", "ลูกเต๋า", "ลูกสน", "ลูกกล้า",
+];
+
+const ANY_RELATIVE_KEYWORDS = [
+  "พ่อแม่", "ครอบครัว", "ญาติพี่น้อง", "ญาติ", "คนในครอบครัว", "คนในบ้าน",
+  "สมาชิกในครอบครัว", "สมาชิก", "พ่อแม่ลูก", "family", "relatives",
+];
+
+const SPOUSE_KEYWORDS = [
+  "คู่ครอง", "คู่ชีวิต", "สามี", "ภรรยา", "แฟน", "คนรัก", "แต่งงาน", "ความรัก",
+  "ดาวคู่ครอง", "ดาวคู่", "เนื้อคู่", "คู่แต่งงาน", "合婚", "compatibility",
+  "spouse", "marriage", "marry", "partner", "husband", "wife", "fiance", "fiancee",
+];
+
+const SON_KEYWORDS = ["ลูกชาย", "บุตรชาย", "ลูกผู้ชาย"];
+const DAUGHTER_KEYWORDS = ["ลูกสาว", "บุตรสาว", "ลูกผู้หญิง"];
+const CHILD_KEYWORDS = ["ลูก", "บุตร", "children", "child"]; // generic — ไม่ระบุเพศ
+const MOTHER_KEYWORDS = ["แม่", "mother"];
+const FATHER_KEYWORDS = ["พ่อ", "father"];
+const SIBLING_KEYWORDS = ["พี่น้อง", "พี่ชาย", "พี่สาว", "น้องชาย", "น้องสาว", "sibling", "brother", "sister"];
+
+/**
+ * Classify role เป้าหมายจากคำถาม六亲
+ *
+ * Priority: any-relative → spouse → son → daughter → child → mother → father → sibling
+ * - ตรวจ "พ่อแม่"/"ครอบครัว" ก่อน specific (เพราะมีทั้ง father+mother คำในประโยคเดียว)
+ * - son/daughter ก่อน child generic (เพราะ "ลูกชาย" มี "ลูก")
+ * - sanitize blacklist ก่อนทุก match (กัน "พ่อค้า" → father)
+ *
+ * @param msg - ข้อความ normalized (lowercase, แปลงเลขไทยเป็นอาหรับแล้ว)
+ * @returns SixRelativeTargetRole หรือ null ถ้าไม่ใช่คำถาม relative
+ */
+export function detectSixRelativeRole(msg: string): SixRelativeTargetRole | null {
+  // Sanitize blacklist — กำจัดคำประกอบก่อน match role
+  let sanitized = msg;
+  for (const word of RELATIVE_BLACKLIST_WORDS) {
+    sanitized = sanitized.split(word).join(" ");
+  }
+
+  const has = (keywords: string[]): boolean =>
+    keywords.some((k) => sanitized.includes(k.toLowerCase()));
+
+  if (has(ANY_RELATIVE_KEYWORDS)) return "any-relative";
+  if (has(SPOUSE_KEYWORDS)) return "spouse";
+  if (has(SON_KEYWORDS)) return "son";
+  if (has(DAUGHTER_KEYWORDS)) return "daughter";
+  if (has(CHILD_KEYWORDS)) return "child";
+  if (has(MOTHER_KEYWORDS)) return "mother";
+  if (has(FATHER_KEYWORDS)) return "father";
+  if (has(SIBLING_KEYWORDS)) return "sibling";
+
+  return null;
 }
 
 /**
@@ -166,14 +238,10 @@ export function detectIntent(userMessage: string, currentYear: number): Detected
   }
 
   // ===== Pattern 4: ถามเรื่อง六亲 (ความสัมพันธ์/คู่ครอง/ครอบครัว) =====
-  const sixRelativeKeywords = [
-    "คู่ครอง","คู่ชีวิต","สามี","ภรรยา","แฟน","คนรัก","แต่งงาน","แต่งงานกับ","ความรัก","ดาวคู่ครอง","ดาวคู่","เนื้อคู่",
-    "合婚"," compatibility","spouse","marriage","marry","partner",
-    "พ่อ","แม่","ลูก","พี่น้อง","ครอบครัว","father","mother","child","children","sibling","family"," relatives"
-  ];
-
-  if (sixRelativeKeywords.some(keyword => normalizedMsg.includes(keyword.toLowerCase()))) {
-    return { intent: "six_relative" };
+  // classify targetRole เพื่อ resolve relative profile ที่ตรงกับคำถาม (N=1)
+  const sixRelativeRole = detectSixRelativeRole(normalizedMsg);
+  if (sixRelativeRole) {
+    return { intent: "six_relative", extracted: { targetRole: sixRelativeRole } };
   }
 
   // ===== Pattern 5: ถามเรื่อง natal (ดวงประจำตัว) =====

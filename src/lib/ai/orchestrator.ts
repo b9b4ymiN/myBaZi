@@ -8,14 +8,15 @@
  * ห้าม AI คำนวณเอง → ใช้ engine ที่แม่นยำ 100%
  */
 
-import type { Profile } from "@/types/profile";
+import type { Profile, RelationshipRole } from "@/types/profile";
 import type { ChatMessage } from "./client";
 import { chatCompletion, streamChatCompletion } from "./client";
 import { TIANJI_SYSTEM_PROMPT } from "./system-prompt";
 import { buildBaZiContext } from "./bazi-context";
-import { detectIntent, type DetectedIntent } from "./intent-detector";
+import { detectIntent, type DetectedIntent, type SixRelativeTargetRole } from "./intent-detector";
 import { buildDynamicContext } from "./dynamic-context";
-import { buildRelationshipContext } from "./relationship-context";
+import { buildRelationshipContext, findRelativeProfile } from "./relationship-context";
+import { RELATIONSHIP_ROLE_LABELS } from "@/lib/bazi/relationship-labels";
 
 export interface TianjiRequest {
   /** ข้อมูลผู้ใช้ (required) */
@@ -26,8 +27,8 @@ export interface TianjiRequest {
   history?: ChatMessage[];
   /** ปีปัจจุบัน (ค.ศ.) - required for SSR safety */
   currentYear: number;
-  /** ข้อมูลคู่ครอง (optional) — ใช้สำหรับคำถามความสัมพันธ์ */
-  partnerProfile?: Profile | null;
+  /** ทุก profile ใน store — ใช้ resolve relative profile สำหรับคำถาม六亲 (intent + findRelativeProfile) */
+  profiles?: Profile[];
 }
 
 export interface TianjiResponse {
@@ -37,9 +38,33 @@ export interface TianjiResponse {
   layersUsed: {
     natal: boolean;
     dynamic: boolean;
+    relationship: boolean;
   };
   /** Intent ที่ detect ได้ */
   intent: DetectedIntent;
+}
+
+/**
+ * สร้าง note เมื่อ user ถามเรื่อง relative แต่ไม่มี profile ของบุคคลนั้นในระบบ
+ * (Zero Hallucination — ห้ามเดา แนะนำให้ user เพิ่ม profile)
+ */
+function buildMissingRelativeNote(targetRole: SixRelativeTargetRole): string {
+  const label =
+    targetRole === "any-relative"
+      ? "คนในครอบครัว/ญาติ"
+      : targetRole === "child"
+        ? "ลูก"
+        : RELATIONSHIP_ROLE_LABELS[targetRole as RelationshipRole] ?? "บุคคลนั้น";
+
+  return [
+    "## Relationship Context (ยังไม่มีข้อมูล)",
+    "",
+    `User ถามเรื่อง **${label}** แต่ยังไม่มี profile ของ${label}ในระบบ`,
+    "",
+    "- ห้ามเดาหรือวิเคราะห์ความสัมพันธ์จากดวงของตัวเอง — ไม่มีข้อมูลดวงของบุคคลนั้น",
+    `- แนะนำ user: "ถ้าต้องการให้วิเคราะห์${label} ช่วยเพิ่ม profile ของ${label}ที่หน้าโปรไฟล์"`,
+    "- หาก user ตั้งใจถามดวงตัวเอง (ไม่ใช่ relative) ให้ตอบตาม BaZi Natal Context ปกติ",
+  ].join("\n");
 }
 
 /**
@@ -49,13 +74,13 @@ export interface TianjiResponse {
  * @returns TianjiResponse
  */
 export async function askTianji(req: TianjiRequest): Promise<TianjiResponse> {
-  const { profile, userMessage, history = [], currentYear, partnerProfile } = req;
+  const { profile, userMessage, history = [], currentYear, profiles = [] } = req;
 
   // ===== Validation =====
   if (!profile) {
     return {
       reply: "กรุณาเลือก profile ก่อนค่ะ/ครับ",
-      layersUsed: { natal: false, dynamic: false },
+      layersUsed: { natal: false, dynamic: false, relationship: false },
       intent: { intent: "general" },
     };
   }
@@ -96,13 +121,28 @@ export async function askTianji(req: TianjiRequest): Promise<TianjiResponse> {
     });
   }
 
-  // ===== Layer 4: Relationship Context (ถ้ามี partner profile + six_relative intent) =====
-  if (intent.intent === "six_relative" && partnerProfile && profile) {
-    const relCtx = buildRelationshipContext(profile, partnerProfile, currentYear);
-    systemMessages.push({
-      role: "system",
-      content: `## Relationship Context (คู่เทียบดวง)\n\n${relCtx.text}`,
-    });
+  // ===== Layer 4: Relationship Context (ถ้าถามเรื่อง六亲) =====
+  // resolve relative profile อัตโนมัติตาม role ที่ถาม (N=1) จาก profiles[] ใน store
+  let relationshipInjected = false;
+  if (intent.intent === "six_relative" && profiles.length > 0) {
+    const targetRole = intent.extracted?.targetRole ?? "any-relative";
+    const match = findRelativeProfile(profiles, profile, targetRole);
+    if (match) {
+      const relCtx = buildRelationshipContext(profile, match.profile, currentYear, {
+        sameRoleCount: match.sameRoleCount,
+      });
+      systemMessages.push({
+        role: "system",
+        content: `## Relationship Context\n\n${relCtx.text}`,
+      });
+    } else {
+      // ถาม relative แต่ไม่มี profile ในระบบ → note แนะนำให้เพิ่ม (Zero Hallucination — ห้ามเดา)
+      systemMessages.push({
+        role: "system",
+        content: buildMissingRelativeNote(targetRole),
+      });
+    }
+    relationshipInjected = true;
   }
 
   // ===== Chat Completion =====
@@ -125,6 +165,7 @@ export async function askTianji(req: TianjiRequest): Promise<TianjiResponse> {
       layersUsed: {
         natal: true,
         dynamic: dynamicComputed,
+        relationship: relationshipInjected,
       },
       intent,
     };
@@ -132,7 +173,7 @@ export async function askTianji(req: TianjiRequest): Promise<TianjiResponse> {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return {
       reply: `ขอโทษค่ะ/ครับ เกิดข้อผิดพลาดในการเชื่อมต่อ AI: ${errorMessage}`,
-      layersUsed: { natal: true, dynamic: dynamicComputed },
+      layersUsed: { natal: true, dynamic: dynamicComputed, relationship: relationshipInjected },
       intent,
     };
   }
@@ -156,13 +197,13 @@ export async function askTianjiStream(
   handlers: TianjiStreamHandlers,
   signal?: AbortSignal
 ): Promise<TianjiResponse> {
-  const { profile, userMessage, history = [], currentYear, partnerProfile } = req;
+  const { profile, userMessage, history = [], currentYear, profiles = [] } = req;
   const { onDelta } = handlers;
 
   if (!profile) {
     return {
       reply: "กรุณาเลือก profile ก่อนค่ะ/ครับ",
-      layersUsed: { natal: false, dynamic: false },
+      layersUsed: { natal: false, dynamic: false, relationship: false },
       intent: { intent: "general" },
     };
   }
@@ -195,13 +236,28 @@ export async function askTianjiStream(
     });
   }
 
-  // ===== Layer 4: Relationship Context (ถ้ามี partner profile + six_relative intent) =====
-  if (intent.intent === "six_relative" && partnerProfile && profile) {
-    const relCtx = buildRelationshipContext(profile, partnerProfile, currentYear);
-    systemMessages.push({
-      role: "system",
-      content: `## Relationship Context (คู่เทียบดวง)\n\n${relCtx.text}`,
-    });
+  // ===== Layer 4: Relationship Context (ถ้าถามเรื่อง六亲) =====
+  // resolve relative profile อัตโนมัติตาม role ที่ถาม (N=1) จาก profiles[] ใน store
+  let relationshipInjected = false;
+  if (intent.intent === "six_relative" && profiles.length > 0) {
+    const targetRole = intent.extracted?.targetRole ?? "any-relative";
+    const match = findRelativeProfile(profiles, profile, targetRole);
+    if (match) {
+      const relCtx = buildRelationshipContext(profile, match.profile, currentYear, {
+        sameRoleCount: match.sameRoleCount,
+      });
+      systemMessages.push({
+        role: "system",
+        content: `## Relationship Context\n\n${relCtx.text}`,
+      });
+    } else {
+      // ถาม relative แต่ไม่มี profile ในระบบ → note แนะนำให้เพิ่ม (Zero Hallucination — ห้ามเดา)
+      systemMessages.push({
+        role: "system",
+        content: buildMissingRelativeNote(targetRole),
+      });
+    }
+    relationshipInjected = true;
   }
 
   const messages: ChatMessage[] = [
@@ -218,7 +274,7 @@ export async function askTianjiStream(
 
   return {
     reply,
-    layersUsed: { natal: true, dynamic: dynamicComputed },
+    layersUsed: { natal: true, dynamic: dynamicComputed, relationship: relationshipInjected },
     intent,
   };
 }

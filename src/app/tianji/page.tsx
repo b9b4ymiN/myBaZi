@@ -5,14 +5,15 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { ChatWindow } from '@/components/tianji/chat-window';
-import { useActiveProfileSafe } from '@/lib/stores/use-hydrated';
+import { useProfiles } from '@/lib/stores/use-hydrated';
 import { UserCircle, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
 type AiStatus = 'loading' | 'ok' | 'not-configured';
 
 export default function TianjiPage() {
-  const profile = useActiveProfileSafe();
+  const { profiles, activeProfileId } = useProfiles();
+  const profile = profiles.find((p) => p.id === activeProfileId) || null;
   const [aiStatus, setAiStatus] = useState<AiStatus>('loading');
 
   // เช็คว่า server มี AI env ครบหรือไม่ (ไม่ return key/endpoint)
@@ -74,7 +75,7 @@ export default function TianjiPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 pt-4 lg:px-6 lg:pt-6 lg:pb-6">
       <Card className="overflow-hidden">
-        <ChatWindow profile={profile} />
+        <ChatWindow profile={profile} profiles={profiles} />
       </Card>
     </div>
   );
