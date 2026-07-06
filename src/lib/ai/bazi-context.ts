@@ -29,6 +29,10 @@ import { analyzeGodsAndStars } from "@/lib/bazi/gods-stars";
 import { analyzeLuck } from "@/lib/bazi/luck";
 import { analyzeElements } from "@/lib/bazi/elements";
 import { analyzeInteractions, summarizeInteractions } from "@/lib/bazi/interactions";
+import { analyzePalace } from "@/lib/bazi/palace";
+import { analyzeTenGodProfile } from "@/lib/bazi/ten-god-profile";
+import { analyzeSpouse } from "@/lib/bazi/spouse-analysis";
+import { getSixRelatives } from "@/lib/bazi/six-relatives";
 import { ELEMENT_THAI, YINYANG_THAI, HIDDEN_STEM_TYPE_THAI } from "@/lib/bazi/types";
 import { TEN_GOD_THAI } from "@/types/bazi-gods-stars";
 import { STEM_THAI, BRANCH_THAI, ZODIAC_THAI } from "@/lib/bazi/pinyin";
@@ -113,11 +117,13 @@ function formatHiddenStems(hiddenStems: { stem: { name: string; element: string 
  *
  * @param profile - ข้อมูลผู้ใช้
  * @param currentYear - ปีปัจจุบัน (ค.ศ.) - required for SSR safety
+ * @param options - ตัวเลือกเพิ่มเติม (เช่น intent สำหรับ gate section)
  * @returns BaZiContext - context ภาษาไทย + summary + raw data
  */
 export function buildBaZiContext(
   profile: Profile,
-  currentYear?: number
+  currentYear?: number,
+  options?: { intent?: string }
 ): BaZiContext {
   // 1. คำนวณ BaZi chart
   const chart = calculateBaZi(profile);
@@ -386,7 +392,58 @@ export function buildBaZiContext(
     sections.push(""); // blank line
   }
 
-  // ===== Section 13: Transit Forecasting Context =====
+  // ===== Section 13: 六亲 Palaces & Stars (ความสัมพันธ์) =====
+  // เฉพาะกรณี intent === "six_relative" เท่านั้น — cost gate
+  if (options?.intent === "six_relative") {
+    // วิเคราะห์เพิ่มเติมสำหรับความสัมพันธ์
+    const palace = analyzePalace(chart);
+    const tenGodProfile = analyzeTenGodProfile(chart);
+    const spouseAnalysis = analyzeSpouse(chart, profile.gender, strength, usefulGod, tenGodProfile, palace);
+    const sixRelatives = getSixRelatives(profile.gender);
+
+    sections.push("## 六亲 Palaces & Stars (ความสัมพันธ์)");
+
+    // 1. ดาวคู่ครอง (Spouse Star)
+    const spouseStarThai = spouseAnalysis.star.stars.map(star => TEN_GOD_THAI[star] || star).join("、");
+    sections.push(`ดาวคู่ครอง: ${spouseStarThai}`);
+    sections.push(`- สถานะ: ${spouseAnalysis.star.quality === "strong" ? "แข็งแรง" : spouseAnalysis.star.quality === "moderate" ? "ปรากฏ" : spouseAnalysis.star.quality === "weak" ? "อ่อน" : "ไม่ปรากฏ"}${spouseAnalysis.star.dominant ? " (เด่น)" : ""}${spouseAnalysis.star.isUsefulGod ? " · เป็น用神" : ""}${spouseAnalysis.star.isAvoidGod ? " · เป็น忌神" : ""}`);
+    sections.push(`- ${spouseAnalysis.star.reading}`);
+
+    // 2. Spouse Palace (夫妻宫)
+    const palacePrimaryTenGodThai = TEN_GOD_THAI[spouseAnalysis.palace.primaryTenGod] || spouseAnalysis.palace.primaryTenGod;
+    sections.push(`\nSpouse Palace (夫妻宫): ${spouseAnalysis.palace.branch} (${palacePrimaryTenGodThai})`);
+    sections.push(`- ความมั่นคง: ${spouseAnalysis.palace.stability === "stable" ? "มั่นคง" : spouseAnalysis.palace.stability === "combined" ? "ร่วม (六合)" : spouseAnalysis.palace.stability === "clashed" ? "ถูก clash (冲)" : "ปกติ"}`);
+    sections.push(`- ${spouseAnalysis.palace.reading}`);
+
+    // 3. 星宫同参 (Cross-check)
+    sections.push(`\n星宫同参 (ดาวคู่ ↔ Palace): ${spouseAnalysis.crossCheckReading}`);
+
+    // 4. 六亲 Map (ทุกบทบาท)
+    sections.push("\n六亲 Map (ดาวครอบครัว):");
+    const roleLabels: Record<string, string> = {
+      spouse: "คู่ครอง",
+      father: "บิดา",
+      mother: "มารดา",
+      son: "บุตรชาย",
+      daughter: "บุตรี",
+      sibling: "พี่น้อง",
+    };
+
+    for (const [role, stars] of Object.entries(sixRelatives)) {
+      const starsThai = stars.map(star => TEN_GOD_THAI[star] || star).join("、");
+      const roleLabel = roleLabels[role] || role;
+      const isPresent = stars.some(star => tenGodProfile.counts[star] > 0);
+      const status = isPresent ? "มี" : "ไม่ปรากฏ";
+      sections.push(`- ${roleLabel}: ${starsThai} (${status})`);
+    }
+
+    // 5. Overall synthesis
+    sections.push(`\nสรุปความสัมพันธ์: ${spouseAnalysis.overall}`);
+
+    sections.push(""); // blank line
+  }
+
+  // ===== Section 14: Transit Forecasting Context =====
   sections.push("## Transit Forecasting Context (บริบทสำหรับการทำนายอนาคต)");
   if (luck) {
     sections.push(`ปีปัจจุบัน: ${luck.currentAnnual?.year || "ไม่ทราบ"} ค.ศ.`);

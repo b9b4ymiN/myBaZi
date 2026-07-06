@@ -14,10 +14,14 @@ import { StructureCard } from "@/components/bazi/structure-card";
 import { UsefulGodCard } from "@/components/bazi/useful-god-card";
 import { TenGodsView } from "@/components/bazi/ten-gods-view";
 import { StarsView } from "@/components/bazi/stars-view";
+import { InteractionsView } from "@/components/bazi/interactions-view";
+import { TenGodProfileView } from "@/components/bazi/ten-god-profile-view";
 import { LuckTimelineView } from "@/components/bazi/luck-timeline";
 import { ElementCompositionView } from "@/components/bazi/element-composition-view";
 import { DestinyHero } from "@/components/bazi/destiny-hero";
 import { InsightNarrative } from "@/components/bazi/insight-narrative";
+import { RelationshipSection } from "@/components/bazi/relationship-section";
+import { Heart } from "lucide-react";
 import { useActiveProfileSafe } from "@/lib/stores/use-hydrated";
 import { useBaZiAnalysis } from "@/lib/bazi/use-bazi-analysis";
 import { getArchetype } from "@/lib/bazi/archetypes";
@@ -35,7 +39,7 @@ import {
 export default function BaziPage() {
   const activeProfile = useActiveProfileSafe();
   const analysis = useBaZiAnalysis(activeProfile);
-  const [tab, setTab] = useState<"overview" | "chart" | "details">("overview");
+  const [tab, setTab] = useState<"overview" | "chart" | "details" | "relationship">("overview");
 
   // Hydration state - แสดง skeleton ระหว่างรอ
   if (activeProfile === null) {
@@ -111,18 +115,20 @@ export default function BaziPage() {
               ["overview", "ภาพรวม"],
               ["chart", "แผนผัง"],
               ["details", "รายละเอียด"],
+              ["relationship", "ความสัมพันธ์", Heart],
             ] as const
-          ).map(([id, label]) => (
+          ).map(([id, label, Icon]) => (
             <button
               key={id}
               role="tab"
               aria-selected={tab === id}
               onClick={() => setTab(id)}
               className={cn(
-                "flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+                "flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors flex items-center justify-center gap-1.5",
                 tab === id ? "bg-card text-ink shadow-sm" : "text-muted-foreground",
               )}
             >
+              {Icon && <Icon className="w-4 h-4" />}
               {label}
             </button>
           ))}
@@ -164,6 +170,9 @@ export default function BaziPage() {
             <StructureCard structure={structure} />
             <UsefulGodCard usefulGod={usefulGod} />
           </div>
+          <div className="mt-4">
+            <TenGodProfileView profile={analysis.tenGodProfile} />
+          </div>
         </PageSection>
         <PageSection title="รายละเอียดเพิ่มเติม">
           <div className="grid gap-4 md:grid-cols-2 md:gap-6">
@@ -171,6 +180,23 @@ export default function BaziPage() {
             <StarsView godsAndStars={godsAndStars} />
             <LuckTimelineView luck={luck} favorabilities={analysis.luckFavorability.pillars} />
           </div>
+        </PageSection>
+        <PageSection title="ปฏิสัมพันธ์ในดวง">
+          <InteractionsView
+            interactions={analysis.interactions}
+            threeHarmony={analysis.threeHarmony}
+            stemCombinations={analysis.stemCombinations}
+          />
+        </PageSection>
+      </div>
+
+      {/* ความสัมพันธ์ — RelationshipSection */}
+      <div className={tab !== "relationship" ? "max-md:hidden" : undefined}>
+        <PageSection
+          title="ความสัมพันธ์"
+          description="วิเคราะห์คู่ครอง ครอบครัว และจังหวะความรักจากดวงจีน"
+        >
+          <RelationshipSection profile={activeProfile} analysis={analysis} />
         </PageSection>
       </div>
     </PageFrame>

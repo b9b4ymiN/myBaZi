@@ -1,10 +1,27 @@
 export type Gender = "male" | "female";
 export type BirthTimeKnown = "known" | "unknown";
 
+/**
+ * ความสัมพันธ์ของ profile นี้กับ "เจ้าของ" (profile ที่เป็นตัวเอง)
+ * ใช้ในระบบวิเคราะห์ความสัมพันธ์ (六亲 / 合婚) + AI context
+ * optional — undefined = ยังไม่ระบุ (backward-compat สำหรับ profile เก่า)
+ */
+export type RelationshipRole =
+  | "self"      // ตัวเอง / เจ้าของ
+  | "spouse"    // คู่ครอง (สามี / ภรรยา)
+  | "father"    // พ่อ
+  | "mother"    // แม่
+  | "son"       // ลูกชาย
+  | "daughter"  // ลูกสาว
+  | "sibling"   // พี่น้อง
+  | "friend"    // เพื่อน
+  | "other";    // อื่นๆ
+
 export interface Profile {
   id: string;                // crypto.randomUUID()
   name: string;              // ชื่อเล่น/ชื่อ (required, trim)
-  gender: Gender;            // สำคัญต่อ Luck Pillar ทิศ
+  gender: Gender;            // สำคัญต่อ Luck Pillar ทิศ + 六亲 mapping
+  relationship?: RelationshipRole; // ความสัมพันธ์กับเจ้าของ (optional — undefined = ยังไม่ระบุ)
   birthDate: string;         // "YYYY-MM-DD" (required)
   birthTime: string | null;  // "HH:mm" (null ถ้า unknown)
   birthTimeKnown: BirthTimeKnown;  // "known" | "unknown"

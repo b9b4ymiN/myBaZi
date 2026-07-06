@@ -6,10 +6,11 @@
  * - future_year: ถามเรื่องปีหน้า/ปีอื่น (เช่น "ปี 2026", "ปีหน้า")
  * - future_month: ถามเรื่องเดือนหน้า/เดือนอื่น
  * - future_day: ถามเรื่องวันที่เฉพาะเจาะจง (เช่น "วันที่ 15", "พรุ่งนี้")
+ * - six_relative: ถามเรื่องความสัมพันธ์/คู่ครอง/ครอบครัว (六亲)
  * - general: คำถามทั่วไป (ไม่ต้องการคำนวณเพิ่ม)
  */
 
-export type Intent = "natal" | "future_year" | "future_month" | "future_day" | "general";
+export type Intent = "natal" | "future_year" | "future_month" | "future_day" | "six_relative" | "general";
 
 export interface DetectedIntent {
   intent: Intent;
@@ -164,7 +165,18 @@ export function detectIntent(userMessage: string, currentYear: number): Detected
     }
   }
 
-  // ===== Pattern 4: ถามเรื่อง natal (ดวงประจำตัว) =====
+  // ===== Pattern 4: ถามเรื่อง六亲 (ความสัมพันธ์/คู่ครอง/ครอบครัว) =====
+  const sixRelativeKeywords = [
+    "คู่ครอง","คู่ชีวิต","สามี","ภรรยา","แฟน","คนรัก","แต่งงาน","แต่งงานกับ","ความรัก","ดาวคู่ครอง","ดาวคู่","เนื้อคู่",
+    "合婚"," compatibility","spouse","marriage","marry","partner",
+    "พ่อ","แม่","ลูก","พี่น้อง","ครอบครัว","father","mother","child","children","sibling","family"," relatives"
+  ];
+
+  if (sixRelativeKeywords.some(keyword => normalizedMsg.includes(keyword.toLowerCase()))) {
+    return { intent: "six_relative" };
+  }
+
+  // ===== Pattern 5: ถามเรื่อง natal (ดวงประจำตัว) =====
   const natalPatterns = [
     /นิสัย/,
     /ลักษณะ/,

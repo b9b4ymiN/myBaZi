@@ -61,7 +61,7 @@ export async function askTianji(req: TianjiRequest): Promise<TianjiResponse> {
   const intent = detectIntent(userMessage, currentYear);
 
   // ===== Layer 1: Natal Context Injection =====
-  const baZiContext = buildBaZiContext(profile, currentYear);
+  const baZiContext = buildBaZiContext(profile, currentYear, { intent: intent.intent });
 
   // ===== Layer 2: Dynamic Context (ถ้าจำเป็น) =====
   let dynamicContextText = "";
@@ -157,7 +157,7 @@ export async function askTianjiStream(
 
   // ===== Layer 0-2: identical to askTianji =====
   const intent = detectIntent(userMessage, currentYear);
-  const baZiContext = buildBaZiContext(profile, currentYear);
+  const baZiContext = buildBaZiContext(profile, currentYear, { intent: intent.intent });
 
   let dynamicContextText = "";
   let dynamicComputed = false;

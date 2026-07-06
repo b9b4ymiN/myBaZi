@@ -16,6 +16,8 @@ import { useProfileStoreBase } from "@/lib/stores/profile-store";
 import { useActiveProfileSafe, useHydratedProfileStore } from "@/lib/stores/use-hydrated";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Profile } from "@/types/profile";
+// TODO: relationship indicator - skipping to avoid clutter in compact selector
+// import { relationshipLabel } from "@/lib/bazi/relationship-labels";
 
 export function ProfileSelector() {
   const router = useRouter();

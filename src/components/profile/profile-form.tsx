@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import type { Profile, Gender, BirthTimeKnown } from "@/types/profile";
+import type { Profile, Gender, BirthTimeKnown, RelationshipRole } from "@/types/profile";
 import {
   BIRTH_LOCATIONS,
   findLocation,
@@ -49,6 +49,7 @@ const ASIAN_TIMEZONES = [
 interface FormData {
   name: string;
   gender: Gender;
+  relationship: RelationshipRole | "";
   birthDate: string;
   birthTime: string;
   birthTimeKnown: BirthTimeKnown;
@@ -64,6 +65,7 @@ interface FormData {
 const DEFAULT_FORM: FormData = {
   name: "",
   gender: "male",
+  relationship: "",
   birthDate: "",
   birthTime: "",
   birthTimeKnown: "known",
@@ -165,6 +167,7 @@ export function ProfileForm({
     const profileData = {
       name: formData.name.trim(),
       gender: formData.gender,
+      relationship: formData.relationship === "" ? undefined : formData.relationship,
       birthDate: formData.birthDate,
       birthTime: formData.birthTimeKnown === "known" ? formData.birthTime : null,
       birthTimeKnown: formData.birthTimeKnown,
@@ -232,6 +235,35 @@ export function ProfileForm({
                 <SelectItem value="female">หญิง</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Relationship */}
+          <div className="space-y-2">
+            <Label htmlFor="relationship">ความสัมพันธ์กับเจ้าของ</Label>
+            <Select
+              value={formData.relationship}
+              onValueChange={(v) =>
+                setFormData({ ...formData, relationship: v as RelationshipRole | "" })
+              }
+            >
+              <SelectTrigger id="relationship">
+                <SelectValue placeholder="เลือกความสัมพันธ์ (ไม่บังคับ)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="self">ตัวเอง</SelectItem>
+                <SelectItem value="spouse">คู่ครอง</SelectItem>
+                <SelectItem value="father">พ่อ</SelectItem>
+                <SelectItem value="mother">แม่</SelectItem>
+                <SelectItem value="son">ลูกชาย</SelectItem>
+                <SelectItem value="daughter">ลูกสาว</SelectItem>
+                <SelectItem value="sibling">พี่น้อง</SelectItem>
+                <SelectItem value="friend">เพื่อน</SelectItem>
+                <SelectItem value="other">อื่นๆ</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              ระบุว่าโปรไฟล์นี้เป็นใครของคุณ (ใช้ในระบบวิเคราะห์ความสัมพันธ์)
+            </p>
           </div>
 
           {/* Birth Date */}
@@ -435,6 +467,7 @@ function buildFormFromProfile(profile: Profile): FormData {
     ...DEFAULT_FORM,
     name: profile.name,
     gender: profile.gender,
+    relationship: profile.relationship ?? "",
     birthDate: profile.birthDate,
     birthTime: profile.birthTime || "",
     birthTimeKnown: profile.birthTimeKnown,

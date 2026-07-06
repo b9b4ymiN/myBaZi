@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,6 +28,8 @@ import { Plus, MoreVertical, Edit, Trash2, Check, UserPlus } from "lucide-react"
 import { toast } from "sonner";
 import type { Profile } from "@/types/profile";
 import { DayMasterAvatar } from "./day-master-avatar";
+import { formatThaiDate } from "@/lib/utils";
+import { relationshipLabel } from "@/lib/bazi/relationship-labels";
 
 export function ProfilesManager() {
   const router = useRouter();
@@ -166,6 +169,11 @@ export function ProfilesManager() {
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         {profile.name}
+                        {profile.relationship && (
+                          <Badge variant="outline" className="text-xs">
+                            {relationshipLabel(profile.relationship)}
+                          </Badge>
+                        )}
                         {activeProfileId === profile.id && (
                           <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full flex items-center gap-1">
                             <Check className="h-3 w-3" />
@@ -175,11 +183,7 @@ export function ProfilesManager() {
                       </CardTitle>
                       <CardDescription>
                         {profile.gender === "male" ? "ชาย" : "หญิง"} • เกิด{" "}
-                        {new Date(profile.birthDate).toLocaleDateString("th-TH", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
+                        {formatThaiDate(profile.birthDate)}
                         {profile.birthTimeKnown === "known" && profile.birthTime && (
                           <> เวลา {profile.birthTime}</>
                         )}
