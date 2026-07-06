@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { RouteHeader } from "@/components/layout/page-patterns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -79,128 +81,126 @@ export function ProfilesManager() {
     }
   };
 
-  // Show loading state during hydration
-  if (!isHydrated) {
-    return (
-      <div className="container max-w-4xl mx-auto py-8">
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold">จัดการโปรไฟล์</h1>
-              <p className="text-muted-foreground">กำลังโหลด...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Empty state
-  if (profiles.length === 0) {
-    return (
-      <div className="container max-w-4xl mx-auto py-8">
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold">จัดการโปรไฟล์</h1>
-              <p className="text-muted-foreground">
-                สร้างโปรไฟล์เพื่อเริ่มคำนวณ BaZi
-              </p>
-            </div>
-          </div>
-
-          <Card className="border-dashed">
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <UserPlus className="h-16 w-16 text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">ยังไม่มีโปรไฟล์</h3>
-              <p className="text-muted-foreground text-center mb-6 max-w-md">
-                สร้างโปรไฟล์แรกของคุณเพื่อเริ่มคำนวณดวงชะตา BaZi
-              </p>
-              <Button onClick={handleAddProfile} size="lg">
-                <Plus className="h-5 w-5 mr-2" />
-                สร้างโปรไฟล์แรก
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        <ProfileForm
-          open={formOpen}
-          onOpenChange={setFormOpen}
-          profile={editingProfile}
-          onSave={handleSaveProfile}
-        />
-      </div>
-    );
-  }
-
   return (
-    <div className="container max-w-4xl mx-auto py-8">
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">จัดการโปรไฟล์</h1>
-            <p className="text-muted-foreground">
-              จัดการข้อมูลส่วนตัวสำหรับคำนวณ BaZi ({profiles.length} โปรไฟล์)
-            </p>
-          </div>
-          <Button onClick={handleAddProfile}>
-            <Plus className="h-5 w-5 mr-2" />
-            เพิ่มโปรไฟล์
-          </Button>
-        </div>
+    <div className="space-y-6">
+      <RouteHeader
+        eyebrow="ผู้ใช้"
+        title="โปรไฟล์"
+        description={
+          isHydrated
+            ? `จัดการข้อมูลสำหรับคำนวณ BaZi · ${profiles.length} โปรไฟล์`
+            : "จัดการข้อมูลสำหรับคำนวณ BaZi"
+        }
+        actions={
+          isHydrated && profiles.length > 0 ? (
+            <Button onClick={handleAddProfile}>
+              <Plus className="h-4 w-4 mr-1.5" />
+              เพิ่มโปรไฟล์
+            </Button>
+          ) : undefined
+        }
+      />
 
-        <div className="grid gap-4">
-          {profiles.map((profile) => (
-            <Card
-              key={profile.id}
-              className={
-                activeProfileId === profile.id
-                  ? "border-primary bg-primary/5"
-                  : ""
-              }
-            >
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3">
-                    <div className="rounded-full border-2 border-gold/60 bg-jade/10 p-0.5">
-                      <DayMasterAvatar profile={profile} size={48} />
-                    </div>
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
+      {/* Loading skeleton */}
+      {!isHydrated && (
+        <div className="grid gap-3">
+          {[0, 1, 2].map((i) => (
+            <Card key={i}>
+              <CardContent className="flex items-center gap-3 p-4">
+                <Skeleton className="h-12 w-12 shrink-0 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-1/3" />
+                  <Skeleton className="h-3 w-2/3" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Empty state */}
+      {isHydrated && profiles.length === 0 && (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="mb-4 rounded-full bg-jade/10 p-4">
+              <UserPlus className="h-8 w-8 text-jade" />
+            </div>
+            <h3 className="text-xl font-semibold mb-1">ยังไม่มีโปรไฟล์</h3>
+            <p className="mb-6 max-w-sm text-sm text-muted-foreground">
+              สร้างโปรไฟล์แรกเพื่อเริ่มคำนวณดวงชะตา BaZi
+            </p>
+            <Button onClick={handleAddProfile} size="lg">
+              <Plus className="h-5 w-5 mr-2" />
+              สร้างโปรไฟล์แรก
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Profile list */}
+      {isHydrated && profiles.length > 0 && (
+        <div className="grid gap-3">
+          {profiles.map((profile) => {
+            const active = activeProfileId === profile.id;
+            return (
+              <Card
+                key={profile.id}
+                className={
+                  active
+                    ? "border-primary/60 bg-primary/5 ring-1 ring-primary/20"
+                    : ""
+                }
+              >
+                <CardContent className="flex items-start gap-3 p-4">
+                  <div className="shrink-0 rounded-full border-2 border-gold/60 bg-jade/10 p-0.5">
+                    <DayMasterAvatar profile={profile} size={48} />
+                  </div>
+
+                  <div className="min-w-0 flex-1 space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-semibold leading-tight">
                         {profile.name}
-                        {profile.relationship && (
-                          <Badge variant="outline" className="text-xs">
-                            {relationshipLabel(profile.relationship)}
-                          </Badge>
-                        )}
-                        {activeProfileId === profile.id && (
-                          <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full flex items-center gap-1">
-                            <Check className="h-3 w-3" />
-                            โปรไฟล์หลัก
-                          </span>
-                        )}
-                      </CardTitle>
-                      <CardDescription>
-                        {profile.gender === "male" ? "ชาย" : "หญิง"} • เกิด{" "}
-                        {formatThaiDate(profile.birthDate)}
-                        {profile.birthTimeKnown === "known" && profile.birthTime && (
-                          <> เวลา {profile.birthTime}</>
-                        )}
-                        {" • "}
-                        {profile.timezone}
-                      </CardDescription>
+                      </span>
+                      {profile.relationship && (
+                        <Badge variant="outline" className="text-[0.65rem]">
+                          {relationshipLabel(profile.relationship)}
+                        </Badge>
+                      )}
+                      {active && (
+                        <Badge className="gap-1 py-0 px-1.5 text-[0.65rem]">
+                          <Check className="h-3 w-3" />
+                          หลัก
+                        </Badge>
+                      )}
                     </div>
+
+                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-muted-foreground">
+                      <span>{profile.gender === "male" ? "ชาย" : "หญิง"}</span>
+                      <span aria-hidden>·</span>
+                      <span>เกิด {formatThaiDate(profile.birthDate)}</span>
+                      {profile.birthTimeKnown === "known" && profile.birthTime && (
+                        <>
+                          <span aria-hidden>·</span>
+                          <span>{profile.birthTime} น.</span>
+                        </>
+                      )}
+                    </div>
+
+                    {profile.note && (
+                      <p className="border-t pt-1.5 text-xs text-muted-foreground">
+                        {profile.note}
+                      </p>
+                    )}
                   </div>
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon-sm" className="shrink-0">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      {activeProfileId !== profile.id && (
+                      {!active && (
                         <DropdownMenuItem onClick={() => handleSetActiveProfile(profile.id)}>
                           <Check className="h-4 w-4 mr-2" />
                           ตั้งเป็นโปรไฟล์หลัก
@@ -219,18 +219,12 @@ export function ProfilesManager() {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </div>
-              </CardHeader>
-
-              {profile.note && (
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{profile.note}</p>
                 </CardContent>
-              )}
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
-      </div>
+      )}
 
       <ProfileForm
         open={formOpen}
