@@ -46,3 +46,8 @@ next-env.d.ts
 .omx/
 .codegraph/
 
+
+# local anchor charts (PII — birth data, never commit)
+scripts/*.local.mjs
+scripts/anchor*
+!scripts/anchor.example.mjs

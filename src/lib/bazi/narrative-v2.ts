@@ -20,6 +20,7 @@ import type { BaZiNarrative, InsightSection } from "./narrative";
 import { interpretBaZi, type InterpretInput } from "./interpret";
 import { ELEMENT_THAI, YINYANG_THAI } from "./types";
 import { STRENGTH_LEVEL_THAI, STRENGTH_LEVEL_DESC } from "../../types/bazi-strength";
+import type { Gender } from "../../types/profile";
 
 export interface BuildNarrativeV2Input {
   profileName: string;
@@ -28,6 +29,8 @@ export interface BuildNarrativeV2Input {
   palace: PalaceAnalysis;
   luckFavorability: LuckFavorabilityAnalysis;
   archetype: Archetype;
+  /** Optional gender for gender-aware relationship readings */
+  gender?: Gender;
 }
 
 const DOMAIN_ORDER = [
@@ -44,8 +47,8 @@ const DOMAIN_ORDER = [
  * สร้าง BaZiNarrative v2 — 7 หัวข้อชีวิตผูกดวงจริง
  */
 export function buildBaZiNarrativeV2(input: BuildNarrativeV2Input): BaZiNarrative {
-  const { profileName, analysis, archetype, tenGodProfile } = input;
-  const interpretation = interpretBaZi(input as InterpretInput);
+  const { profileName, analysis, archetype, tenGodProfile, gender } = input;
+  const interpretation = interpretBaZi({ ...input, gender } as InterpretInput);
 
   const { chart, strength } = analysis;
   const dm = chart.dayMaster;

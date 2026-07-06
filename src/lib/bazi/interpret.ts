@@ -24,6 +24,8 @@ import {
 } from "./content";
 import { ELEMENT_THAI } from "./types";
 import { TEN_GOD_THAI, type TenGodName } from "../../types/bazi-gods-stars";
+import type { Gender } from "../../types/profile";
+import { analyzeSpouse } from "./spouse-analysis";
 
 export interface DomainInterpretation {
   domain: LifeDomain;
@@ -59,13 +61,15 @@ export interface InterpretInput {
   palace: PalaceAnalysis;
   luckFavorability: LuckFavorabilityAnalysis;
   archetype: Archetype;
+  /** Optional gender for gender-aware relationship readings */
+  gender?: Gender;
 }
 
 /**
  * ประกอบ interpretation ทั้ง 7 domains จาก engine features
  */
 export function interpretBaZi(input: InterpretInput): BaZiInterpretation {
-  const { profileName, analysis, tenGodProfile, palace, luckFavorability, archetype } = input;
+  const { profileName, analysis, tenGodProfile, palace, luckFavorability, archetype, gender } = input;
 
   return {
     profileName,
@@ -73,7 +77,7 @@ export function interpretBaZi(input: InterpretInput): BaZiInterpretation {
       personality: buildPersonality(archetype, tenGodProfile),
       career: buildCareer(archetype, analysis, tenGodProfile),
       wealth: buildWealth(tenGodProfile, analysis),
-      relationship: buildRelationship(palace, tenGodProfile),
+      relationship: buildRelationship(palace, tenGodProfile, gender ? { gender, chart: analysis.chart, strength: analysis.strength, usefulGod: analysis.usefulGod } : undefined),
       health: buildHealth(analysis),
       timing: buildTiming(luckFavorability),
       family: buildFamily(palace),
@@ -170,7 +174,58 @@ function buildWealth(tp: TenGodProfile, analysis: BaZiAnalysis): DomainInterpret
 }
 
 // ── Relationship (spouse palace) ──────────────────────────────────────
-function buildRelationship(palace: PalaceAnalysis, tp: TenGodProfile): DomainInterpretation {
+interface BuildRelationshipContext {
+  gender: Gender;
+  chart: BaZiAnalysis["chart"];
+  strength: BaZiAnalysis["strength"];
+  usefulGod: BaZiAnalysis["usefulGod"];
+}
+
+function buildRelationship(
+  palace: PalaceAnalysis,
+  tp: TenGodProfile,
+  ctx?: BuildRelationshipContext
+): DomainInterpretation {
+  // When gender is provided, use gender-aware analyzeSpouse
+  if (ctx) {
+    const spouseAnalysis = analyzeSpouse(
+      ctx.chart,
+      ctx.gender,
+      ctx.strength,
+      ctx.usefulGod,
+      tp,
+      palace
+    );
+
+    const intro = `ดาวคู่ครอง (เพศ${ctx.gender === "male" ? "ชาย" : "หญิง"}): ${spouseAnalysis.star.reading}`;
+
+    const bullets: string[] = [
+      `spouse palace: ${spouseAnalysis.palace.reading}`,
+      spouseAnalysis.crossCheckReading,
+      spouseAnalysis.overall,
+    ].filter(Boolean);
+
+    // Keep existing companion-dominant warning logic
+    if (tp.dominantGods.includes("比肩") || tp.dominantGods.includes("劫财")) {
+      bullets.push("⚠️ companion เด่น — อาจมีคู่แข่ง/แรงดึงดูดจากคนนอก ควรสื่อสารให้ชัด");
+    }
+
+    const sources = [
+      `spouseBranch=${palace.spouse.branch.name}`,
+      `spouseTenGod=${palace.spouse.branchPrimaryTenGod}`,
+      `genderedSpouseStar=${spouseAnalysis.star.stars.join(",")}`,
+    ];
+
+    return {
+      domain: "relationship",
+      title: DOMAIN_TITLE.relationship,
+      intro,
+      bullets,
+      sources,
+    };
+  }
+
+  // Fall back to existing behavior when gender is not provided
   const spouse = palace.spouse;
   const spouseTenGod = spouse.branchPrimaryTenGod;
   const spouseReading = PALACE_MEANINGS.day.byTenGod[spouseTenGod];
