@@ -14,7 +14,14 @@ export interface NavItem {
   icon: LucideIcon;
 }
 
-export const NAV_ITEMS: NavItem[] = [
+/**
+ * ฉีเหมือนยังไม่พร้อม — hide ออกจาก navigation/UI ชั่วคราว
+ * route `/qimen` ยังเข้าได้ (URL ตรง) เพราะยังไม่ลบ page + components
+ * พร้อมทำจริง → flip `true` แล้วจบ
+ */
+export const QIMEN_ENABLED = false;
+
+const ALL_NAV_ITEMS: NavItem[] = [
   {
     href: "/bazi",
     label: "ปาจื้อ",
@@ -40,6 +47,10 @@ export const NAV_ITEMS: NavItem[] = [
     icon: Sparkles,
   },
 ];
+
+export const NAV_ITEMS: NavItem[] = ALL_NAV_ITEMS.filter(
+  (item) => QIMEN_ENABLED || item.href !== "/qimen",
+);
 
 export const SETTINGS_ITEM: NavItem = {
   href: "/settings",

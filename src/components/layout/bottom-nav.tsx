@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { QIMEN_ENABLED } from "@/config/nav";
 
 interface MobileNavItem {
   href: string;
@@ -21,7 +22,7 @@ interface MobileNavItem {
 }
 
 // 7 ช่อง — 4 modules + หน้าแรก + โปรไฟล์ + ตั้งค่า (เข้า settings/profiles จาก mobile ได้)
-const MOBILE_ITEMS: MobileNavItem[] = [
+const ALL_MOBILE_ITEMS: MobileNavItem[] = [
   { href: "/", label: "หน้าแรก", icon: House },
   { href: "/bazi", label: "ปาจื้อ", icon: ScrollText },
   { href: "/tongshu", label: "ปฏิทิน", icon: Calendar },
@@ -30,6 +31,10 @@ const MOBILE_ITEMS: MobileNavItem[] = [
   { href: "/profiles", label: "โปรไฟล์", icon: Users },
   { href: "/settings", label: "ตั้งค่า", icon: Settings },
 ];
+
+const MOBILE_ITEMS: MobileNavItem[] = ALL_MOBILE_ITEMS.filter(
+  (item) => QIMEN_ENABLED || item.href !== "/qimen",
+);
 
 export function BottomNav() {
   const pathname = usePathname();

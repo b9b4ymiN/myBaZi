@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProfiles, useActiveProfileSafe } from "@/lib/stores/use-hydrated";
+import { QIMEN_ENABLED } from "@/config/nav";
 import { HomeHub } from "@/components/home/home-hub";
 
 export default function Home() {
@@ -55,7 +56,7 @@ export default function Home() {
               myBaZi
             </h1>
             <p className="max-w-2xl text-2xl font-semibold leading-relaxed">
-              เริ่มต้นด้วยโปรไฟล์แรก เพื่อเปิดแผนผังปาจื้อ ปฏิทินมงคล และฉีเหมือนในแอปเดียว
+              เริ่มต้นด้วยโปรไฟล์แรก เพื่อเปิดแผนผังปาจื้อ ปฏิทินมงคล{QIMEN_ENABLED ? " และฉีเหมือน" : ""} ในแอปเดียว
             </p>
             <p className="max-w-xl text-base leading-7 text-[#6b5a3f]">
               ข้อมูลวันเกิดและโปรไฟล์ถูกเก็บไว้ในเครื่องของคุณเป็นหลัก เหมาะสำหรับใช้งานซ้ำทุกวันแบบ PWA โดยไม่ต้องผ่านหน้า marketing ก่อนเข้าแอป

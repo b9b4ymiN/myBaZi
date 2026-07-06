@@ -1,10 +1,39 @@
 import type { MetadataRoute } from "next";
+import { QIMEN_ENABLED } from "@/config/nav";
+
+const ALL_SHORTCUTS: NonNullable<MetadataRoute.Manifest["shortcuts"]> = [
+  {
+    name: "ปาจื้อ",
+    short_name: "八字",
+    description: "เปิดหน้าวิเคราะห์ปาจื้อ",
+    url: "/bazi",
+    icons: [{ src: "/assets/brand/element-mountain-ink.png", type: "image/png" }],
+  },
+  {
+    name: "ปฏิทินมงคล",
+    short_name: "通勝",
+    description: "เปิดปฏิทินมงคลรายวัน",
+    url: "/tongshu",
+    icons: [{ src: "/assets/brand/tool-calendar.png", type: "image/png" }],
+  },
+  {
+    name: "ฉีเหมือน",
+    short_name: "奇門",
+    description: "เปิดผังฉีเหมือน",
+    url: "/qimen",
+    icons: [{ src: "/assets/brand/tool-compass-qimen.png", type: "image/png" }],
+  },
+];
+
+const SHORTCUTS = ALL_SHORTCUTS.filter(
+  (s) => QIMEN_ENABLED || s.url !== "/qimen",
+);
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "myBaZi — ดวงจีนครบวงจร",
     short_name: "myBaZi",
-    description: "PWA ดวงจีนครบวงจรสำหรับปาจื้อ ปฏิทินมงคล ฉีเหมือน และเทียนจี AI",
+    description: `PWA ดวงจีนครบวงจรสำหรับปาจื้อ ปฏิทินมงคล${QIMEN_ENABLED ? " ฉีเหมือน" : ""} และเทียนจี AI`,
     start_url: "/",
     scope: "/",
     display: "standalone",
@@ -33,28 +62,6 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "maskable",
       },
     ],
-    shortcuts: [
-      {
-        name: "ปาจื้อ",
-        short_name: "八字",
-        description: "เปิดหน้าวิเคราะห์ปาจื้อ",
-        url: "/bazi",
-        icons: [{ src: "/assets/brand/element-mountain-ink.png", type: "image/png" }],
-      },
-      {
-        name: "ปฏิทินมงคล",
-        short_name: "通勝",
-        description: "เปิดปฏิทินมงคลรายวัน",
-        url: "/tongshu",
-        icons: [{ src: "/assets/brand/tool-calendar.png", type: "image/png" }],
-      },
-      {
-        name: "ฉีเหมือน",
-        short_name: "奇門",
-        description: "เปิดผังฉีเหมือน",
-        url: "/qimen",
-        icons: [{ src: "/assets/brand/tool-compass-qimen.png", type: "image/png" }],
-      },
-    ],
+    shortcuts: SHORTCUTS,
   };
 }
