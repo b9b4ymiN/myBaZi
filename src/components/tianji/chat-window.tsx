@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { formatThaiDate } from '@/lib/utils';
 import Image from 'next/image';
 import { AlertCircle, Copy, Check, RefreshCw, Square, Trash2 } from 'lucide-react';
 import {
@@ -262,7 +263,7 @@ export function ChatWindow({ profile }: ChatWindowProps) {
                 <p className="text-muted-foreground">ที่ปรึกษาดวงจีน AI ของคุณ</p>
                 <p className="text-sm text-muted-foreground">
                   Profile: {profile.name} • {profile.gender === 'male' ? 'ชาย' : 'หญิง'} • เกิด{' '}
-                  {new Date(profile.birthDate).toLocaleDateString('th-TH')}
+                  {formatThaiDate(profile.birthDate)}
                 </p>
               </div>
               <SuggestionChips onPick={handleSend} />

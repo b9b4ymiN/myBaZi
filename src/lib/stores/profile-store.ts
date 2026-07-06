@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Profile } from '@/types/profile';
+import { getSafeUUID } from '@/lib/utils';
 
 interface ProfileState {
   profiles: Profile[];
@@ -26,7 +27,7 @@ export const useProfileStoreBase = create<ProfileState>()(
         const newProfile: Profile = {
           ...data,
           name, // เก็บชื่อที่ trim แล้ว
-          id: crypto.randomUUID(),
+          id: getSafeUUID(),
           createdAt: now,
           updatedAt: now,
         };

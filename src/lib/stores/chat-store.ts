@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { getSafeUUID } from '@/lib/utils';
 
 export interface ChatMessageUI {
   id: string;
@@ -32,7 +33,7 @@ export const useChatStoreBase = create<ChatStore>()(
       isThinking: false,
 
       addMessage: (message) => {
-        const id = crypto.randomUUID();
+        const id = getSafeUUID();
         const timestamp = Date.now();
         set((state) => ({
           messages: [...state.messages, { ...message, id, timestamp }],
