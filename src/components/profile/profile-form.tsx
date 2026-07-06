@@ -203,7 +203,8 @@ export function ProfileForm({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
+          <div className="flex-1 overflow-y-auto space-y-4 pr-1">
           {/* Name */}
           <div className="space-y-2">
             <Label htmlFor="name">ชื่อ</Label>
@@ -218,85 +219,84 @@ export function ProfileForm({
             />
           </div>
 
-          {/* Gender */}
-          <div className="space-y-2">
-            <Label htmlFor="gender">เพศ</Label>
-            <Select
-              value={formData.gender}
-              onValueChange={(value: Gender) =>
-                setFormData({ ...formData, gender: value })
-              }
-            >
-              <SelectTrigger id="gender">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">ชาย</SelectItem>
-                <SelectItem value="female">หญิง</SelectItem>
-              </SelectContent>
-            </Select>
+          {/* Gender + Relationship — compact 2 col */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="gender">เพศ</Label>
+              <Select
+                value={formData.gender}
+                onValueChange={(value: Gender) =>
+                  setFormData({ ...formData, gender: value })
+                }
+              >
+                <SelectTrigger id="gender">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">ชาย</SelectItem>
+                  <SelectItem value="female">หญิง</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="relationship">ความสัมพันธ์</Label>
+              <Select
+                value={formData.relationship}
+                onValueChange={(v) =>
+                  setFormData({ ...formData, relationship: v as RelationshipRole | "" })
+                }
+              >
+                <SelectTrigger id="relationship">
+                  <SelectValue placeholder="เลือก (ไม่บังคับ)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="self">ตัวเอง</SelectItem>
+                  <SelectItem value="spouse">คู่ครอง</SelectItem>
+                  <SelectItem value="father">พ่อ</SelectItem>
+                  <SelectItem value="mother">แม่</SelectItem>
+                  <SelectItem value="son">ลูกชาย</SelectItem>
+                  <SelectItem value="daughter">ลูกสาว</SelectItem>
+                  <SelectItem value="sibling">พี่น้อง</SelectItem>
+                  <SelectItem value="friend">เพื่อน</SelectItem>
+                  <SelectItem value="other">อื่นๆ</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          {/* Relationship */}
-          <div className="space-y-2">
-            <Label htmlFor="relationship">ความสัมพันธ์กับเจ้าของ</Label>
-            <Select
-              value={formData.relationship}
-              onValueChange={(v) =>
-                setFormData({ ...formData, relationship: v as RelationshipRole | "" })
-              }
-            >
-              <SelectTrigger id="relationship">
-                <SelectValue placeholder="เลือกความสัมพันธ์ (ไม่บังคับ)" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="self">ตัวเอง</SelectItem>
-                <SelectItem value="spouse">คู่ครอง</SelectItem>
-                <SelectItem value="father">พ่อ</SelectItem>
-                <SelectItem value="mother">แม่</SelectItem>
-                <SelectItem value="son">ลูกชาย</SelectItem>
-                <SelectItem value="daughter">ลูกสาว</SelectItem>
-                <SelectItem value="sibling">พี่น้อง</SelectItem>
-                <SelectItem value="friend">เพื่อน</SelectItem>
-                <SelectItem value="other">อื่นๆ</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">
-              ระบุว่าโปรไฟล์นี้เป็นใครของคุณ (ใช้ในระบบวิเคราะห์ความสัมพันธ์)
-            </p>
-          </div>
+          {/* Birth Date + Time Known — compact 2 col */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="birthDate">วันเกิด</Label>
+              <Input
+                id="birthDate"
+                type="date"
+                value={formData.birthDate}
+                onChange={(e) =>
+                  setFormData({ ...formData, birthDate: e.target.value })
+                }
+                required
+              />
+            </div>
 
-          {/* Birth Date */}
-          <div className="space-y-2">
-            <Label htmlFor="birthDate">วันเกิด</Label>
-            <Input
-              id="birthDate"
-              type="date"
-              value={formData.birthDate}
-              onChange={(e) =>
-                setFormData({ ...formData, birthDate: e.target.value })
-              }
-              required
-            />
-          </div>
-
-          {/* Birth Time Known */}
-          <div className="space-y-2">
-            <Label>ทราบเวลาเกิดหรือไม่</Label>
-            <Select
-              value={formData.birthTimeKnown}
-              onValueChange={(value: BirthTimeKnown) =>
-                setFormData({ ...formData, birthTimeKnown: value })
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="known">ทราบเวลาเกิด</SelectItem>
-                <SelectItem value="unknown">ไม่ทราบเวลาเกิด</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <Label>ทราบเวลาเกิด?</Label>
+              <Select
+                value={formData.birthTimeKnown}
+                onValueChange={(value: BirthTimeKnown) =>
+                  setFormData({ ...formData, birthTimeKnown: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="known">ทราบ</SelectItem>
+                  <SelectItem value="unknown">ไม่ทราบ</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Birth Time */}
@@ -312,6 +312,13 @@ export function ProfileForm({
                 }
                 required
               />
+              <p className="text-xs leading-relaxed rounded-md border border-amber-300/60 bg-amber-50 dark:border-amber-700/50 dark:bg-amber-950/40 p-2.5 text-amber-800 dark:text-amber-300">
+                ⏰ เวลาเกิดกำหนด <strong>เสายาม</strong> (เสาที่ 4 — ด้านลูกและบั้นปลายชีวิต)
+                ถ้าใส่ผิดจนข้ามขอบ 2 ชั่วโมง (เช่น 13:59 ↔ 14:01) จะเปลี่ยนเสายามทั้งคู่
+                และกระทบดาว·สมดุลธาตุ·ด้านลูก ส่วนเสาปี·เดือน·วันไม่กระทบ
+                (อิงวันเกิด ไม่ใช่เวลา) — สรุปคือผิดนิดเดียวมักไม่เปลี่ยนดวง
+                แต่ผิดข้ามขอบชั่วโมงจะเปลี่ยนเสายามเลย
+              </p>
             </div>
           )}
 
@@ -442,8 +449,9 @@ export function ProfileForm({
               rows={3}
             />
           </div>
+          </div>
 
-          <DialogFooter>
+          <DialogFooter className="shrink-0 gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               ยกเลิก
             </Button>
