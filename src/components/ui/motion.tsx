@@ -13,7 +13,7 @@
  */
 
 import * as React from "react"
-import { motion, useReducedMotion, type HTMLMotionProps } from "motion/react"
+import { animate, motion, useMotionValue, useReducedMotion, type HTMLMotionProps } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
@@ -92,5 +92,155 @@ export function FadeIn({
     >
       {children}
     </motion.div>
+  )
+}
+
+export type StaggerProps = HTMLMotionProps<"div"> & {
+  /** Delay before the first child starts (s). */
+  delay?: number
+  /** Gap between each child (s). */
+  gap?: number
+}
+
+/**
+ * Container that reveals its `<StaggerItem>` children one after another.
+ * Under reduced motion, children appear together with a short fade.
+ */
+export function Stagger({
+  children,
+  className,
+  delay = 0,
+  gap = 0.08,
+  ...props
+}: StaggerProps) {
+  const reduce = useReducedMotion()
+  return (
+    <motion.div
+      className={className}
+      initial="hidden"
+      animate="show"
+      variants={
+        reduce
+          ? {
+              hidden: { opacity: 0 },
+              show: { opacity: 1, transition: { duration: 0.2, delay } },
+            }
+          : {
+              hidden: {},
+              show: { transition: { staggerChildren: gap, delayChildren: delay } },
+            }
+      }
+      {...props}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+export type StaggerItemProps = HTMLMotionProps<"div">
+
+/** Child of `<Stagger>`. Animates fade + slide-up when the parent staggers it. */
+export function StaggerItem({
+  children,
+  className,
+  ...props
+}: StaggerItemProps) {
+  const reduce = useReducedMotion()
+  return (
+    <motion.div
+      className={cn(className)}
+      variants={
+        reduce
+          ? {
+              hidden: { opacity: 0 },
+              show: { opacity: 1, transition: { duration: 0.15 } },
+            }
+          : {
+              hidden: { opacity: 0, y: 12 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
+            }
+      }
+      {...props}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+export type CountUpProps = {
+  value: number
+  duration?: number
+  decimals?: number
+  prefix?: string
+  suffix?: string
+  className?: string
+}
+
+/**
+ * Animates a number from 0 to `value`. Under reduced motion it renders the
+ * final value instantly. Use `decimals` to keep fractional precision.
+ */
+export function CountUp({
+  value,
+  duration = 0.9,
+  decimals = 0,
+  prefix = "",
+  suffix = "",
+  className,
+}: CountUpProps) {
+  const reduce = useReducedMotion()
+
+  // Reduced motion: render the final value directly — no state, no effect.
+  if (reduce) {
+    return (
+      <span className={className}>
+        {prefix}
+        {value.toFixed(decimals)}
+        {suffix}
+      </span>
+    )
+  }
+
+  return (
+    <CountUpAnimated
+      value={value}
+      duration={duration}
+      decimals={decimals}
+      prefix={prefix}
+      suffix={suffix}
+      className={className}
+    />
+  )
+}
+
+function CountUpAnimated({
+  value,
+  duration,
+  decimals,
+  prefix,
+  suffix,
+  className,
+}: Required<Pick<CountUpProps, "value" | "duration" | "decimals" | "prefix" | "suffix">> & {
+  className?: string
+}) {
+  const mv = useMotionValue(0)
+  const [display, setDisplay] = React.useState(0)
+
+  React.useEffect(() => {
+    const controls = animate(mv, value, {
+      duration,
+      ease: EASE,
+      onUpdate: (latest) => setDisplay(latest),
+    })
+    return () => controls.stop()
+    // mv is a stable motion value reference.
+  }, [value, duration, mv])
+
+  return (
+    <span className={className}>
+      {prefix}
+      {display.toFixed(decimals)}
+      {suffix}
+    </span>
   )
 }
