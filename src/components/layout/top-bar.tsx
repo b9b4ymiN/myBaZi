@@ -10,7 +10,10 @@ import { Button } from "@/components/ui/button";
 
 export function TopBar() {
   return (
-    <header className="flex h-16 items-center justify-between border-b border-border bg-background/88 px-4 backdrop-blur lg:px-6">
+    <header
+      className="flex h-16 items-center justify-between border-b border-border bg-background/88 px-4 backdrop-blur lg:px-6"
+      style={{ viewTransitionName: "site-header" }}
+    >
       {/* Mobile logo */}
       <Link
         href="/"

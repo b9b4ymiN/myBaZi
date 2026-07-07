@@ -24,6 +24,7 @@ import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { RevealContent } from "@/components/ui/motion";
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import type { TongShuDayInfo, PersonalResonance } from "@/types/tongshu";
 import type { DayNatalInteraction, PersonalizedRecommend, CellTone } from "@/lib/tongshu/day-bazi";
@@ -207,21 +208,24 @@ export default function TongShuPage() {
       </div>
 
       {/* TODAY HERO */}
-      {todayInfo ? (
-        <div className="mb-4">
-          <TodayHero
-            todayInfo={todayInfo}
-            resonance={todayData.resonance}
-            dayInteractions={todayData.interactions}
-            recommends={todayData.recommends}
-            currentLuck={baziInputs?.currentLuck ?? null}
-            currentAnnual={baziInputs?.currentAnnual ?? null}
-            profileName={activeProfile?.name}
-          />
-        </div>
-      ) : (
-        <Skeleton className="mb-4 h-48 w-full rounded-2xl" />
-      )}
+      <RevealContent
+        loading={!todayInfo}
+        fallback={<Skeleton className="mb-4 h-48 w-full rounded-2xl" />}
+      >
+        {todayInfo && (
+          <div className="mb-4">
+            <TodayHero
+              todayInfo={todayInfo}
+              resonance={todayData.resonance}
+              dayInteractions={todayData.interactions}
+              recommends={todayData.recommends}
+              currentLuck={baziInputs?.currentLuck ?? null}
+              currentAnnual={baziInputs?.currentAnnual ?? null}
+              profileName={activeProfile?.name}
+            />
+          </div>
+        )}
+      </RevealContent>
 
       {/* MONTH GOOD DAYS — proactive best-days recommendation */}
       {days.length > 0 && (

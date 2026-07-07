@@ -23,7 +23,10 @@ import { InsightNarrative } from "@/components/bazi/insight-narrative";
 import { RelationshipSection } from "@/components/bazi/relationship-section";
 import { Heart } from "lucide-react";
 import { useActiveProfileSafe } from "@/lib/stores/use-hydrated";
-import { useBaZiAnalysis } from "@/lib/bazi/use-bazi-analysis";
+import {
+  useBaZiAnalysis,
+  type BaZiAnalysis,
+} from "@/lib/bazi/use-bazi-analysis";
 import { getArchetype } from "@/lib/bazi/archetypes";
 import { buildBaZiNarrativeV2 } from "@/lib/bazi/narrative-v2";
 import { Button } from "@/components/ui/button";
@@ -35,13 +38,14 @@ import {
   PageSection,
   RouteHeader,
 } from "@/components/layout/page-patterns";
+import { RevealContent } from "@/components/ui/motion";
+import type { Profile } from "@/types/profile";
 
 export default function BaziPage() {
   const activeProfile = useActiveProfileSafe();
   const analysis = useBaZiAnalysis(activeProfile);
-  const [tab, setTab] = useState<"overview" | "chart" | "details" | "relationship">("overview");
 
-  // Hydration state - แสดง skeleton ระหว่างรอ
+  // ไม่มีโปรไฟล์ → empty state (ไม่ใช่ loading swap, เป็น early return)
   if (activeProfile === null) {
     return (
       <PageFrame maxWidth="narrow">
@@ -62,14 +66,35 @@ export default function BaziPage() {
     );
   }
 
-  // แสดง skeleton ระหว่างคำนวณ
-  if (analysis === null) {
-    return (
-      <PageFrame maxWidth="narrow">
-        <LoadingPanel title="ปาจื้อ (八字)" description="กำลังคำนวณแผนผังและสมดุลธาตุ..." />
-      </PageFrame>
-    );
-  }
+  // analysis คำนวณ async → LoadingPanel cross-fade เป็น content ผ่าน RevealContent
+  return (
+    <PageFrame maxWidth="narrow">
+      <RevealContent
+        loading={analysis === null}
+        fallback={
+          <LoadingPanel
+            title="ปาจื้อ (八字)"
+            description="กำลังคำนวณแผนผังและสมดุลธาตุ..."
+          />
+        }
+      >
+        {analysis && (
+          <BaziContent analysis={analysis} profile={activeProfile} />
+        )}
+      </RevealContent>
+    </PageFrame>
+  );
+}
+
+/** เนื้อหาหลักของ /bazi — รับ analysis ที่ non-null เสมอ (แยกออกเพื่อให้ cross-fade ระหว่าง skeleton↔content ทำงานได้) */
+function BaziContent({
+  analysis,
+  profile,
+}: {
+  analysis: BaZiAnalysis;
+  profile: Profile;
+}) {
+  const [tab, setTab] = useState<"overview" | "chart" | "details" | "relationship">("overview");
 
   const { chart, strength, structure, usefulGod, godsAndStars, luck, elements } = analysis;
 
@@ -82,7 +107,7 @@ export default function BaziPage() {
 
   // Build narrative insight flow (v2 — ผูกดวงจริง via ten god profile/palace/luck favorability)
   const narrative = buildBaZiNarrativeV2({
-    profileName: activeProfile.name,
+    profileName: profile.name,
     analysis,
     tenGodProfile: analysis.tenGodProfile,
     palace: analysis.palace,
@@ -91,7 +116,7 @@ export default function BaziPage() {
   });
 
   return (
-    <PageFrame>
+    <>
       <RouteHeader
         eyebrow="八字"
         title="ปาจื้อ"
@@ -142,8 +167,8 @@ export default function BaziPage() {
             strength={strength}
             structure={structure}
             usefulGod={usefulGod}
-            profileName={activeProfile.name}
-            birthDate={activeProfile.birthDate}
+            profileName={profile.name}
+            birthDate={profile.birthDate}
           />
         </PageSection>
         <PageSection title="สิ่งที่คุณอยากรู้">
@@ -196,9 +221,9 @@ export default function BaziPage() {
           title="ความสัมพันธ์"
           description="วิเคราะห์คู่ครอง ครอบครัว และจังหวะความรักจากดวงจีน"
         >
-          <RelationshipSection profile={activeProfile} analysis={analysis} />
+          <RelationshipSection profile={profile} analysis={analysis} />
         </PageSection>
       </div>
-    </PageFrame>
+    </>
   );
 }

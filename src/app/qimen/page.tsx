@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { PageFrame, PageSection, RouteHeader } from "@/components/layout/page-patterns";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
+import { RevealContent } from "@/components/ui/motion";
 import type { ChartType } from "@/types/qimen";
 
 export default function QiMenPage() {
@@ -74,23 +75,7 @@ export default function QiMenPage() {
       />
 
       <PageSection>
-        {isLoading ? (
-          <div className="grid gap-6 lg:grid-cols-3">
-            {/* Loading skeleton */}
-            <div className="space-y-6 lg:col-span-1">
-              <Skeleton className="h-64 w-full" />
-              <Skeleton className="h-48 w-full" />
-            </div>
-            <div className="space-y-6 lg:col-span-2">
-              <Skeleton className="h-96 w-full" />
-              <Separator className="my-8" />
-              <div className="grid gap-6 md:grid-cols-2">
-                <Skeleton className="h-64 w-full" />
-                <Skeleton className="h-64 w-full" />
-              </div>
-            </div>
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="flex flex-col items-center justify-center py-12 space-y-4 text-center">
             <Image
               src="/assets/brand/tool-compass-qimen.png"
@@ -106,33 +91,54 @@ export default function QiMenPage() {
             </div>
           </div>
         ) : (
-          <div className="grid gap-6 lg:grid-cols-3">
-            {/* Left Column: Controls + Summary */}
-            <div className="space-y-6 lg:col-span-1">
-              <DateTimePicker
-                date={date}
-                hour={hour}
-                type={type}
-                onDateChange={handleDateChange}
-                onHourChange={handleHourChange}
-                onTypeChange={handleTypeChange}
-                onGoNow={goNow}
-              />
-              <ChartSummary chart={chart} chartType={type} />
-            </div>
+          <RevealContent
+            loading={isLoading}
+            fallback={
+              <div className="grid gap-6 lg:grid-cols-3">
+                {/* Loading skeleton */}
+                <div className="space-y-6 lg:col-span-1">
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-48 w-full" />
+                </div>
+                <div className="space-y-6 lg:col-span-2">
+                  <Skeleton className="h-96 w-full" />
+                  <Separator className="my-8" />
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <Skeleton className="h-64 w-full" />
+                    <Skeleton className="h-64 w-full" />
+                  </div>
+                </div>
+              </div>
+            }
+          >
+            <div className="grid gap-6 lg:grid-cols-3">
+              {/* Left Column: Controls + Summary */}
+              <div className="space-y-6 lg:col-span-1">
+                <DateTimePicker
+                  date={date}
+                  hour={hour}
+                  type={type}
+                  onDateChange={handleDateChange}
+                  onHourChange={handleHourChange}
+                  onTypeChange={handleTypeChange}
+                  onGoNow={goNow}
+                />
+                <ChartSummary chart={chart} chartType={type} />
+              </div>
 
-            {/* Center Column: Palace Grid (Main) */}
-            <div className="space-y-6 lg:col-span-2">
-              <PalaceGrid chart={chart} />
+              {/* Center Column: Palace Grid (Main) */}
+              <div className="space-y-6 lg:col-span-2">
+                <PalaceGrid chart={chart} />
 
-              <Separator className="my-8" />
+                <Separator className="my-8" />
 
-              <div className="grid gap-6 md:grid-cols-2">
-                <DeityInsight chart={chart} />
-                <DestinyView profile={activeProfile} chart={chart} />
+                <div className="grid gap-6 md:grid-cols-2">
+                  <DeityInsight chart={chart} />
+                  <DestinyView profile={activeProfile} chart={chart} />
+                </div>
               </div>
             </div>
-          </div>
+          </RevealContent>
         )}
       </PageSection>
     </PageFrame>

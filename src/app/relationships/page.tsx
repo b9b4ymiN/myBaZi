@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Users } from "lucide-react";
+import { RevealContent } from "@/components/ui/motion";
 
 export default function RelationshipsPage() {
   const { profiles, isHydrated } = useProfiles();
@@ -149,50 +150,55 @@ export default function RelationshipsPage() {
       </div>
 
       {/* Analysis content */}
-      {!selfAnalysis || !relativeAnalysis ? (
-        <PageSection>
-          <div className="rounded-lg border bg-card p-6">
-            <p className="text-sm text-muted-foreground">กำลังคำนวณ...</p>
-          </div>
-        </PageSection>
-      ) : (
-        <PageSection>
-          {/* Cross-chart analysis */}
-          <div className="mb-6">
-            <CrossChartCard
-              result={analyzeCrossChart(selfAnalysis.chart, relativeAnalysis.chart)}
-              selfName={selfProfile?.name || ""}
-              relativeName={relativeProfile?.name || ""}
-            />
-          </div>
+      <RevealContent
+        loading={!selfAnalysis || !relativeAnalysis}
+        fallback={
+          <PageSection>
+            <div className="rounded-lg border bg-card p-6">
+              <p className="text-sm text-muted-foreground">กำลังคำนวณ...</p>
+            </div>
+          </PageSection>
+        }
+      >
+        {selfAnalysis && relativeAnalysis && (
+          <PageSection>
+            {/* Cross-chart analysis */}
+            <div className="mb-6">
+              <CrossChartCard
+                result={analyzeCrossChart(selfAnalysis.chart, relativeAnalysis.chart)}
+                selfName={selfProfile?.name || ""}
+                relativeName={relativeProfile?.name || ""}
+              />
+            </div>
 
-          {/* Spouse summaries side-by-side */}
-          <div className="grid gap-4 md:grid-cols-2">
-            <SpouseSummaryCard
-              name={selfProfile?.name || ""}
-              spouse={analyzeSpouse(
-                selfAnalysis.chart,
-                selfProfile?.gender || "male",
-                selfAnalysis.strength,
-                selfAnalysis.usefulGod,
-                selfAnalysis.tenGodProfile,
-                selfAnalysis.palace
-              )}
-            />
-            <SpouseSummaryCard
-              name={relativeProfile?.name || ""}
-              spouse={analyzeSpouse(
-                relativeAnalysis.chart,
-                relativeProfile?.gender || "male",
-                relativeAnalysis.strength,
-                relativeAnalysis.usefulGod,
-                relativeAnalysis.tenGodProfile,
-                relativeAnalysis.palace
-              )}
-            />
-          </div>
-        </PageSection>
-      )}
+            {/* Spouse summaries side-by-side */}
+            <div className="grid gap-4 md:grid-cols-2">
+              <SpouseSummaryCard
+                name={selfProfile?.name || ""}
+                spouse={analyzeSpouse(
+                  selfAnalysis.chart,
+                  selfProfile?.gender || "male",
+                  selfAnalysis.strength,
+                  selfAnalysis.usefulGod,
+                  selfAnalysis.tenGodProfile,
+                  selfAnalysis.palace
+                )}
+              />
+              <SpouseSummaryCard
+                name={relativeProfile?.name || ""}
+                spouse={analyzeSpouse(
+                  relativeAnalysis.chart,
+                  relativeProfile?.gender || "male",
+                  relativeAnalysis.strength,
+                  relativeAnalysis.usefulGod,
+                  relativeAnalysis.tenGodProfile,
+                  relativeAnalysis.palace
+                )}
+              />
+            </div>
+          </PageSection>
+        )}
+      </RevealContent>
     </PageFrame>
   );
 }

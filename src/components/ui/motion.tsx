@@ -13,11 +13,30 @@
  */
 
 import * as React from "react"
-import { animate, motion, useMotionValue, useReducedMotion, type HTMLMotionProps } from "motion/react"
+import { animate, AnimatePresence, motion, useMotionValue, useReducedMotion, type HTMLMotionProps } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
-const EASE = [0.22, 1, 0.36, 1] as const
+/**
+ * MOTION — single source of truth for the myBaZi motion design system.
+ *
+ * Every animated surface should pull timings/easings/springs from here so the
+ * whole app feels like one instrument. Tuned for "subtle & cohesive": gentle
+ * cubic-bezier ease, short durations, soft springs.
+ */
+export const MOTION = {
+  /** Primary ease (easeOutQuint-ish). Read-only tuple for motion's `ease` prop. */
+  ease: [0.22, 1, 0.36, 1] as const,
+  /** Duration scale (seconds). fast = taps/micro, base = reveals, slow = hero. */
+  duration: { fast: 0.2, base: 0.4, slow: 0.6 },
+  /** Spring presets. soft = nav pill / shared layout; snappy = press / tap. */
+  spring: {
+    soft: { type: "spring", stiffness: 380, damping: 30 } as const,
+    snappy: { type: "spring", stiffness: 500, damping: 32 } as const,
+  },
+} as const
+
+const EASE = MOTION.ease
 
 export type PageRevealProps = HTMLMotionProps<"div"> & {
   delay?: number
@@ -242,5 +261,63 @@ function CountUpAnimated({
       {display.toFixed(decimals)}
       {suffix}
     </span>
+  )
+}
+
+export interface RevealContentProps {
+  /**
+   * When true, `fallback` (skeleton/spinner) is shown; when it flips to false,
+   * the real `children` cross-fade in. Drive this from your data hook:
+   * `<RevealContent loading={analysis === null} fallback={<Skeleton/>}>`.
+   */
+  loading: boolean
+  fallback: React.ReactNode
+  children: React.ReactNode
+  className?: string
+}
+
+/**
+ * Cross-fades between a loading state and real content.
+ *
+ * Replaces the `if (data === null) return <Skeleton/>` snap-swap with a soft
+ * handoff: the skeleton fades/retreats, then the content fades/slides up. Uses
+ * `AnimatePresence mode="wait"` so the exit finishes before the enter starts.
+ *
+ * This is separate from View Transitions (route-level crossfades) because the
+ * skeleton/content swap is a client conditional render, not a navigation — VT
+ * doesn't fire for it. Reduced motion collapses both legs to opacity-only.
+ */
+export function RevealContent({
+  loading,
+  fallback,
+  children,
+  className,
+}: RevealContentProps) {
+  const reduce = useReducedMotion()
+  return (
+    <AnimatePresence mode="wait">
+      {loading ? (
+        <motion.div
+          key="loading"
+          className={className}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduce ? 0.12 : 0.18, ease: EASE }}
+        >
+          {fallback}
+        </motion.div>
+      ) : (
+        <motion.div
+          key="content"
+          className={className}
+          initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduce ? 0.15 : 0.35, ease: EASE }}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

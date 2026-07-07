@@ -299,3 +299,41 @@
   .cb-element[data-el="water"] { color: var(--element-water); background: color-mix(in oklch, var(--element-water) 12%, transparent); }
   .cb-element[data-el="water"]::before { content: "水"; }
 }
+
+/* ============================================================
+   Porcelain Motion — View Transitions
+   Route cross-fade auto-fires on App Router navigation via
+   <ViewTransition> in app-shell.tsx + experimental.viewTransition
+   in next.config.ts. Timings = single source of truth here.
+   ============================================================ */
+
+/* Global timing for the default route cross-fade — short & gentle (subtle). */
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Anchored bars — must not shift during a route change. */
+::view-transition-group(site-header),
+::view-transition-group(site-nav) {
+  animation: none;
+}
+::view-transition-old(site-header),
+::view-transition-old(site-nav) {
+  display: none;
+}
+::view-transition-new(site-header),
+::view-transition-new(site-nav) {
+  animation: none;
+}
+
+/* Reduced motion: collapse every view transition to an instant swap. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

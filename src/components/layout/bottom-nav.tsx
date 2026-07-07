@@ -14,6 +14,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MOTION } from "@/components/ui/motion";
 import { QIMEN_ENABLED } from "@/config/nav";
 
 interface MobileNavItem {
@@ -38,8 +39,8 @@ const MOBILE_ITEMS: MobileNavItem[] = ALL_MOBILE_ITEMS.filter(
   (item) => QIMEN_ENABLED || item.href !== "/qimen",
 );
 
-/** spring นุ่มสำหรับ active pill + icon */
-const SPRING = { type: "spring", stiffness: 380, damping: 30 } as const;
+/** spring นุ่มสำหรับ active pill + icon (จาก MOTION token) */
+const SPRING = MOTION.spring.soft;
 
 export function BottomNav() {
   const pathname = usePathname();
@@ -48,6 +49,7 @@ export function BottomNav() {
     <nav
       className="safe-area-inset-bottom fixed bottom-0 left-0 right-0 z-40 flex items-stretch justify-around border-t border-border bg-card/94 px-1.5 pb-1 pt-1.5 shadow-[0_-12px_32px_rgba(76,57,25,0.10)] backdrop-blur lg:hidden"
       aria-label="Mobile navigation"
+      style={{ viewTransitionName: "site-nav" }}
     >
       {MOBILE_ITEMS.map((item) => {
         const Icon = item.icon;
