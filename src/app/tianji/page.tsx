@@ -5,7 +5,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { ChatWindow } from '@/components/tianji/chat-window';
+import { CelestialBg } from '@/components/tianji/celestial-bg';
 import { useProfiles } from '@/lib/stores/use-hydrated';
+import { useBaZiAnalysis } from '@/lib/bazi/use-bazi-analysis';
+import type { ElementName } from '@/lib/bazi/types';
 import { UserCircle, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
@@ -15,6 +18,11 @@ export default function TianjiPage() {
   const { profiles, activeProfileId } = useProfiles();
   const profile = profiles.find((p) => p.id === activeProfileId) || null;
   const [aiStatus, setAiStatus] = useState<AiStatus>('loading');
+
+  // ดึง Day Master element เพื่อ element-tint orb/atmosphere (天机 รู้จักธาตุเจ้าวันของ user)
+  const analysis = useBaZiAnalysis(profile);
+  const dayMasterElement: ElementName | null =
+    analysis?.chart.dayMaster.element ?? null;
 
   // เช็คว่า server มี AI env ครบหรือไม่ (ไม่ return key/endpoint)
   useEffect(() => {
@@ -74,8 +82,14 @@ export default function TianjiPage() {
   // Loading or OK — render chat window (it handles its own loading state)
   return (
     <div className="mx-auto max-w-4xl px-4 pt-4 lg:px-6 lg:pt-6 lg:pb-6">
-      <Card className="overflow-hidden">
-        <ChatWindow profile={profile} profiles={profiles} />
+      <Card className="relative overflow-hidden border-gold/20 bg-card/70 backdrop-blur-sm">
+        {/* Celestial atmosphere — อยู่ใน Card (absolute) ลอดผ่าน chat content */}
+        <CelestialBg />
+        <ChatWindow
+          profile={profile}
+          profiles={profiles}
+          dayMasterElement={dayMasterElement}
+        />
       </Card>
     </div>
   );

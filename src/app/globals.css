@@ -337,3 +337,49 @@
     animation-delay: 0s !important;
   }
 }
+
+/* ============================================================
+   天机 — Celestial atmosphere (nebula + twinkling stars)
+   ใช้ใน CelestialBg component (src/components/tianji/celestial-bg.tsx)
+   CSS animation แทน motion lib เพราะเป็น infinite loop stars หลายดวง
+   ============================================================ */
+
+.celestial-nebula {
+  background:
+    radial-gradient(
+      circle at 20% 18%,
+      color-mix(in oklch, var(--gold) 20%, transparent) 0 14rem,
+      transparent 22rem
+    ),
+    radial-gradient(
+      circle at 82% 72%,
+      color-mix(in oklch, var(--jade) 18%, transparent) 0 16rem,
+      transparent 26rem
+    );
+}
+
+.celestial-star {
+  background: var(--gold);
+  box-shadow: 0 0 6px color-mix(in oklch, var(--gold) 60%, transparent);
+  animation: celestial-twinkle 3s ease-in-out infinite;
+}
+
+@keyframes celestial-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+}
+
+/* Reduced motion: stars static ไม่ twinkle */
+@media (prefers-reduced-motion: reduce) {
+  .celestial-star {
+    animation: none;
+    opacity: 0.6;
+  }
+}
